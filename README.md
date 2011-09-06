@@ -1,12 +1,12 @@
-# HTML and Javascript code formatter for Sublime Text editor via node.js
+# HTML, CSS and Javascript code formatter for Sublime Text editor via node.js
 #### [Sublime Text 2](http://www.sublimetext.com/2)
 #### [JSBeautifier](http://jsbeautifier.org/)
 #### [Node.js download](http://nodejs.org/#download)
 
 ## About
-This is a Sublime Text 2 plugin and build system allowing you to format your HTML and JavaScript code. It uses a nice beautifier made by Einar Lielmanis. The formatter is itself written in JavaScript, so you'll need something (node.js) to interpret JavaScript code outside the browser.
+This is a Sublime Text 2 plugin and build system allowing you to format your HTML, CSS and JavaScript code. It uses a set of nice beautifier libs made by Einar Lielmanis and Noah Kantrowitz. The formatters are written in JavaScript, so you'll need something (node.js) to interpret JavaScript code outside the browser.
 
-This will work with both HTML and JavaScript files.
+This will work with both HTML, CSS and JavaScript files.
 
 ## Installation
 First of all, be sure you have [node.js](http://nodejs.org/#download) installed in order to run the beautifier. After you've installed node.js, you will need to setup this plugin.
