@@ -47,6 +47,9 @@
   global.js_beautify =
     require(path.join(__dirname, "beautify.js")).js_beautify;
 
+  global.cssbeautify =
+    require(path.join(__dirname, "cssbeautify.js")).cssbeautify;
+
   // continue only if the source file is specified
   if (source !== "") {
 
@@ -68,11 +71,14 @@
       }
 
       // format the code
-      if (source.match(".js" + "$") == ".js") {
-        log(js_beautify(data, option));
-      }
-      else {
+      if (source.match(".html" + "$") == ".html") {
         log(style_html(data, option));
+      }
+      else if (source.match(".css" + "$") == ".css") {
+        log(cssbeautify(data, option));
+      }
+      else if (source.match(".js" + "$") == ".js") {
+        log(js_beautify(data, option));
       }
     });
   }
