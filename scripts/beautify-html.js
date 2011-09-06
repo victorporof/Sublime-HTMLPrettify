@@ -456,7 +456,5 @@ function style_html(html_source, options) {
   return multi_parser.output.join('');
 }
 
-// Add support for CommonJS. Just put this file somewhere on your require.paths
-// and you will be able to `var js_beautify = require("beautify").js_beautify`.
 if (typeof exports !== "undefined")
     exports.style_html = style_html;
