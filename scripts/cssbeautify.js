@@ -22,32 +22,67 @@
  THE SOFTWARE.
 */
 
-/*jslint continue: true, indent: 4 */
+/*jslint continue: true, sloppy: true, indent: 4 */
 
 function cssbeautify(style, opt) {
-    "use strict";
+
     var options, index = 0, length = style.length, formatted = '',
-        ch, ch2, str, state, State,
-        openbrace = ' {',
-        trimRight, i, len;
+        ch, ch2, str, state, State, depth, quote, comment,
+        openbracesuffix = true,
+        trimRight;
 
     options = arguments.length > 1 ? opt : {};
-    if (typeof options.indent_size !== "undefined") {
-        options.indent = "";
-
-        for (i = 0, len = options.indent_size; i < len; i++) {
-            options.indent += options.indent_char || ' ';
-        }
-    }
     if (typeof options.indent === 'undefined') {
         options.indent = '    ';
     }
     if (typeof options.openbrace === 'string') {
-        openbrace = (options.openbrace === 'end-of-line') ? ' {' : '\n{';
+        openbracesuffix = (options.openbrace === 'end-of-line');
     }
 
     function isWhitespace(c) {
         return ' \t\n\r\f'.indexOf(c) >= 0;
+    }
+
+    function isQuote(c) {
+        return '\'"'.indexOf(c) >= 0;
+    }
+
+    // FIXME: handle Unicode characters
+    function isName(c) {
+        return (ch >= 'a' && ch <= 'z') ||
+            (ch >= 'A' && ch <= 'Z') ||
+            (ch >= '0' && ch <= '9') ||
+            '-_*.:#'.indexOf(c) >= 0;
+    }
+
+    function appendIndent() {
+        var i;
+        for (i = depth; i > 0; i -= 1) {
+            formatted += options.indent;
+        }
+    }
+
+    function openBlock() {
+        formatted = trimRight(formatted);
+        if (openbracesuffix) {
+            formatted += ' {';
+        } else {
+            formatted += '\n';
+            appendIndent();
+            formatted += '{';
+        }
+        if (ch2 !== '\n') {
+            formatted += '\n';
+        }
+        depth += 1;
+    }
+
+    function closeBlock() {
+        depth -= 1;
+        formatted = trimRight(formatted);
+        formatted += '\n';
+        appendIndent();
+        formatted += '}';
     }
 
     if (String.prototype.trimRight) {
@@ -63,16 +98,18 @@ function cssbeautify(style, opt) {
 
     State = {
         Start: 0,
-        BlockComment: 1,
-        Selectors: 2,
-        Ruleset: 3,
-        PropertyName: 4,
-        Separator: 5,
-        PropertyValue: 6,
-        SingleQuotedString: 7,
-        DoubleQuotedString: 8
+        AtRule: 1,
+        Block: 2,
+        Selector: 3,
+        Ruleset: 4,
+        Property: 5,
+        Separator: 6,
+        Expression: 7
     };
+
+    depth = 0;
     state = State.Start;
+    comment = false;
 
     // We want to deal with LF (\n) only
     style = style.replace(/\r\n/g, '\n');
@@ -81,6 +118,46 @@ function cssbeautify(style, opt) {
         ch = style.charAt(index);
         ch2 = style.charAt(index + 1);
         index += 1;
+
+        // Inside a string literal?
+        if (isQuote(quote)) {
+            formatted += ch;
+            if (ch === quote) {
+                quote = null;
+            }
+            if (ch === '\\' && ch2 === quote) {
+                // Don't treat escaped character as the closing quote
+                formatted += ch2;
+                index += 1;
+            }
+            continue;
+        }
+
+        // Starting a string literal?
+        if (isQuote(ch)) {
+            formatted += ch;
+            quote = ch;
+            continue;
+        }
+
+        // Comment
+        if (comment) {
+            formatted += ch;
+            if (ch === '*' && ch2 === '/') {
+                comment = false;
+                formatted += ch2;
+                index += 1;
+            }
+            continue;
+        } else {
+            if (ch === '/' && ch2 === '*') {
+                comment = true;
+                formatted += ch;
+                formatted += ch2;
+                index += 1;
+                continue;
+            }
+        }
 
         if (state === State.Start) {
 
@@ -91,28 +168,17 @@ function cssbeautify(style, opt) {
                 continue;
             }
 
-            // Block comment
-            if (ch === '/' && ch2 === '*') {
-                state = State.BlockComment;
-                formatted += ch;
-                formatted += ch2;
-                index += 1;
-                continue;
-            }
-
-            // Selectors
-            // FIXME: handle Unicode characters
-            if ((ch >= 'a' && ch <= 'z') ||
-                    (ch >= 'A' && ch <= 'Z') ||
-                    (ch >= '0' && ch <= '9') ||
-                    (ch === '-') || (ch === '_') ||
-                    (ch === '.') || (ch === ':')) {
+            // Selector or at-rule
+            if (isName(ch) || (ch === '@')) {
 
                 // Clear trailing whitespaces and linefeeds.
                 str = trimRight(formatted);
 
-                // After finishing a ruleset, there should be one blank line.
-                if (str.charAt(str.length - 1) === '}') {
+                // After finishing a ruleset or directive statement,
+                // there should be one blank line.
+                if (str.charAt(str.length - 1) === '}' ||
+                        str.charAt(str.length - 1) === ';') {
+
                     formatted = str + '\n\n';
                 } else {
                     // After block comment, keep all the linefeeds but
@@ -126,152 +192,190 @@ function cssbeautify(style, opt) {
                     }
                 }
                 formatted += ch;
-                state = State.Selectors;
+                state = (ch === '@') ? State.AtRule : State.Selector;
                 continue;
             }
         }
 
-        if (state ===  State.BlockComment) {
-            // Continue until we hit the final marker '*/' (star, forward slash).
-            formatted += ch;
-            if (ch === '*' && ch2 === '/') {
+        if (state === State.AtRule) {
+
+            // ';' terminates a statement.
+            if (ch === ';') {
+                formatted += ch;
                 state = State.Start;
-                formatted += ch2;
-                index += 1;
+                continue;
             }
+
+            // '{' starts a block
+            if (ch === '{') {
+                openBlock();
+                state = State.Block;
+                continue;
+            }
+
+            formatted += ch;
             continue;
         }
 
-        if (state === State.Selectors) {
-            // Continue until we hit '{'
-            if (ch === '{') {
-                formatted = trimRight(formatted);
-                formatted += openbrace;
-                if (ch2 !== '\n') {
-                    formatted += '\n';
+        if (state === State.Block) {
+
+            // Selector
+            if (isName(ch)) {
+
+                // Clear trailing whitespaces and linefeeds.
+                str = trimRight(formatted);
+
+                // Insert blank line if necessary.
+                if (str.charAt(str.length - 1) === '}') {
+                    formatted = str + '\n\n';
+                } else {
+                    // After block comment, keep all the linefeeds but
+                    // start from the first column (remove whitespaces prefix).
+                    while (true) {
+                        ch2 = formatted.charAt(formatted.length - 1);
+                        if (ch2 !== ' ' && ch2.charCodeAt(0) !== 9) {
+                            break;
+                        }
+                        formatted = formatted.substr(0, formatted.length - 1);
+                    }
                 }
-                state = State.Ruleset;
-            } else {
+
+                appendIndent();
                 formatted += ch;
+                state = State.Selector;
+                continue;
             }
+
+            // '}' resets the state.
+            if (ch === '}') {
+                closeBlock();
+                state = State.Start;
+                continue;
+            }
+
+            formatted += ch;
+            continue;
+        }
+
+        if (state === State.Selector) {
+
+            // '{' starts the ruleset.
+            if (ch === '{') {
+                openBlock();
+                state = State.Ruleset;
+                continue;
+            }
+
+            // '}' resets the state.
+            if (ch === '}') {
+                closeBlock();
+                state = State.Start;
+                continue;
+            }
+
+            formatted += ch;
             continue;
         }
 
         if (state === State.Ruleset) {
-            // Continue until we hit '}'
+
+            // '}' finishes the ruleset.
             if (ch === '}') {
-                formatted = trimRight(formatted);
-                formatted += '\n}';
+                closeBlock();
                 state = State.Start;
+                if (depth > 0) {
+                    state = State.Block;
+                }
                 continue;
             }
+
             // Make sure there is no blank line or trailing spaces inbetween
             if (ch === '\n') {
                 formatted = trimRight(formatted);
                 formatted += '\n';
                 continue;
             }
+
             // property name
             if (!isWhitespace(ch)) {
                 formatted = trimRight(formatted);
                 formatted += '\n';
-                formatted += options.indent;
+                appendIndent();
                 formatted += ch;
-                state = State.PropertyName;
+                state = State.Property;
                 continue;
             }
             formatted += ch;
             continue;
         }
 
-        if (state === State.PropertyName) {
-            // Continue until we hit ':'
+        if (state === State.Property) {
+
+            // ':' concludes the property.
             if (ch === ':') {
                 formatted = trimRight(formatted);
                 formatted += ': ';
-                state = State.Separator;
+                state = State.Expression;
+                if (isWhitespace(ch2)) {
+                    state = State.Separator;
+                }
                 continue;
             }
-            // or until we hit '}'
+
+            // '}' finishes the ruleset.
             if (ch === '}') {
-                formatted = trimRight(formatted);
-                formatted += '\n}';
+                closeBlock();
                 state = State.Start;
+                if (depth > 0) {
+                    state = State.Block;
+                }
                 continue;
             }
+
             formatted += ch;
             continue;
         }
 
         if (state === State.Separator) {
+
+            // Non-whitespace starts the expression.
             if (!isWhitespace(ch)) {
                 formatted += ch;
-                if (ch === '\'') {
-                    state = State.SingleQuotedString;
-                    continue;
-                } else if (ch === '"') {
-                    state = State.DoubleQuotedString;
-                    continue;
-                }
-                state = State.PropertyValue;
+                state = State.Expression;
                 continue;
             }
+
+            // Anticipate string literal.
+            if (isQuote(ch2)) {
+                state = State.Expression;
+            }
+
             continue;
         }
 
-        if (state === State.PropertyValue) {
-            if (ch === '\'') {
-                formatted += ch;
-                state = State.SingleQuotedString;
+        if (state === State.Expression) {
+
+            // '}' finishes the ruleset.
+            if (ch === '}') {
+                closeBlock();
+                state = State.Start;
+                if (depth > 0) {
+                    state = State.Block;
+                }
                 continue;
             }
-            if (ch === '"') {
-                formatted += ch;
-                state = State.DoubleQuotedString;
-                continue;
-            }
-            // Continue until we hit ';''
+
+            // ';' completes the declaration.
             if (ch === ';') {
                 formatted = trimRight(formatted);
                 formatted += ';\n';
                 state = State.Ruleset;
                 continue;
             }
-            // or until we hit '}'
-            if (ch === '}') {
-                formatted = trimRight(formatted);
-                formatted += '\n}';
-                state = State.Start;
-                continue;
-            }
+
             formatted += ch;
             continue;
         }
-
-        // TODO: fully implement http://www.w3.org/TR/CSS2/syndata.html#strings
-        if (state === State.SingleQuotedString) {
-            // Continue until we hit another single quote
-            if (ch === '\'') {
-                state = State.PropertyValue;
-                formatted += ch;
-                continue;
-            }
-            formatted += ch;
-            continue;
-        }
-
-        // TODO: fully implement http://www.w3.org/TR/CSS2/syndata.html#strings
-        if (state === State.DoubleQuotedString) {
-            // Continue until we hit another double quote
-            if (ch === '"') {
-                state = State.PropertyValue;
-                formatted += ch;
-                continue;
-            }
-            formatted += ch;
-            continue;
-        }
-
 
         // The default action is to copy the character (to prevent
         // infinite loop).

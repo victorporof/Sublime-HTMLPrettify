@@ -68,7 +68,7 @@ function js_beautify(js_source_text, options) {
     opt_brace_style = options.brace_style ? options.brace_style : (opt_brace_style ? opt_brace_style : "collapse");
 
 
-    var opt_indent_size = options.indent_size ? options.indent_size : 2;
+    var opt_indent_size = options.indent_size ? options.indent_size : 4;
     var opt_indent_char = options.indent_char ? options.indent_char : ' ';
     var opt_preserve_newlines = typeof options.preserve_newlines === 'undefined' ? true : options.preserve_newlines;
     var opt_max_preserve_newlines = typeof options.max_preserve_newlines === 'undefined' ? false : options.max_preserve_newlines;
@@ -129,11 +129,7 @@ function js_beautify(js_source_text, options) {
             output.push(indent_string);
         }
         if (flags.var_line && flags.var_line_reindented) {
-            if (opt_indent_char === ' ') {
-                output.push('    '); // var_line always pushes 4 spaces, so that the variables would be one under another
-            } else {
-                output.push(indent_string); // skip space-stuffing, if indenting with a tab
-            }
+            output.push(indent_string); // skip space-stuffing, if indenting with a tab
         }
     }
 
@@ -597,7 +593,9 @@ function js_beautify(js_source_text, options) {
     wordchar = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_$'.split('');
     digits = '0123456789'.split('');
 
-    punct = '+ - * / % & ++ -- = += -= *= /= %= == === != !== > < >= <= >> << >>> >>>= >>= <<= && &= | || ! !! , : ? ^ ^= |= ::'.split(' ');
+    punct = '+ - * / % & ++ -- = += -= *= /= %= == === != !== > < >= <= >> << >>> >>>= >>= <<= && &= | || ! !! , : ? ^ ^= |= ::';
+    punct += ' <%= <% %> <?= <? ?>'; // try to be a good boy and try not to break the markup language identifiers
+    punct = punct.split(' ');
 
     // words which should always start on new line.
     line_starters = 'continue,try,throw,return,var,if,switch,case,default,for,while,break,function'.split(',');
@@ -1168,7 +1166,5 @@ function js_beautify(js_source_text, options) {
 
 }
 
-// Add support for CommonJS. Just put this file somewhere on your require.paths
-// and you will be able to `var js_beautify = require("beautify").js_beautify`.
 if (typeof exports !== "undefined")
     exports.js_beautify = js_beautify;
