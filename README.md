@@ -13,11 +13,15 @@ First of all, be sure you have [node.js](http://nodejs.org/#download) installed 
 Each OS has a different `Packages` folder required by Sublime Text. Open it via Preferences -> Browse Packages, and copy this repository contents to the `HTMLPrettify` folder there.
 
 The shorter way of doing this is:
+#### Linux
+`git clone git://github.com/victorporof/Sublime-HTMLPrettify.git ~/.config/sublime-text-2/Packages/HTMLPrettify`
+
 #### Mac
 `git clone git://github.com/victorporof/Sublime-HTMLPrettify.git ~/Library/Application\ Support/Sublime\ Text\ 2/Packages/HTMLPrettify`
 
 #### Windows
 `git clone git://github.com/victorporof/Sublime-HTMLPrettify.git %APPDATA%\Sublime Text 2\Packages\HTMLPrettify`
+
 
 ## Usage
 Open a HTML or JavaScript file, pop out the console in Sublime Text from View -> Show Console, and type `view.run_command("htmlprettify")`.
