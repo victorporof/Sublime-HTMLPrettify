@@ -20,7 +20,7 @@ The shorter way of doing this is:
 `git clone git://github.com/victorporof/Sublime-HTMLPrettify.git ~/Library/Application\ Support/Sublime\ Text\ 2/Packages/HTMLPrettify`
 
 #### Windows
-`git clone git://github.com/victorporof/Sublime-HTMLPrettify.git %APPDATA%\Sublime Text 2\Packages\HTMLPrettify`
+`git clone git://github.com/victorporof/Sublime-HTMLPrettify.git %APPDATA%/Sublime\ Text\ 2/Packages/HTMLPrettify`
 
 
 ## Usage
