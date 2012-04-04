@@ -20,5 +20,5 @@ class HtmlprettifyCommand(sublime_plugin.TextCommand):
         " brace_style:\ collapse")
 
     if len(html) > 0:
-      self.view.replace(edit, sublime.Region(0, self.view.size()), html)
+      self.view.replace(edit, sublime.Region(0, self.view.size()), html.decode('utf-8'))
       sublime.set_timeout(self.save, 100)
