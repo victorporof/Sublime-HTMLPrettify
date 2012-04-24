@@ -10,7 +10,7 @@ This will work with both HTML, CSS and JavaScript files.
 
 ## Installation
 First of all, be sure you have [node.js](http://nodejs.org/#download) installed in order to run the beautifier. After you've installed node.js, you will need to setup this plugin.
-Each OS has a different `Packages` folder required by Sublime Text. Open it via Preferences -> Browse Packages, and copy this repository contents to the `HTMLPrettify` folder there.
+Each OS has a different `Packages` folder required by Sublime Text. Open it via Preferences -> Browse Packages, and copy this repository contents to the `Sublime-HTMLPrettify` folder there.
 
 The shorter way of doing this is:
 #### Linux
