@@ -33,7 +33,7 @@ Open a HTML or JavaScript file, pop out the console in Sublime Text from View ->
 Writing commands in the console is ugly. Set up your own key combo for this, by going to Preferences -> Key Bindings - Default, and adding a command in that huge array: `{ "keys": ["super+shift+h"], "command": "htmlprettify" },`. You can use any other command you want, thought most of them are already taken.
 
 ### Oh noez, command not found!
-If you get an error `sh: node: command not found` or similar, you don't have `node` in the right path. Try setting the absolute path to node in HTMLPrettify.py!
+If you get an error `sh: node: command not found` or similar, you don't have `node` in the right path. Try setting the absolute path to node in `HTMLPrettify.py`.
 This means from:
 `html = commands.getoutput("node " + ...`
 change to
