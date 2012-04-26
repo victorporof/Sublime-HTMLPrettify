@@ -35,9 +35,9 @@ Writing commands in the console is ugly. Set up your own key combo for this, by 
 ### Oh noez, command not found!
 If you get an error `sh: node: command not found` or similar, you don't have `node` in the right path. Try setting the absolute path to node in `HTMLPrettify.py`.
 This means from:
-`html = commands.getoutput("node " + ...`
+`cmd=["node",...]`
 change to
-`html = commands.getoutput("absolute/path/to/node " + ...`
+`cmd=["absolute/path/to/node",...]`
 
 ## Customize
 The `HTMLPrettify.py` script has some predefined settings regarding the indentation size, indentation character, maximum chars per line and brace styling. Customize these settings by modifying the script with your desired values (see the [JSBeautifier options](https://github.com/einars/js-beautify/blob/master/beautify-html.js)).
