@@ -14,13 +14,13 @@ Each OS has a different `Packages` folder required by Sublime Text. Open it via 
 
 The shorter way of doing this is:
 #### Linux
-`git clone git@github.com:victorporof/Sublime-HTMLPrettify.git ~/.config/sublime-text-2/Packages/Sublime-HTMLPrettify`
+`git clone git://github.com/victorporof/Sublime-HTMLPrettify.git ~/.config/sublime-text-2/Packages/Sublime-HTMLPrettify`
 
 #### Mac
-`git clone git@github.com:victorporof/Sublime-HTMLPrettify.git ~/Library/Application\ Support/Sublime\ Text\ 2/Packages/Sublime-HTMLPrettify`
+`git clone git://github.com/victorporof/Sublime-HTMLPrettify.git ~/Library/Application\ Support/Sublime\ Text\ 2/Packages/Sublime-HTMLPrettify`
 
 #### Windows
-`git clone git@github.com:victorporof/Sublime-HTMLPrettify.git %APPDATA%/Sublime\ Text\ 2/Packages/Sublime-HTMLPrettify`
+`git clone git://github.com/victorporof/Sublime-HTMLPrettify.git %APPDATA%/Sublime\ Text\ 2/Packages/Sublime-HTMLPrettify`
 
 
 ## Usage
