@@ -77,6 +77,9 @@
       else if (source.match(".css" + "$") == ".css") {
         log(cssbeautify(data, option));
       }
+      else if (source.match(".less" + "$") == ".less") {
+        log(cssbeautify(data, option));
+      }
       else if (source.match(".js" + "$") == ".js") {
         log(js_beautify(data, option));
       }
