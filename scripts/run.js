@@ -71,7 +71,7 @@
       }
 
       // format the code
-      if (source.match(".html" + "$") == ".html") {
+      if (source.match(".html?" + "$")) {
         log(style_html(data, option));
       }
       else if (source.match(".css" + "$") == ".css") {
