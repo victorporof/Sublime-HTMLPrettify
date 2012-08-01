@@ -55,17 +55,21 @@
 
     // extra argument with custom options could be passed, so check it now
     // and add them to the options object
-    if (argv.length === 4) {
-      var args = argv[3].split(',');
-      for (var j = 0; j < args.length; j++) {
-        hash = args[j].split(":");
-        key = hash[0];
-        value = hash[1];
-
-        // options are stored in key value pairs, such as option.es5 = true
-        option[key] = value;
+    if (argv.length > 3) {
+      var args = argv[3];
+      for (var j = 4; j < argv.length; j++) {
+        args += argv[j];
       }
 
+      args = args.split('~');
+      for (j = 0; j < args.length; j++) {
+        hash = args[j].split(":");
+        key = hash[0];
+        value = hash[1].trim();
+
+        // options are stored in key value pairs, such as option.es5 = true
+        option[key] = value == "' '" ? ' ' : value;
+      }
     }
 
     // read the source file and, when complete, lint the code
