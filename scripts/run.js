@@ -53,15 +53,19 @@
   // continue only if the source file is specified
   if (source !== "") {
 
-    // extra arguments with custom options could be passed, so check them now
+    // extra argument with custom options could be passed, so check it now
     // and add them to the options object
-    for (i = 3, len = argv.length; i < len; i++) {
-      hash = argv[i].split(": ");
-      key = hash[0];
-      value = hash[1];
+    if (argv.length === 4) {
+      var args = argv[3].split(',');
+      for (var j = 0; j < args.length; j++) {
+        hash = args[j].split(":");
+        key = hash[0];
+        value = hash[1];
 
-      // options are stored in key value pairs, such as option.es5 = true
-      option[key] = value;
+        // options are stored in key value pairs, such as option.es5 = true
+        option[key] = value;
+      }
+
     }
 
     // read the source file and, when complete, lint the code
