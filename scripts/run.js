@@ -30,6 +30,7 @@
 
     // cache the console log function and the process arguments
     log = console.log,
+
     argv = process.argv,
 
     // require path and file system utilities to load the jshint.js file
@@ -39,6 +40,7 @@
     // the source file to be linted and options
     source = argv[2] || "",
     option = {};
+    
 
   // the style_html and js_beautify functions work when global by dependance
   global.style_html =
@@ -47,8 +49,8 @@
   global.js_beautify =
     require(path.join(__dirname, "beautify.js")).js_beautify;
 
-  global.cssbeautify =
-    require(path.join(__dirname, "cssbeautify.js")).cssbeautify;
+  global.css_beautify =
+    require(path.join(__dirname, "cssbeautify.js")).css_beautify;
 
   // continue only if the source file is specified
   if (source !== "") {
@@ -82,8 +84,8 @@
       if (source.match(".html?" + "$")) {
         log(style_html(data, option));
       }
-      else if (source.match(".css" + "$") == ".css") {
-        log(cssbeautify(data, option));
+      else if (source.match(".css" + "$") == ".css" || source.match(".scss" + "$") == ".scss") {
+        log(css_beautify(data, option));
       }
       else if (source.match(".js" + "$") == ".js") {
         log(js_beautify(data, option));
