@@ -1,389 +1,198 @@
 /*
- Copyright (C) 2011 Sencha Inc.
 
- Author: Ariya Hidayat.
+ CSS Beautifier
+---------------
 
- Permission is hereby granted, free of charge, to any person obtaining a copy
- of this software and associated documentation files (the "Software"), to deal
- in the Software without restriction, including without limitation the rights
- to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- copies of the Software, and to permit persons to whom the Software is
- furnished to do so, subject to the following conditions:
+    Written by Harutyun Amirjanyan, (amirjanyan@gmail.com)
 
- The above copyright notice and this permission notice shall be included in
- all copies or substantial portions of the Software.
+    Based on code initially developed by: Einar Lielmanis, <elfz@laacz.lv>
+        http://jsbeautifier.org/
 
- THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
- THE SOFTWARE.
+
+    You are free to use this in any way you want, in case you find this useful or working for you.
+
+    Usage:
+        css_beautify(source_text);
+        css_beautify(source_text, options);
+
+    The options are:
+        indent_size (default 4)          — indentation size,
+        indent_char (default space)      — character to indent with,
+
+    e.g
+
+    css_beautify(css_source_text, {
+      'indent_size': 1,
+      'indent_char': '\t'
+    });
 */
 
-/*jslint continue: true, sloppy: true, indent: 4 */
+// http://www.w3.org/TR/CSS21/syndata.html#tokenization
+// http://www.w3.org/TR/css3-syntax/
+function css_beautify(source_text, options) {
+    options = options || {};
+    var indentSize = options.indent_size || 4;
+    var indentCharacter = options.indent_char || ' ';
 
-function cssbeautify(style, opt) {
+    // compatibility
+    if (typeof indentSize == "string")
+        indentSize = parseInt(indentSize);
 
-    var options, index = 0, length = style.length, formatted = '',
-        ch, ch2, str, state, State, depth, quote, comment,
-        openbracesuffix = true,
-        trimRight;
 
-    options = arguments.length > 1 ? opt : {};
-    if (typeof options.indent === 'undefined') {
-        options.indent = '    ';
+    // tokenizer
+    var whiteRe = /^\s+$/;
+    var wordRe = /[\w$\-_]/;
+
+    var pos = -1, ch;
+    function next() {
+        return ch = source_text.charAt(++pos)
     }
-    if (typeof options.openbrace === 'string') {
-        openbracesuffix = (options.openbrace === 'end-of-line');
+    function peek() {
+        return source_text.charAt(pos+1)
     }
-
-    function isWhitespace(c) {
-        return ' \t\n\r\f'.indexOf(c) >= 0;
-    }
-
-    function isQuote(c) {
-        return '\'"'.indexOf(c) >= 0;
-    }
-
-    // FIXME: handle Unicode characters
-    function isName(c) {
-        return (ch >= 'a' && ch <= 'z') ||
-            (ch >= 'A' && ch <= 'Z') ||
-            (ch >= '0' && ch <= '9') ||
-            '-_*.:#'.indexOf(c) >= 0;
-    }
-
-    function appendIndent() {
-        var i;
-        for (i = depth; i > 0; i -= 1) {
-            formatted += options.indent;
+    function eatString(comma) {
+        var start = pos;
+        while(next()){
+            if (ch=="\\"){
+                next();
+                next();
+            } else if (ch == comma) {
+                break;
+            } else if (ch == "\n") {
+                break;
+            }
         }
+        return source_text.substring(start, pos + 1);
     }
 
-    function openBlock() {
-        formatted = trimRight(formatted);
-        if (openbracesuffix) {
-            formatted += ' {';
+    function eatWhitespace() {
+        var start = pos;
+        while (whiteRe.test(peek()))
+            pos++;
+        return pos != start;
+    }
+
+    function skipWhitespace() {
+        var start = pos;
+        do{
+        }while (whiteRe.test(next()))
+        return pos != start + 1;
+    }
+
+    function eatComment() {
+        var start = pos;
+        next();
+        while (next()) {
+            if (ch == "*" && peek() == "/") {
+                pos ++;
+                break;
+            }
+        }
+
+        return source_text.substring(start, pos + 1);
+    }
+
+
+    function lookBack(str, index) {
+        return output.slice(-str.length + (index||0), index).join("").toLowerCase() == str;
+    }
+
+    // printer
+    var indentString = source_text.match(/^[\r\n]*[\t ]*/)[0];
+    var singleIndent = Array(indentSize + 1).join(indentCharacter);
+    var indentLevel = 0;
+    function indent() {
+        indentLevel++;
+        indentString += singleIndent;
+    }
+    function outdent() {
+        indentLevel--;
+        indentString = indentString.slice(0, -indentSize);
+    }
+
+    print = {}
+    print["{"] = function(ch) {
+        print.singleSpace();
+        output.push(ch);
+        print.newLine();
+    }
+    print["}"] = function(ch) {
+        print.newLine();
+        output.push(ch);
+        print.newLine();
+    }
+
+    print.newLine = function(keepWhitespace) {
+        if (!keepWhitespace)
+            while (whiteRe.test(output[output.length - 1]))
+                output.pop();
+
+        if (output.length)
+            output.push('\n');
+        if (indentString)
+            output.push(indentString);
+    }
+    print.singleSpace = function() {
+        if (output.length && !whiteRe.test(output[output.length - 1]))
+            output.push(' ');
+    }
+    var output = [];
+    if (indentString)
+        output.push(indentString);
+    /*_____________________--------------------_____________________*/
+
+    while(true) {
+        var isAfterSpace = skipWhitespace();
+
+        if (!ch)
+            break;
+
+        if (ch == '{') {
+            indent();
+            print["{"](ch);
+        } else if (ch == '}') {
+            outdent();
+            print["}"](ch);
+        } else if (ch == '"' || ch == '\'') {
+            output.push(eatString(ch))
+        } else if (ch == ';') {
+            output.push(ch, '\n', indentString);
+        } else if (ch == '/' && peek() == '*') { // comment
+            print.newLine();
+            output.push(eatComment(), "\n", indentString);
+        } else if (ch == '(') { // may be a url
+            output.push(ch);
+            eatWhitespace();
+            if (lookBack("url", -1) && next()) {
+                if (ch != ')' && ch != '"' && ch != '\'')
+                    output.push(eatString(')'));
+                else
+                    pos--;
+            }
+        } else if (ch == ')') {
+            output.push(ch);
+        } else if (ch == ',') {
+            eatWhitespace();
+            output.push(ch);
+            print.singleSpace();
+        } else if (ch == ']') {
+            output.push(ch);
+        }  else if (ch == '[' || ch == '=') { // no whitespace before or after
+            eatWhitespace();
+            output.push(ch);
         } else {
-            formatted += '\n';
-            appendIndent();
-            formatted += '{';
+            if (isAfterSpace)
+                print.singleSpace();
+
+            output.push(ch);
         }
-        if (ch2 !== '\n') {
-            formatted += '\n';
-        }
-        depth += 1;
     }
 
-    function closeBlock() {
-        depth -= 1;
-        formatted = trimRight(formatted);
-        formatted += '\n';
-        appendIndent();
-        formatted += '}';
-    }
 
-    if (String.prototype.trimRight) {
-        trimRight = function (s) {
-            return s.trimRight();
-        };
-    } else {
-        // old Internet Explorer
-        trimRight = function (s) {
-            return s.replace(/\s+$/, '');
-        };
-    }
-
-    State = {
-        Start: 0,
-        AtRule: 1,
-        Block: 2,
-        Selector: 3,
-        Ruleset: 4,
-        Property: 5,
-        Separator: 6,
-        Expression: 7
-    };
-
-    depth = 0;
-    state = State.Start;
-    comment = false;
-
-    // We want to deal with LF (\n) only
-    style = style.replace(/\r\n/g, '\n');
-
-    while (index < length) {
-        ch = style.charAt(index);
-        ch2 = style.charAt(index + 1);
-        index += 1;
-
-        // Inside a string literal?
-        if (isQuote(quote)) {
-            formatted += ch;
-            if (ch === quote) {
-                quote = null;
-            }
-            if (ch === '\\' && ch2 === quote) {
-                // Don't treat escaped character as the closing quote
-                formatted += ch2;
-                index += 1;
-            }
-            continue;
-        }
-
-        // Starting a string literal?
-        if (isQuote(ch)) {
-            formatted += ch;
-            quote = ch;
-            continue;
-        }
-
-        // Comment
-        if (comment) {
-            formatted += ch;
-            if (ch === '*' && ch2 === '/') {
-                comment = false;
-                formatted += ch2;
-                index += 1;
-            }
-            continue;
-        } else {
-            if (ch === '/' && ch2 === '*') {
-                comment = true;
-                formatted += ch;
-                formatted += ch2;
-                index += 1;
-                continue;
-            }
-        }
-
-        if (state === State.Start) {
-
-            // Copy white spaces and control characters
-            if (ch <= ' ' || ch.charCodeAt(0) >= 128) {
-                state = State.Start;
-                formatted += ch;
-                continue;
-            }
-
-            // Selector or at-rule
-            if (isName(ch) || (ch === '@')) {
-
-                // Clear trailing whitespaces and linefeeds.
-                str = trimRight(formatted);
-
-                // After finishing a ruleset or directive statement,
-                // there should be one blank line.
-                if (str.charAt(str.length - 1) === '}' ||
-                        str.charAt(str.length - 1) === ';') {
-
-                    formatted = str + '\n\n';
-                } else {
-                    // After block comment, keep all the linefeeds but
-                    // start from the first column (remove whitespaces prefix).
-                    while (true) {
-                        ch2 = formatted.charAt(formatted.length - 1);
-                        if (ch2 !== ' ' && ch2.charCodeAt(0) !== 9) {
-                            break;
-                        }
-                        formatted = formatted.substr(0, formatted.length - 1);
-                    }
-                }
-                formatted += ch;
-                state = (ch === '@') ? State.AtRule : State.Selector;
-                continue;
-            }
-        }
-
-        if (state === State.AtRule) {
-
-            // ';' terminates a statement.
-            if (ch === ';') {
-                formatted += ch;
-                state = State.Start;
-                continue;
-            }
-
-            // '{' starts a block
-            if (ch === '{') {
-                openBlock();
-                state = State.Block;
-                continue;
-            }
-
-            formatted += ch;
-            continue;
-        }
-
-        if (state === State.Block) {
-
-            // Selector
-            if (isName(ch)) {
-
-                // Clear trailing whitespaces and linefeeds.
-                str = trimRight(formatted);
-
-                // Insert blank line if necessary.
-                if (str.charAt(str.length - 1) === '}') {
-                    formatted = str + '\n\n';
-                } else {
-                    // After block comment, keep all the linefeeds but
-                    // start from the first column (remove whitespaces prefix).
-                    while (true) {
-                        ch2 = formatted.charAt(formatted.length - 1);
-                        if (ch2 !== ' ' && ch2.charCodeAt(0) !== 9) {
-                            break;
-                        }
-                        formatted = formatted.substr(0, formatted.length - 1);
-                    }
-                }
-
-                appendIndent();
-                formatted += ch;
-                state = State.Selector;
-                continue;
-            }
-
-            // '}' resets the state.
-            if (ch === '}') {
-                closeBlock();
-                state = State.Start;
-                continue;
-            }
-
-            formatted += ch;
-            continue;
-        }
-
-        if (state === State.Selector) {
-
-            // '{' starts the ruleset.
-            if (ch === '{') {
-                openBlock();
-                state = State.Ruleset;
-                continue;
-            }
-
-            // '}' resets the state.
-            if (ch === '}') {
-                closeBlock();
-                state = State.Start;
-                continue;
-            }
-
-            formatted += ch;
-            continue;
-        }
-
-        if (state === State.Ruleset) {
-
-            // '}' finishes the ruleset.
-            if (ch === '}') {
-                closeBlock();
-                state = State.Start;
-                if (depth > 0) {
-                    state = State.Block;
-                }
-                continue;
-            }
-
-            // Make sure there is no blank line or trailing spaces inbetween
-            if (ch === '\n') {
-                formatted = trimRight(formatted);
-                formatted += '\n';
-                continue;
-            }
-
-            // property name
-            if (!isWhitespace(ch)) {
-                formatted = trimRight(formatted);
-                formatted += '\n';
-                appendIndent();
-                formatted += ch;
-                state = State.Property;
-                continue;
-            }
-            formatted += ch;
-            continue;
-        }
-
-        if (state === State.Property) {
-
-            // ':' concludes the property.
-            if (ch === ':') {
-                formatted = trimRight(formatted);
-                formatted += ': ';
-                state = State.Expression;
-                if (isWhitespace(ch2)) {
-                    state = State.Separator;
-                }
-                continue;
-            }
-
-            // '}' finishes the ruleset.
-            if (ch === '}') {
-                closeBlock();
-                state = State.Start;
-                if (depth > 0) {
-                    state = State.Block;
-                }
-                continue;
-            }
-
-            formatted += ch;
-            continue;
-        }
-
-        if (state === State.Separator) {
-
-            // Non-whitespace starts the expression.
-            if (!isWhitespace(ch)) {
-                formatted += ch;
-                state = State.Expression;
-                continue;
-            }
-
-            // Anticipate string literal.
-            if (isQuote(ch2)) {
-                state = State.Expression;
-            }
-
-            continue;
-        }
-
-        if (state === State.Expression) {
-
-            // '}' finishes the ruleset.
-            if (ch === '}') {
-                closeBlock();
-                state = State.Start;
-                if (depth > 0) {
-                    state = State.Block;
-                }
-                continue;
-            }
-
-            // ';' completes the declaration.
-            if (ch === ';') {
-                formatted = trimRight(formatted);
-                formatted += ';\n';
-                state = State.Ruleset;
-                continue;
-            }
-
-            formatted += ch;
-            continue;
-        }
-
-        // The default action is to copy the character (to prevent
-        // infinite loop).
-        formatted += ch;
-    }
-
-    return formatted;
+    var sweetCode = output.join('').replace(/[\n ]+$/, '');
+    return sweetCode;
 }
 
+
 if (typeof exports !== "undefined")
-    exports.cssbeautify = cssbeautify;
+    exports.css_beautify = css_beautify;
