@@ -65,10 +65,10 @@
       for (j = 0; j < args.length; j++) {
         hash = args[j].split(":");
         key = hash[0];
-        value = hash[1].trim();
+        value = hash[1].trim().replace(/^['"](.*)['"]$/, "$1");
 
         // options are stored in key value pairs, such as option.es5 = true
-        option[key] = value == "' '" ? ' ' : value;
+        option[key] = value;
       }
     }
 
