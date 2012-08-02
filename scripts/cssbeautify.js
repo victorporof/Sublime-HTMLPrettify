@@ -177,9 +177,11 @@ function css_beautify(source_text, options) {
             print.singleSpace();
         } else if (ch == ']') {
             output.push(ch);
-        }  else if (ch == '[' || ch == '=') { // no whitespace before or after
+        } else if (ch == '[' || ch == '=') { // no whitespace before or after
             eatWhitespace();
             output.push(ch);
+        } else if (ch== "#" && peek()== "{") { //Sass interpolation syntax: #{$foo}
+            output.push(eatString("}"))
         } else {
             if (isAfterSpace)
                 print.singleSpace();
