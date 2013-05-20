@@ -23,13 +23,14 @@
 
 /*global console, process, require, __dirname */
 
-(function() {
-  "use strict";
+(function () {
+    "use strict";
 
-  var i, len, hash, key, value, raw,
+    var i, len, hash, key, value, raw,
 
     // cache the console log function and the process arguments
     log = console.log,
+
     argv = process.argv,
 
     // require path and file system utilities to load the jshint.js file
@@ -40,46 +41,51 @@
     source = argv[2] || "",
     option = {};
 
-  // the style_html and js_beautify functions work when global by dependance
-  global.style_html =
-    require(path.join(__dirname, "beautify-html.js")).style_html;
 
-  global.js_beautify =
-    require(path.join(__dirname, "beautify.js")).js_beautify;
+    // the style_html and js_beautify functions work when global by dependance
+    global.style_html = require(path.join(__dirname, "beautify-html.js")).style_html;
 
-  global.cssbeautify =
-    require(path.join(__dirname, "cssbeautify.js")).cssbeautify;
+    global.js_beautify = require(path.join(__dirname, "beautify.js")).js_beautify;
 
-  // continue only if the source file is specified
-  if (source !== "") {
+    global.css_beautify = require(path.join(__dirname, "cssbeautify.js")).css_beautify;
 
-    // extra arguments with custom options could be passed, so check them now
-    // and add them to the options object
-    for (i = 3, len = argv.length; i < len; i++) {
-      hash = argv[i].split(": ");
-      key = hash[0];
-      value = hash[1];
+    // continue only if the source file is specified
+    if (source !== "") {
+        // extra argument with custom options could be passed, so check it now
+        // and add them to the options object
+        if (argv.length > 3) {
+            var args = argv[3];
+            for (var j = 4; j < argv.length; j++) {
+                args += argv[j];
+            }
 
-      // options are stored in key value pairs, such as option.es5 = true
-      option[key] = value;
+            args = args.split('~');
+            for (j = 0; j < args.length; j++) {
+                hash = args[j].split(":");
+                key = hash[0];
+                value = hash[1].trim().replace(/^['"](.*)['"]$/, "$1");
+
+                // options are stored in key value pairs, such as option.es5 = true
+                option[key] = value;
+            }
+        }
+
+        // read the source file and, when complete, lint the code
+        fs.readFile(source, "utf8", function (err, data) {
+            if (err) {
+                return;
+            }
+
+            // format the code
+            if (source.match(".html?" + "$")) {
+                log(style_html(data, option));
+            }
+            else if (/(.css$)|(.scss$)|(.less$)/.test(source)) {
+                log(css_beautify(data, option));
+            }
+            else if (source.match(".js" + "$") == ".js") {
+                log(js_beautify(data, option));
+            }
+        });
     }
-
-    // read the source file and, when complete, lint the code
-    fs.readFile(source, "utf8", function(err, data) {
-      if (err) {
-        return;
-      }
-
-      // format the code
-      if (source.match(".html?" + "$")) {
-        log(style_html(data, option));
-      }
-      else if (source.match(".css" + "$") == ".css") {
-        log(cssbeautify(data, option));
-      }
-      else if (source.match(".js" + "$") == ".js") {
-        log(js_beautify(data, option));
-      }
-    });
-  }
 }());
