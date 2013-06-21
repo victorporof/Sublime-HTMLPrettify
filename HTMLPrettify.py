@@ -11,13 +11,12 @@ class HtmlprettifyCommand(sublime_plugin.TextCommand):
 
   def prettify(self, edit):
     scriptPath = sublime.packages_path() + "/Sublime-HTMLPrettify/scripts/run.js"
-    setings = ' '.join([
-      "indent_size:\ 2",
-      "indent_char:\ ' '",
-      "max_char:\ 80",
-      "brace_style:\ collapse"
-    ])
-    cmd = ["node",scriptPath,self.view.file_name(),setings]
+    cmd = ["node",scriptPath,self.view.file_name(),
+      "indent_size: 1",
+      "indent_char: \t",
+      "max_char: 80",
+      "brace_style: collapse"
+    ]
 
     if sublime.platform()=='windows':
       p = subprocess.Popen(cmd,shell=True,stdout=subprocess.PIPE)
