@@ -22,15 +22,22 @@ The shorter way of doing this is:
 #### Windows
 `git clone git://github.com/victorporof/Sublime-HTMLPrettify.git %APPDATA%/Sublime\ Text\ 2/Packages/Sublime-HTMLPrettify`
 
-
 ## Usage
 Tools -> Command Palette (`Cmd+Shift+P` or `Ctrl+Shift+P`) and type `htmlprettify`.
 
 -- or --
 
+`Ctrl+Shift+H` (or `Cmd+Shift+H` if you're on a Mac).
+
+-- or --
+
+Right click in the current buffer and select "Beautify code".
+
+-- or --
+
 Open a HTML or JavaScript file, pop out the console in Sublime Text from View -> Show Console, and type `view.run_command("htmlprettify")`.
 
-Writing commands in the console is ugly. Set up your own key combo for this, by going to Preferences -> Key Bindings - Default, and adding a command in that huge array: `{ "keys": ["super+shift+h"], "command": "htmlprettify" },`. You can use any other command you want, thought most of them are already taken.
+Writing commands in the console is ugly. Set up your own key combo for this, by going to Preferences -> Key Bindings - User, and adding a command in that huge array: `{ "keys": ["super+shift+h"], "command": "htmlprettify" },`. You can use any other command you want, thought most of them are already taken.
 
 ### Oh noez, command not found!
 If you get an error `sh: node: command not found` or similar, you don't have `node` in the right path. Try setting the absolute path to node in `HTMLPrettify.py`.

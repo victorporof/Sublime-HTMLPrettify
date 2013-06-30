@@ -19,7 +19,7 @@ class HtmlprettifyCommand(sublime_plugin.TextCommand):
       "brace_style: collapse"
     ])
 
-    cmd = ["/usr/local/bin/node", scriptPath, self.view.file_name(), setings]
+    cmd = ["/usr/local/bin/node", scriptPath, filePath, setings]
 
     if sublime.platform() == 'windows':
       p = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE)
