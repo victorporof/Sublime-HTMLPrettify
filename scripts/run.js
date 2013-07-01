@@ -78,5 +78,8 @@
     else if (filePath.match(".css?$")) {
       log(css_beautify(data, option));
     }
+    else if (filePath.match(".less$")) {
+      log(css_beautify(data, option));
+    }
   });
 }());
