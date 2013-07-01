@@ -52,6 +52,13 @@
     var key = hash[0].trim();
     var value = hash[1].replace(/^\ /, "");
 
+    // There is one option that allows array of strings to be passed.
+    if (key == "unformatted") {
+      // eval is evil, but JSON.parse would require usage of only double quotes.
+      option[key] = eval(value);
+      continue;
+    }
+
     // Options are stored in key value pairs, such as option.indent_size = 2.
     option[key] = value;
   }
