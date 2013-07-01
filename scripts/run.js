@@ -59,6 +59,11 @@
       continue;
     }
 
+    // Special case 'max_char' to allow for infinite lines.
+    if (key == "max_char" && +value <= 0) {
+      option[key] = Number.MAX_VALUE;
+    }
+
     // Options are stored in key value pairs, such as option.indent_size = 2.
     option[key] = value;
   }
