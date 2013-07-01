@@ -26,10 +26,13 @@ class HtmlprettifyCommand(sublime_plugin.TextCommand):
     f.close()
 
     cmd = ["/usr/local/bin/node", scriptPath, tempPath, filePath or "?", setings]
-
-    if sublime.platform() == 'windows':
-      output = subprocess.Popen(cmd, stdout=subprocess.PIPE).communicate()[0]
-    else:
+    output = ""
+    try:
+      if sublime.platform() != 'windows':
+        output = commands.getoutput('"' + '" "'.join(cmd) + '"')
+      else:
+        output = subprocess.Popen(cmd, stdout=subprocess.PIPE).communicate()[0]
+    except NameError:
       output = subprocess.check_output('"' + '" "'.join(cmd) + '"',
                                        stderr=subprocess.STDOUT,
                                        shell=True)
