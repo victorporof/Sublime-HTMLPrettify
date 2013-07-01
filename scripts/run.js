@@ -71,7 +71,6 @@
   // Read the source file and, when complete, beautify the code.
   fs.readFile(tempPath, "utf8", function(err, data) {
     if (err) {
-      log("Error, unable to continue.");
       return;
     }
     else if (filePath.match(".jsm?$") || data.indexOf("<") != 0) {
