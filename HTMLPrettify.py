@@ -27,7 +27,7 @@ class HtmlprettifyCommand(sublime_plugin.TextCommand):
     cmd = ["/usr/local/bin/node", scriptPath, tempPath, filePath or "?", setings]
 
     if sublime.platform() == 'windows':
-      p = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE)
+      p = subprocess.Popen(cmd, stdout=subprocess.PIPE)
       output = p.communicate()[0]
     else:
       output = commands.getoutput('"' + '" "'.join(cmd) + '"')
