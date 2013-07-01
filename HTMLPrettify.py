@@ -1,5 +1,10 @@
 import sublime, sublime_plugin
-import os, subprocess
+import os
+
+try:
+  import commands
+except ImportError:
+  import subprocess
 
 PLUGIN_FOLDER = os.path.dirname(os.path.realpath(__file__))
 
