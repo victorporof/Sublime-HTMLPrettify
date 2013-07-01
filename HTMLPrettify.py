@@ -7,7 +7,7 @@ class HtmlprettifyCommand(sublime_plugin.TextCommand):
   def run(self, edit):
     scriptPath = PLUGIN_FOLDER + "/scripts/run.js"
     filePath = self.view.file_name()
-    setings = ' && '.join([
+    setings = " && ".join([
       "indent_size: 1",
       "indent_char: \t",
       "max_char: 80",
@@ -28,7 +28,7 @@ class HtmlprettifyCommand(sublime_plugin.TextCommand):
     cmd = ["/usr/local/bin/node", scriptPath, tempPath, filePath or "?", setings]
     output = ""
     try:
-      if sublime.platform() != 'windows':
+      if sublime.platform() != "windows":
         output = commands.getoutput('"' + '" "'.join(cmd) + '"')
       else:
         output = subprocess.Popen(cmd, stdout=subprocess.PIPE).communicate()[0]
@@ -42,7 +42,7 @@ class HtmlprettifyCommand(sublime_plugin.TextCommand):
     os.remove(tempPath)
 
     if len(output) > 0:
-      self.view.replace(edit, sublime.Region(0, self.view.size()), output.decode('utf-8'))
+      self.view.replace(edit, sublime.Region(0, self.view.size()), output.decode("utf-8"))
 
     if filePath != None:
       self.view.run_command("save")
