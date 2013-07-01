@@ -34,7 +34,7 @@
 
   // The source file to be linted and options.
   var source = argv[2] || "";
-  var settings = (argv[3] || "").split(",");
+  var settings = (argv[3] || "").split(" && ");
   var option = {};
 
   var html_beautify = require(path.join(__dirname, "beautify-html.js")).html_beautify;
@@ -66,13 +66,13 @@
       log("Error, unable to continue.");
       return;
     }
-    else if (source.match(".html?" + "$")) {
+    else if (source.match(".html?$")) {
       log(html_beautify(data, option));
     }
-    else if (source.match(".css?" + "$")) {
+    else if (source.match(".css?$")) {
       log(css_beautify(data, option));
     }
-    else if (source.match(".jsm?" + "$")) {
+    else if (source.match(".jsm?$")) {
       log(js_beautify(data, option));
     }
   });

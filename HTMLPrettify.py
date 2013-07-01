@@ -12,7 +12,7 @@ class HtmlprettifyCommand(sublime_plugin.TextCommand):
   def prettify(self, edit):
     scriptPath = sublime.packages_path() + "/Sublime-HTMLPrettify/scripts/run.js"
     filePath = self.view.file_name()
-    setings = ','.join([
+    setings = ' && '.join([
       "indent_size: 1",
       "indent_char: \t",
       "max_char: 80",
