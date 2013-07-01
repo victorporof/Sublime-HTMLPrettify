@@ -46,6 +46,8 @@ This means from:
 change to
 `cmd = ["/your/absolute/path/to/node",...]`
 
+On Windows, the absolute path to node.exe *must* use forward slashes.
+
 ## Customize
 The `HTMLPrettify.py` script has some predefined settings regarding the indentation size, indentation character, maximum chars per line and brace styling. Customize these settings by modifying the script with your desired values (see the [JSBeautifier options](https://github.com/einars/js-beautify/#options)).
 
