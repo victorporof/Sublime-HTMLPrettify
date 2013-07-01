@@ -1,5 +1,5 @@
 import sublime, sublime_plugin
-import commands, subprocess, os
+import os, subprocess
 
 PLUGIN_FOLDER = os.path.dirname(os.path.realpath(__file__))
 
@@ -28,10 +28,11 @@ class HtmlprettifyCommand(sublime_plugin.TextCommand):
     cmd = ["/usr/local/bin/node", scriptPath, tempPath, filePath or "?", setings]
 
     if sublime.platform() == 'windows':
-      p = subprocess.Popen(cmd, stdout=subprocess.PIPE)
-      output = p.communicate()[0]
+      output = subprocess.Popen(cmd, stdout=subprocess.PIPE).communicate()[0]
     else:
-      output = commands.getoutput('"' + '" "'.join(cmd) + '"')
+      output = subprocess.check_output('"' + '" "'.join(cmd) + '"',
+                                       stderr=subprocess.STDOUT,
+                                       shell=True)
 
     # We're done with beautifying, remove the temporary file and change the
     # text shown in the current buffer.
