@@ -1,16 +1,10 @@
-import commands, subprocess
+import commands, subprocess, os
 import sublime, sublime_plugin
 
 class HtmlprettifyCommand(sublime_plugin.TextCommand):
   def run(self, edit):
-    self.save()
-    self.prettify(edit)
-
-  def save(self):
-    self.view.run_command("save")
-
-  def prettify(self, edit):
-    scriptPath = sublime.packages_path() + "/Sublime-HTMLPrettify/scripts/run.js"
+    packageFolder = sublime.packages_path() + "/Sublime-HTMLPrettify";
+    scriptPath = packageFolder + "/scripts/run.js"
     filePath = self.view.file_name()
     setings = ' && '.join([
       "indent_size: 1",
@@ -19,7 +13,18 @@ class HtmlprettifyCommand(sublime_plugin.TextCommand):
       "brace_style: collapse"
     ])
 
-    cmd = ["/usr/local/bin/node", scriptPath, filePath, setings]
+    # Get the current text in the buffer.
+    bufferText = self.view.substr(sublime.Region(0, self.view.size()))
+
+    # ...and save it in a temporary file. This allows for scratch buffers
+    # and dirty files to be beautified as well.
+    tempName = ".__temp__"
+    tempPath = packageFolder + '/' + tempName
+    f = open(tempPath, 'w')
+    f.write(bufferText)
+    f.close()
+
+    cmd = ["/usr/local/bin/node", scriptPath, tempPath, filePath or "?", setings]
 
     if sublime.platform() == 'windows':
       p = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE)
@@ -27,6 +32,12 @@ class HtmlprettifyCommand(sublime_plugin.TextCommand):
     else:
       output = commands.getoutput('"' + '" "'.join(cmd) + '"')
 
+    # We're done with beautifying, remove the temporary file and change the
+    # text shown in the current buffer.
+    os.remove(tempPath)
+
     if len(output) > 0:
       self.view.replace(edit, sublime.Region(0, self.view.size()), output.decode('utf-8'))
-      sublime.set_timeout(self.save, 100)
+
+    if filePath != None:
+      self.view.run_command("save")

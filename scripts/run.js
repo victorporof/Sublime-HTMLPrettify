@@ -32,19 +32,15 @@
   var path = require('path');
   var fs = require('fs');
 
-  // The source file to be linted and options.
-  var source = argv[2] || "";
-  var settings = (argv[3] || "").split(" && ");
+  // The source file to be prettified, original source's path and some options.
+  var tempPath = argv[2] || "";
+  var filePath = argv[3] || "";
+  var settings = (argv[4] || "").split(" && ");
   var option = {};
 
   var html_beautify = require(path.join(__dirname, "beautify-html.js")).html_beautify;
   var js_beautify = require(path.join(__dirname, "beautify.js")).js_beautify;
   var css_beautify = require(path.join(__dirname, "beautify-css.js")).css_beautify;
-
-  // Continue only if the source file is specified.
-  if (source == "") {
-    return;
-  }
 
   // Extra arguments with custom options could be passed, so check them now
   // and add them to the options object.
@@ -61,19 +57,19 @@
   }
 
   // Read the source file and, when complete, beautify the code.
-  fs.readFile(source, "utf8", function(err, data) {
+  fs.readFile(tempPath, "utf8", function(err, data) {
     if (err) {
       log("Error, unable to continue.");
       return;
     }
-    else if (source.match(".html?$")) {
+    else if (filePath.match(".jsm?$") || data.indexOf("<") != 0) {
+      log(js_beautify(data, option));
+    }
+    else if (filePath.match(".html?$") || data.indexOf("<") == 0) {
       log(html_beautify(data, option));
     }
-    else if (source.match(".css?$")) {
+    else if (filePath.match(".css?$")) {
       log(css_beautify(data, option));
-    }
-    else if (source.match(".jsm?$")) {
-      log(js_beautify(data, option));
     }
   });
 }());
