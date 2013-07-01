@@ -35,7 +35,7 @@ Right click in the current buffer and select "Beautify code".
 
 -- or --
 
-Open a HTML or JavaScript file, pop out the console in Sublime Text from View -> Show Console, and type `view.run_command("htmlprettify")`.
+Open a HTML, CSS or JavaScript file, pop out the console in Sublime Text from View -> Show Console, and type `view.run_command("htmlprettify")`.
 
 Writing commands in the console is ugly. Set up your own key combo for this, by going to Preferences -> Key Bindings - User, and adding a command in that huge array: `{ "keys": ["super+shift+h"], "command": "htmlprettify" },`. You can use any other command you want, thought most of them are already taken.
 
@@ -49,6 +49,6 @@ change to
 On Windows, the absolute path to node.exe *must* use forward slashes.
 
 ## Customize
-The `HTMLPrettify.py` script has some predefined settings regarding the indentation size, indentation character, maximum chars per line and brace styling. Customize these settings by modifying the script with your desired values (see the [JSBeautifier options](https://github.com/einars/js-beautify/#options)).
+The `HTMLPrettify.py` script has some predefined settings regarding the indentation size, indentation character, maximum chars per line and brace styling. Customize these settings by modifying the script with your desired values (see the [JSBeautifier options](https://github.com/einars/js-beautify/#options)). To add different file extensions (like jsp/gsp/php) edit scripts/run.js.
 
 Have fun!
