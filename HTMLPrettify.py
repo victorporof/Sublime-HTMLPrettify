@@ -1,10 +1,11 @@
-import commands, subprocess, os
 import sublime, sublime_plugin
+import commands, subprocess, os
+
+PLUGIN_FOLDER = os.path.dirname(os.path.realpath(__file__))
 
 class HtmlprettifyCommand(sublime_plugin.TextCommand):
   def run(self, edit):
-    packageFolder = sublime.packages_path() + "/Sublime-HTMLPrettify";
-    scriptPath = packageFolder + "/scripts/run.js"
+    scriptPath = PLUGIN_FOLDER + "/scripts/run.js"
     filePath = self.view.file_name()
     setings = ' && '.join([
       "indent_size: 1",
@@ -19,7 +20,7 @@ class HtmlprettifyCommand(sublime_plugin.TextCommand):
     # ...and save it in a temporary file. This allows for scratch buffers
     # and dirty files to be beautified as well.
     tempName = ".__temp__"
-    tempPath = packageFolder + '/' + tempName
+    tempPath = PLUGIN_FOLDER + '/' + tempName
     f = open(tempPath, 'w')
     f.write(bufferText)
     f.close()
