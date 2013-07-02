@@ -20,6 +20,10 @@ The shorter way of doing this is:
 * type `prettify`, select `HTML-CSS-JS Prettify`
 
 ### Manually
+Make sure you use the right Sublime Text folder. For example, on OS X, packages for version 2 are in `~/Library/Application\ Support/Sublime\ Text\ 2`, while version 3 is labeled `~/Library/Application\ Support/Sublime\ Text\ 3`.
+
+These are for Sublime Text 2:
+
 #### Mac
 `git clone https://github.com/victorporof/Sublime-HTMLPrettify.git ~/Library/Application\ Support/Sublime\ Text\ 2/Packages/Sublime-HTMLPrettify`
 
