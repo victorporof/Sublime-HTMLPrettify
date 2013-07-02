@@ -13,14 +13,21 @@ First of all, be sure you have [node.js](http://nodejs.org/#download) installed 
 Each OS has a different `Packages` folder required by Sublime Text. Open it via Preferences -> Browse Packages, and copy this repository contents to the `Sublime-HTMLPrettify` folder there.
 
 The shorter way of doing this is:
-#### Linux
-`git clone git://github.com/victorporof/Sublime-HTMLPrettify.git ~/.config/sublime-text-2/Packages/Sublime-HTMLPrettify`
+### Through [Sublime Package Manager](http://wbond.net/sublime_packages/package_control)
 
+* `Ctrl+Shift+P` or `Cmd+Shift+P` in Linux/Windows/OS X
+* type `install`, select `Package Control: Install Package`
+* type `prettify`, select `HTML-CSS-JS Prettify`
+
+### Manually
 #### Mac
-`git clone git://github.com/victorporof/Sublime-HTMLPrettify.git ~/Library/Application\ Support/Sublime\ Text\ 2/Packages/Sublime-HTMLPrettify`
+`git clone https://github.com/victorporof/Sublime-HTMLPrettify.git ~/Library/Application\ Support/Sublime\ Text\ 2/Packages/Sublime-HTMLPrettify`
+
+#### Linux
+`git clone https://github.com/victorporof/Sublime-HTMLPrettify.git ~/.config/sublime-text-2/Packages/Sublime-HTMLPrettify`
 
 #### Windows
-`git clone git://github.com/victorporof/Sublime-HTMLPrettify.git %APPDATA%/Sublime\ Text\ 2/Packages/Sublime-HTMLPrettify`
+`git clone https://github.com/victorporof/Sublime-HTMLPrettify.git %APPDATA%/Sublime\ Text\ 2/Packages/Sublime-HTMLPrettify`
 
 ## Usage
 Tools -> Command Palette (`Cmd+Shift+P` or `Ctrl+Shift+P`) and type `htmlprettify`.
@@ -42,9 +49,9 @@ Writing commands in the console is ugly. Set up your own key combo for this, by 
 ## Oh noez, command not found!
 If you get an error `sh: node: command not found` or similar, you don't have `node` in the right path. Try setting the absolute path to node in `HTMLPrettify.py`.
 This means from:
-`cmd = ["/usr/local/bin/node",...]`
+* `cmd = ["/usr/local/bin/node",...]`
 change to
-`cmd = ["/your/absolute/path/to/node",...]`
+* `cmd = ["/your/absolute/path/to/node",...]`
 
 On Windows, the absolute path to node.exe *must* use forward slashes.
 
