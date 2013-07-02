@@ -73,17 +73,17 @@
     if (err) {
       return;
     }
-    else if (filePath.match(".jsm?$") || data.indexOf("<") != 0) {
-      log(js_beautify(data, option));
-    }
-    else if (filePath.match(".html?$") || data.indexOf("<") == 0) {
-      log(html_beautify(data, option));
-    }
     else if (filePath.match(".css?$")) {
       log(css_beautify(data, option));
     }
     else if (filePath.match(".less$")) {
       log(css_beautify(data, option));
+    }
+    else if (filePath.match(".html?$") || data.indexOf("<") == 0) {
+      log(html_beautify(data, option));
+    }
+    else if (filePath.match(".jsm?$") || data.indexOf("<") != 0) {
+      log(js_beautify(data, option));
     }
   });
 }());
