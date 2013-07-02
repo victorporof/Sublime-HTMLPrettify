@@ -40,14 +40,14 @@ class HtmlprettifyCommand(sublime_plugin.TextCommand):
     try:
       # Sublime Text 2.
       if sublime.platform() != "windows":
-        # Handle Windows in Python 2.
+        # Handle Linux and OS X in Python 2.
         run = '"' + '" "'.join(cmd) + '"'
         output = commands.getoutput(run)
       else:
-        # Handle Linux and OS X in Python 2.
+        # Handle Windows in Python 2.
         output = subprocess.Popen(cmd, stdout=subprocess.PIPE).communicate()[0]
     except:
-      # Sublime Text 3.
+      # Sublime Text 3, Python 3.
       run = '"' + '" "'.join(cmd) + '"'
       output = subprocess.check_output(run, stderr=subprocess.STDOUT, shell=True)
 
