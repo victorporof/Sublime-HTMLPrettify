@@ -1,5 +1,5 @@
 # HTML, CSS and JavaScript code formatter for Sublime Text 2 and 3 via node.js
-#### [Sublime Text 2](http://www.sublimetext.com/2)
+#### [Sublime Text 3](http://www.sublimetext.com/3)
 #### [JSBeautifier](http://jsbeautifier.org/)
 #### [Node.js download](http://nodejs.org/#download)
 
