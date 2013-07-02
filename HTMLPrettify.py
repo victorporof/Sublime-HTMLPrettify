@@ -29,7 +29,7 @@ class HtmlprettifyCommand(sublime_plugin.TextCommand):
     # and dirty files to be beautified as well.
     tempName = ".__temp__"
     tempPath = PLUGIN_FOLDER + '/' + tempName
-    f = open(tempPath, 'w')
+    f = open(tempPath, 'w', encoding="utf-8")
     f.write(bufferText)
     f.close()
 
