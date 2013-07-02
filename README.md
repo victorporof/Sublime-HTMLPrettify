@@ -1,6 +1,6 @@
 # HTML, CSS and JavaScript code formatter for Sublime Text 2 and 3 via node.js
 #### [Sublime Text 3](http://www.sublimetext.com/3)
-#### [JSBeautifier](http://jsbeautifier.org/)
+#### [JS-beautify](https://github.com/einars/js-beautify)
 #### [Node.js download](http://nodejs.org/#download)
 
 ## About
