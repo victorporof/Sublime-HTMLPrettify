@@ -57,6 +57,10 @@ This means from:
 change to
 * `cmd = ["/your/absolute/path/to/node",...]`
 
+Simply using `node` without specifying a path sometimes doesn't work :(
+
+For example, on Linux the path could be in `/home/<user>/.nvm/<node version>/bin/node`.
+
 On Windows, the absolute path to node.exe *must* use forward slashes.
 
 ## Customize
