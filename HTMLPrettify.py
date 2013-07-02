@@ -54,6 +54,7 @@ class HtmlprettifyCommand(sublime_plugin.TextCommand):
     # We're done with beautifying, remove the temporary file and change the
     # text shown in the current buffer.
     os.remove(tempPath)
+    self.view.erase_regions("jshint_errors");
 
     if len(output) > 0:
       self.view.replace(edit, sublime.Region(0, self.view.size()), output.decode("utf-8"))
