@@ -15,8 +15,11 @@ class HtmlprettifyCommand(sublime_plugin.TextCommand):
     setings = " && ".join([
       "indent_size: 1",
       "indent_char: \t",
-      "max_char: 80",
-      "brace_style: collapse"
+      "wrap_line_length: 250",
+      "brace_style: collapse",
+      "unformatted: ['a', 'sub', 'sup', 'b', 'i', 'u']",
+      "preserve_newlines: true",
+      "max_preserve_newlines: 5"
     ])
 
     # Get the current text in the buffer.
