@@ -41,7 +41,7 @@ class HtmlprettifyCommand(sublime_plugin.TextCommand):
     except:
       msg = "Node.js was not found in the default path. Please specify the location."
       if sublime.ok_cancel_dialog(msg):
-        self.view.window().open_file(PLUGIN_FOLDER + "/HTMLPrettify.py:36", sublime.ENCODED_POSITION)
+        open_htmlprettify(self.view.window(), 36)
       else:
         msg = "You won't be able to use this plugin without specifying the path to Node.js."
         sublime.error_message(msg)
@@ -86,3 +86,14 @@ def get_output(cmd):
     # Handle all OS in Python 3.
     run = '"' + '" "'.join(cmd) + '"'
     return subprocess.check_output(run, stderr=subprocess.STDOUT, shell=True)
+
+def open_htmlprettify(window, line):
+  window.open_file(PLUGIN_FOLDER + "/HTMLPrettify.py:" + str(line), sublime.ENCODED_POSITION)
+
+class HtmlprettifySetOptionsCommand(sublime_plugin.TextCommand):
+  def run(self, edit):
+    open_htmlprettify(self.view.window(), 15)
+
+class HtmlprettifySetNodePathCommand(sublime_plugin.TextCommand):
+  def run(self, edit):
+    open_htmlprettify(self.view.window(), 36)

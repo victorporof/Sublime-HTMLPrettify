@@ -1,0 +1,17 @@
+[{
+  "id": "tools",
+  "children": [{
+    "id": "htmlprettify_tools"
+  }, {
+    "caption": "-"
+  }, {
+    "caption": "HTML/CSS/JS Prettify",
+    "children": [{
+      "caption": "Set Default Options",
+      "command": "htmlprettify_set_options"
+    }, {
+      "caption": "Set `node` Path",
+      "command": "htmlprettify_set_node_path"
+    }]
+  }]
+}]
