@@ -29,8 +29,8 @@
   var argv = process.argv;
 
   // Require path and file system utilities to load the jshint.js file.
-  var path = require('path');
-  var fs = require('fs');
+  var path = require("path");
+  var fs = require("fs");
 
   // The source file to be prettified, original source's path and some options.
   var tempPath = argv[2] || "";
@@ -67,7 +67,7 @@
     return path.match(/\.html?$/) ||
       path.match(/\.xhtml?$/) ||
       path.match(/\.xml?$/) ||
-      (path == "?" && data.indexOf("<") == 0)
+      (path == "?" && data.indexOf("<") == 0);
   }
 
   function isCSS(path, data) {
@@ -78,7 +78,7 @@
     return path.match(/\.jsm?$/) ||
       path.match(/\.json$/) ||
       path.match(/\.sublime-/) ||
-      (path == "?" && data.indexOf("<") != 0)
+      (path == "?" && data.indexOf("<") != 0);
   }
 
   // Read the source file and, when complete, beautify the code.
