@@ -1,4 +1,5 @@
-[{
-  "caption": "HTMLPrettify",
-  "command": "htmlprettify"
-}]
+[
+  { "caption": "HTMLPrettify", "command": "htmlprettify" },
+  { "caption": "HTMLPrettify: Set Default Options", "command": "htmlprettify_set_options" },
+  { "caption": "HTMLPrettify: Set `node` Path", "command": "htmlprettify_set_node_path" }
+]
