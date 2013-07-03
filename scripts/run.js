@@ -63,23 +63,33 @@
     option[key] = value;
   }
 
+  function isHTML(path, data) {
+    return path.match(/\.html?$/) ||
+      path.match(/\.xhtml?$/) ||
+      path.match(/\.xml?$/) ||
+      (path == "?" && data.indexOf("<") == 0)
+  }
+
+  function isCSS(path, data) {
+    return path.match(/\.css?$/) || path.match(/\.less?$/);
+  }
+
+  function isJS(path, data) {
+    return path.match(/\.jsm?$/) ||
+      path.match(/\.json$/) ||
+      path.match(/\.sublime-/) ||
+      (path == "?" && data.indexOf("<") != 0)
+  }
+
   // Read the source file and, when complete, beautify the code.
   fs.readFile(tempPath, "utf8", function(err, data) {
     if (err) {
       return;
-    }
-    else if (filePath.match(".css?$")) {
+    } else if (isCSS(filePath)) {
       log(css_beautify(data, option));
-    }
-    else if (filePath.match(".less$")) {
-      log(css_beautify(data, option));
-    }
-    else if (filePath.match(".html?$") ||
-            (filePath == "?" && data.indexOf("<") == 0)) {
+    } else if (isHTML(filePath, data)) {
       log(html_beautify(data, option));
-    }
-    else if (filePath.match(".jsm?$") ||
-            (filePath == "?" && data.indexOf("<") != 0)) {
+    } else if (isJS(filePath, data)) {
       log(js_beautify(data, option));
     }
   });
