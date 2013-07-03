@@ -1,6 +1,4 @@
-[
-  {
-    "caption": "HTMLPrettify",
-    "command": "htmlprettify"
-  }
-]
+[{
+  "caption": "HTMLPrettify",
+  "command": "htmlprettify"
+}]
