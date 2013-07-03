@@ -1,5 +1,10 @@
-[
-  { "keys": ["ctrl+shift+h"], "command": "htmlprettify" },
-  { "keys": ["ctrl+alt+h", "o"], "command": "htmlprettify_set_options" },
-  { "keys": ["ctrl+alt+h", "n"], "command": "htmlprettify_set_node_path" }
-]
+[{
+  "keys": ["ctrl+shift+h"],
+  "command": "htmlprettify"
+}, {
+  "keys": ["ctrl+alt+h", "o"],
+  "command": "htmlprettify_set_options"
+}, {
+  "keys": ["ctrl+alt+h", "n"],
+  "command": "htmlprettify_set_node_path"
+}]
