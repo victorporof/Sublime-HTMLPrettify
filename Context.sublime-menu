@@ -1,3 +1,4 @@
 [
-	{ "caption": "Beautify code", "command": "htmlprettify" }
+  { "caption": "Prettify Code", "command": "htmlprettify" },
+  { "caption": "Set Prettify Options", "command": "htmlprettify_set_options" }
 ]
