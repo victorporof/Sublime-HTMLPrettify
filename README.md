@@ -57,6 +57,9 @@ This means from:
 change to
 `node = "node" if self.exists_in_path("node") else "/your/absolute/path/to/node"`
 
+* `Ctrl+Shift+P` or `Cmd+Shift+P` in Linux/Windows/OS X
+* type `htmlprettify`, select `Set node Path`
+
 Simply using `node` without specifying a path sometimes doesn't work :(
 
 For example, on Linux the path could be in `/home/<user>/.nvm/<node version>/bin/node`.
@@ -65,6 +68,9 @@ On Windows, the absolute path to node.exe *must* use forward slashes.
 
 ## Customize
 The `HTMLPrettify.py` script has some predefined settings regarding the indentation size, indentation character, maximum chars per line and brace styling. Customize these settings by modifying the script with your desired values (see the [JSBeautifier options](https://github.com/einars/js-beautify/#options), or for [CSS and HTML](https://github.com/einars/js-beautify/#css--html)).
+
+* `Ctrl+Shift+P` or `Cmd+Shift+P` in Linux/Windows/OS X
+* type `jshint`, select `Set Default Options`
 
 To add different file extensions (like jsp/gsp/php) edit `scripts/run.js`.
 
