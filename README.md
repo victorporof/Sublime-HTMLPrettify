@@ -42,7 +42,7 @@ Tools -> Command Palette (`Cmd+Shift+P` or `Ctrl+Shift+P`) and type `htmlprettif
 
 -- or --
 
-Right click in the current buffer and select "Beautify code".
+Right click in the current buffer and select "Prettify Code".
 
 -- or --
 
