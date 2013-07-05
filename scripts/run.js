@@ -115,6 +115,8 @@
   function isJS(path, data) {
     return path.match(/\.jsm?$/) ||
       path.match(/\.json$/) ||
+      path.match(/\.jshintrc$/) ||
+      path.match(/\.jsbeautifyrc$/) ||
       path.match(/\.sublime-/) ||
       (path == "?" && data.indexOf("<") != 0);
   }
