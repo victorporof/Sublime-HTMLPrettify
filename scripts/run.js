@@ -106,7 +106,12 @@
   fs.readFile(tempPath, "utf8", function(err, data) {
     if (err) {
       return;
-    } else if (isCSS(filePath)) {
+    }
+
+    // Mark the output as being from this plugin.
+    log("*** HTMLPrettify output ***");
+
+    if (isCSS(filePath)) {
       log(css_beautify(data, options).replace(/\s+$/, ""));
     } else if (isHTML(filePath, data)) {
       log(html_beautify(data, options).replace(/\s+$/, ""));

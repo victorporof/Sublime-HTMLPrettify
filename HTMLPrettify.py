@@ -11,6 +11,7 @@ except ImportError:
   pass
 
 PLUGIN_FOLDER = os.path.dirname(os.path.realpath(__file__))
+OUTPUT_VALID = "*** HTMLPrettify output ***"
 NODE_LINE = 31
 
 class HtmlprettifyCommand(sublime_plugin.TextCommand):
@@ -35,6 +36,12 @@ class HtmlprettifyCommand(sublime_plugin.TextCommand):
       scriptPath = PLUGIN_FOLDER + "/scripts/run.js"
       filePath = self.view.file_name()
       output = get_output([node, scriptPath, tempPath, filePath or "?"])
+
+      # Make sure the correct/expected output is available.
+      if output.find(OUTPUT_VALID) == -1:
+        print(output)
+        raise Error()
+
     except:
       msg = "Node.js was not found in the default path. Please specify the location."
       if sublime.ok_cancel_dialog(msg):
@@ -49,6 +56,8 @@ class HtmlprettifyCommand(sublime_plugin.TextCommand):
     os.remove(tempPath)
     self.view.erase_regions("jshint_errors");
 
+    # Remove the output identification marker (first line).
+    output = output[len(OUTPUT_VALID) + 1:]
     if len(output) > 0:
       self.view.replace(edit, sublime.Region(0, self.view.size()), output.decode("utf-8"))
 
