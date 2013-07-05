@@ -11,7 +11,7 @@ except ImportError:
   pass
 
 PLUGIN_FOLDER = os.path.dirname(os.path.realpath(__file__))
-OUTPUT_VALID = "*** HTMLPrettify output ***"
+OUTPUT_VALID = b"*** HTMLPrettify output ***"
 NODE_LINE = 33
 
 class HtmlprettifyCommand(sublime_plugin.TextCommand):
