@@ -16,7 +16,7 @@ NODE_LINE = 33
 
 class HtmlprettifyCommand(sublime_plugin.TextCommand):
   def run(self, edit):
-    if PLUGIN_FOLDER.find(u".sublime-package") == -1:
+    if PLUGIN_FOLDER.find(u".sublime-package") != -1:
       # Can't use this plugin if installed via the Package Manager in Sublime
       # Text 3, because it will be zipped into a .sublime-package archive.
       # Thus executing scripts *located inside this archive* via node.js
