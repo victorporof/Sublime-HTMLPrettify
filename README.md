@@ -4,7 +4,7 @@
 #### [Node.js download](http://nodejs.org/#download)
 
 ## About
-This is a Sublime Text 2 and 3 plugin allowing you to format your HTML, CSS and JavaScript code. It uses a set of nice beautifier libs made by Einar Lielmanis and Noah Kantrowitz. The formatters are written in JavaScript, so you'll need something (node.js) to interpret JavaScript code outside the browser.
+This is a Sublime Text 2 and 3 plugin allowing you to format your HTML, CSS and JavaScript code. It uses a set of nice beautifier scripts made by Einar Lielmanis. The formatters are written in JavaScript, so you'll need something (node.js) to interpret JavaScript code outside the browser.
 
 This will work with both HTML, CSS and JavaScript files.
 
@@ -48,7 +48,7 @@ Right click in the current buffer and select `HTML/CSS/JS Prettify` -> `Prettify
 
 Open a HTML, CSS or JavaScript file, pop out the console in Sublime Text from View -> Show Console, and type `view.run_command("htmlprettify")`.
 
-Writing commands in the console is ugly. Set up your own key combo for this, by going to Preferences -> Key Bindings - User, and adding a command in that huge array: `{ "keys": ["super+shift+h"], "command": "htmlprettify" },`. You can use any other command you want, thought most of them are already taken.
+Writing commands in the console is ugly. Set up your own key combo for this, by going to Preferences -> Key Bindings - User, and adding a command in that array: `{ "keys": ["super+shift+h"], "command": "htmlprettify" }`. You can use any other command you want, thought most of them are already taken.
 
 ## Oh noez, command not found!
 If you get an error `sh: node: command not found` or similar, you don't have `node` in the right path. Try setting the absolute path to node in `HTMLPrettify.py`.
@@ -66,12 +66,46 @@ For example, on Linux the path could be in `/home/<user>/.nvm/<node version>/bin
 
 On Windows, the absolute path to node.exe *must* use forward slashes.
 
-## Customize
-A few persistent options always applied from a `.jsbeautifyrc` file in the same directory as the plugin. Those are defined [here](https://github.com/victorporof/Sublime-JSHint/blob/master/scripts/.jsbeautifyrc). You can safely add stuff to that json file if you want (see documentation for [JS](https://github.com/einars/js-beautify/#options), or [CSS and HTML](https://github.com/einars/js-beautify/#css--html).
+## Using your own .jsbeautifyrc options
+The plugin looks for a `.jsbeautifyrc` file in the same directory as the source file you're prettifying (or one directory above if it doesn't exist, or in your home folder if everything else fails) and uses those options along the default ones. [Here](https://github.com/einars/js-beautify/blob/master/js/config/defaults.json)'s an example of how it can look like.
+
+These are the default options used by this plugin:
+```
+{
+  "brace_style": "collapse",
+  "break_chained_methods": false,
+  "eval_code": false,
+  "indent_char": " ",
+  "indent_level": 0,
+  "indent_size": 2,
+  "indent_with_tabs": false,
+  "jslint_happy": false,
+  "keep_array_indentation": false,
+  "keep_function_indentation": false,
+  "max_preserve_newlines": 10,
+  "preserve_newlines": true,
+  "space_before_conditional": true,
+  "unescape_strings": false,
+  "unformatted": ["a", "sub", "sup", "b", "i", "u"],
+  "wrap_line_length": 0
+}
+```
+
+And here's how a `.jsbeautifyrc` file in your home folder could look like:
+```
+{
+  "indent_char": "\t",
+  "indent_size": 1
+}
+```
+
+See documentation for [JS](https://github.com/einars/js-beautify/#options), or [CSS and HTML](https://github.com/einars/js-beautify/#css--html).
+
+A few persistent options are always applied from a `.jsbeautifyrc` file located in the same directory as the plugin, if not overwritten by your own `.jsbeautifyrc` file. Those are defined [here](https://github.com/victorporof/Sublime-HTMLPrettify/blob/master/.jsbeautifyrc). You can safely add stuff to that json file if you want:
 
 * `Ctrl+Shift+P` or `Cmd+Shift+P` in Linux/Windows/OS X
 * type `htmlprettify`, select `Set Default Options`
 
 To add different file extensions (like jsp/gsp/php) edit `scripts/run.js`.
 
-Have fun!
+Thank you!
