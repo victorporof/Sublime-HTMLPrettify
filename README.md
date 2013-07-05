@@ -67,7 +67,7 @@ For example, on Linux the path could be in `/home/<user>/.nvm/<node version>/bin
 On Windows, the absolute path to node.exe *must* use forward slashes.
 
 ## Customize
-A few persistent options always applied from a `.jsbeautifyrc` file in the same directory as the plugin. Those are defined [here](https://github.com/victorporof/Sublime-JSHint/blob/master/scripts/.jsbeautifyrc). You can safely add stuff to that json file if you want (see documentation for [JS](https://github.com/einars/js-beautify/#options), or [CSS and HTML](https://github.com/einars/js-beautify/#css--html).
+A few persistent options always applied from a `.jsbeautifyrc` file in the same directory as the plugin. Those are defined [here](https://github.com/victorporof/Sublime-JSHint/blob/master/scripts/.jsbeautifyrc). You can safely add stuff to that json file if you want (documentation: [JS](https://github.com/einars/js-beautify/#options), or [CSS and HTML](https://github.com/einars/js-beautify/#css--html).
 
 * `Ctrl+Shift+P` or `Cmd+Shift+P` in Linux/Windows/OS X
 * type `htmlprettify`, select `Set Default Options`
