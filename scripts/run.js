@@ -103,7 +103,7 @@
     return path.match(/\.html?$/) ||
       path.match(/\.xhtml?$/) ||
       path.match(/\.xml?$/) ||
-      (path == "?" && data.indexOf("<") == 0);
+      (path == "?" && data.match(/^\s*</));
   }
 
   function isCSS(path, data) {
@@ -118,7 +118,7 @@
       path.match(/\.jshintrc$/) ||
       path.match(/\.jsbeautifyrc$/) ||
       path.match(/\.sublime-/) ||
-      (path == "?" && data.indexOf("<") != 0);
+      (path == "?" && !data.match(/^\s*</));
   }
 
   // Read the source file and, when complete, beautify the code.
@@ -126,11 +126,11 @@
     if (err) {
       return;
     } else if (isCSS(filePath)) {
-      log(css_beautify(data, options));
+      log(css_beautify(data, options).replace(/\s+$/, ""));
     } else if (isHTML(filePath, data)) {
-      log(html_beautify(data, options));
+      log(html_beautify(data, options).replace(/\s+$/, ""));
     } else if (isJS(filePath, data)) {
-      log(js_beautify(data, options));
+      log(js_beautify(data, options).replace(/\s+$/, ""));
     }
   });
 }());
