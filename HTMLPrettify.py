@@ -33,6 +33,7 @@ class HtmlprettifyCommand(sublime_plugin.TextCommand):
     node = "node" if exists_in_path("node") else "/usr/local/bin/node"
 
     try:
+      print("Plugin folder is: " + PLUGIN_FOLDER)
       scriptPath = PLUGIN_FOLDER + "/scripts/run.js"
       filePath = self.view.file_name()
       output = get_output([node, scriptPath, tempPath, filePath or "?"])
@@ -40,7 +41,8 @@ class HtmlprettifyCommand(sublime_plugin.TextCommand):
       # Make sure the correct/expected output is retrieved.
       if output.find(OUTPUT_VALID) == -1:
         print(output)
-        msg = "Invalid output created by " + scriptPath + " for " + filePath
+        cmd = node + " " + scriptPath + " " + tempPath + " " + filePath
+        msg = "Command " + cmd + " created invalid output"
         raise Exception(msg)
 
     except:
@@ -59,7 +61,7 @@ class HtmlprettifyCommand(sublime_plugin.TextCommand):
     # We're done with beautifying, remove the temporary file and change the
     # text shown in the current buffer.
     os.remove(tempPath)
-    self.view.erase_regions("jshint_errors");
+    self.view.erase_regions("jshint_errors")
 
     # Remove the output identification marker (first line).
     output = output[len(OUTPUT_VALID) + 1:]
