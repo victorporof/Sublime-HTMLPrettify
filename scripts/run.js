@@ -35,32 +35,46 @@
   // The source file to be prettified, original source's path and some options.
   var tempPath = argv[2] || "";
   var filePath = argv[3] || "";
-  var settings = (argv[4] || "").split(" && ");
-  var option = {};
+  var options = {};
 
   var html_beautify = require(path.join(__dirname, "beautify-html.js")).html_beautify;
   var js_beautify = require(path.join(__dirname, "beautify.js")).js_beautify;
   var css_beautify = require(path.join(__dirname, "beautify-css.js")).css_beautify;
 
-  // Extra arguments with custom options could be passed, so check them now
-  // and add them to the options object.
-  for (var i = 0, len = settings.length; i < len; i++) {
-    var hash = settings[i].split(":");
-    if (hash.length != 2) {
-      continue;
+  // Some handy utility functions.
+  function isTrue(value) {
+    return value == "true" || value == true;
+  }
+  function getOptions(file) {
+    var data = fs.readFileSync(file, "utf8");
+    var comments = /(?:\/\*(?:[\s\S]*?)\*\/)|(?:\/\/(?:.*)$)/gm;
+    try {
+      return JSON.parse(data.replace(comments, ""));
+    } catch (e) {
+      return Object.create(null);
     }
-    var key = hash[0].trim();
-    var value = hash[1].replace(/^\ /, "");
-
-    // There is one option that allows array of strings to be passed.
-    if (key == "unformatted") {
-      // eval is evil, but JSON.parse would require usage of only double quotes.
-      option[key] = eval(value);
-      continue;
+  }
+  function setOptions(file, optionsStore) {
+    var obj = getOptions(file);
+    for (var key in obj) {
+      var value = obj[key];
+      // Special case "true" and "false" pref values as actually booleans.
+      // This avoids common accidents in .jsbeautifyrc json files.
+      if (value == "true" || value == "false") {
+        optionsStore[key] = isTrue(value);
+      } else {
+        optionsStore[key] = value;
+      }
     }
+  }
 
-    // Options are stored in key value pairs, such as option.indent_size = 2.
-    option[key] = value;
+  var jshintrc = ".jsbeautifyrc";
+  var pluginFolder = __dirname.split(path.sep).slice(0, -1).join(path.sep);
+  var jshintrcPath;
+
+  // Try and get some persistent options from the plugin folder.
+  if (fs.existsSync(jshintrcPath = pluginFolder + path.sep + jshintrc)) {
+    setOptions(jshintrcPath, options);
   }
 
   function isHTML(path, data) {
@@ -86,11 +100,11 @@
     if (err) {
       return;
     } else if (isCSS(filePath)) {
-      log(css_beautify(data, option));
+      log(css_beautify(data, options));
     } else if (isHTML(filePath, data)) {
-      log(html_beautify(data, option));
+      log(html_beautify(data, options));
     } else if (isJS(filePath, data)) {
-      log(js_beautify(data, option));
+      log(js_beautify(data, options));
     }
   });
 }());

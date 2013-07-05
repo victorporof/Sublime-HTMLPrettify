@@ -7,22 +7,10 @@ except ImportError:
   pass
 
 PLUGIN_FOLDER = os.path.dirname(os.path.realpath(__file__))
-SETTINGS_LINE = 17
-NODE_LINE = 39
+NODE_LINE = 27
 
 class HtmlprettifyCommand(sublime_plugin.TextCommand):
   def run(self, edit):
-    filePath = self.view.file_name()
-    setings = " && ".join([
-      "indent_size: 1",
-      "indent_char: \t",
-      "wrap_line_length: 250",
-      "brace_style: collapse",
-      "unformatted: ['a', 'sub', 'sup', 'b', 'i', 'u']",
-      "preserve_newlines: true",
-      "max_preserve_newlines: 5"
-    ])
-
     # Get the current text in the buffer.
     bufferText = self.view.substr(sublime.Region(0, self.view.size()))
     # ...and save it in a temporary file. This allows for scratch buffers
@@ -40,11 +28,12 @@ class HtmlprettifyCommand(sublime_plugin.TextCommand):
 
     try:
       scriptPath = PLUGIN_FOLDER + "/scripts/run.js"
-      output = get_output([node, scriptPath, tempPath, filePath or "?", setings])
+      filePath = self.view.file_name()
+      output = get_output([node, scriptPath, tempPath, filePath or "?"])
     except:
       msg = "Node.js was not found in the default path. Please specify the location."
       if sublime.ok_cancel_dialog(msg):
-        open_htmlprettify(self.view.window(), NODE_LINE)
+        open_htmlprettifypy(self.view.window())
       else:
         msg = "You won't be able to use this plugin without specifying the path to Node.js."
         sublime.error_message(msg)
@@ -57,16 +46,14 @@ class HtmlprettifyCommand(sublime_plugin.TextCommand):
 
     if len(output) > 0:
       self.view.replace(edit, sublime.Region(0, self.view.size()), output.decode("utf-8"))
-    if filePath != None:
-      self.view.run_command("save")
 
 class HtmlprettifySetOptionsCommand(sublime_plugin.TextCommand):
   def run(self, edit):
-    open_htmlprettify(self.view.window(), SETTINGS_LINE)
+    open_jsbeautifyrc(self.view.window())
 
 class HtmlprettifySetNodePathCommand(sublime_plugin.TextCommand):
   def run(self, edit):
-    open_htmlprettify(self.view.window(), NODE_LINE)
+    open_htmlprettifypy(self.view.window())
 
 def exists_in_path(cmd):
   # Can't search the path if a directory is specified.
@@ -98,5 +85,8 @@ def get_output(cmd):
     run = '"' + '" "'.join(cmd) + '"'
     return subprocess.check_output(run, stderr=subprocess.STDOUT, shell=True)
 
-def open_htmlprettify(window, line):
-  window.open_file(PLUGIN_FOLDER + "/HTMLPrettify.py:" + str(line), sublime.ENCODED_POSITION)
+def open_jsbeautifyrc(window):
+  window.open_file(PLUGIN_FOLDER + "/.jsbeautifyrc")
+
+def open_htmlprettifypy(window):
+  window.open_file(PLUGIN_FOLDER + "/HTMLPrettify.py:" + str(NODE_LINE), sublime.ENCODED_POSITION)

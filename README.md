@@ -67,10 +67,10 @@ For example, on Linux the path could be in `/home/<user>/.nvm/<node version>/bin
 On Windows, the absolute path to node.exe *must* use forward slashes.
 
 ## Customize
-The `HTMLPrettify.py` script has some predefined settings regarding the indentation size, indentation character, maximum chars per line and brace styling. Customize these settings by modifying the script with your desired values (see the [JSBeautifier options](https://github.com/einars/js-beautify/#options), or for [CSS and HTML](https://github.com/einars/js-beautify/#css--html)).
+A few persistent options always applied from a `.jsbeautifyrc` file in the same directory as the plugin. Those are defined [here](https://github.com/victorporof/Sublime-JSHint/blob/master/scripts/.jsbeautifyrc). You can safely add stuff to that json file if you want (see documentation for [JS](https://github.com/einars/js-beautify/#options), or [CSS and HTML](https://github.com/einars/js-beautify/#css--html).
 
 * `Ctrl+Shift+P` or `Cmd+Shift+P` in Linux/Windows/OS X
-* type `jshint`, select `Set Default Options`
+* type `htmlprettify`, select `Set Default Options`
 
 To add different file extensions (like jsp/gsp/php) edit `scripts/run.js`.
 
