@@ -3,7 +3,7 @@
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 import sublime, sublime_plugin
-import os, subprocess, tempfile, codecs
+import os, sys, subprocess, tempfile, codecs
 
 try:
   import commands
@@ -37,12 +37,17 @@ class HtmlprettifyCommand(sublime_plugin.TextCommand):
       filePath = self.view.file_name()
       output = get_output([node, scriptPath, tempPath, filePath or "?"])
 
-      # Make sure the correct/expected output is available.
+      # Make sure the correct/expected output is retrieved.
       if output.find(OUTPUT_VALID) == -1:
         print(output)
-        raise Error()
+        msg = "Invalid output created by " + scriptPath + " for " + filePath
+        raise Exception(msg)
 
     except:
+      # Something bad happened.
+      print("Unexpected error({0}): {1}".format(sys.exc_info()[0], sys.exc_info()[1]))
+
+      # Usually, it's just node.js not being found. Try to alleviate the issue.
       msg = "Node.js was not found in the default path. Please specify the location."
       if sublime.ok_cancel_dialog(msg):
         open_htmlprettifypy(self.view.window())
