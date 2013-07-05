@@ -21,6 +21,7 @@ class HtmlprettifyCommand(sublime_plugin.TextCommand):
     # and dirty files to be beautified as well.
     tempName = ".__temp__"
     tempPath = tempfile.gettempdir() + '/' + tempName
+    print("Saving buffer to: " + tempPath)
     f = codecs.open(tempPath, mode='w', encoding='utf-8')
     f.write(bufferText)
     f.close()
