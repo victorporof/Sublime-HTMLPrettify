@@ -6,7 +6,7 @@
   "eval_code": false,
   "indent_char": " ",
   "indent_level": 0,
-  "indent_size": 2,
+  "indent_size": 4,
   "indent_with_tabs": false,
   "jslint_happy": false,
   "keep_array_indentation": false,
