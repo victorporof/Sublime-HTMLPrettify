@@ -70,7 +70,7 @@ On Windows, the absolute path to node.exe *must* use forward slashes.
 The plugin looks for a `.jsbeautifyrc` file in the same directory as the source file you're prettifying (or one directory above if it doesn't exist, or in your home folder if everything else fails) and uses those options along the default ones. [Here](https://github.com/einars/js-beautify/blob/master/js/config/defaults.json)'s an example of how it can look like.
 
 These are the default options used by this plugin:
-```
+```json
 {
   "brace_style": "collapse",
   "break_chained_methods": false,
@@ -92,7 +92,7 @@ These are the default options used by this plugin:
 ```
 
 And here's how a `.jsbeautifyrc` file in your home folder could look like:
-```
+```json
 {
   "indent_char": "\t",
   "indent_size": 1
