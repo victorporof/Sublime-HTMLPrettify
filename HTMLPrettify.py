@@ -3,7 +3,7 @@
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 import sublime, sublime_plugin
-import os, subprocess, codecs
+import os, subprocess, tempfile, codecs
 
 try:
   import commands
@@ -20,7 +20,7 @@ class HtmlprettifyCommand(sublime_plugin.TextCommand):
     # ...and save it in a temporary file. This allows for scratch buffers
     # and dirty files to be beautified as well.
     tempName = ".__temp__"
-    tempPath = PLUGIN_FOLDER + '/' + tempName
+    tempPath = tempfile.gettempdir() + '/' + tempName
     f = codecs.open(tempPath, mode='w', encoding='utf-8')
     f.write(bufferText)
     f.close()
