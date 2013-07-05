@@ -8,6 +8,6 @@
     "command": "htmlprettify_set_options"
   }, {
     "caption": "Set `node` Path",
-    "command": "jshint_set_node_path"
+    "command": "htmlprettify_set_node_path"
   }]
 }]
