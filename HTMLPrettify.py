@@ -21,7 +21,7 @@ class HtmlprettifyCommand(sublime_plugin.TextCommand):
       # Text 3, because it will be zipped into a .sublime-package archive.
       # Thus executing scripts *located inside this archive* via node.js
       # will, unfortunately, not be possible.
-      url = "https://github.com/victorporof/Sublime-JSHint#manually"
+      url = "https://github.com/victorporof/Sublime-HTMLPrettify#manually"
       msg = """You won't be able to use this plugin in Sublime Text 3 when \
 installed via the Package Manager.\n\nPlease remove it and install manually, \
 following the instructions at:\n"""
@@ -42,7 +42,7 @@ following the instructions at:\n"""
 
     # Simply using `node` without specifying a path sometimes doesn't work :(
     # http://nodejs.org/#download
-    # https://github.com/victorporof/Sublime-JSHint#oh-noez-command-not-found
+    # https://github.com/victorporof/Sublime-HTMLPrettify#oh-noez-command-not-found
     node = "node" if exists_in_path("node") else "/usr/local/bin/node"
     output = ""
 
