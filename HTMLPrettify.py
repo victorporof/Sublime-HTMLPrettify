@@ -33,8 +33,8 @@ following the instructions at:\n"""
     bufferText = self.view.substr(sublime.Region(0, self.view.size()))
     # ...and save it in a temporary file. This allows for scratch buffers
     # and dirty files to be beautified as well.
-    tempName = ".__temp__"
-    tempPath = tempfile.gettempdir() + '/' + tempName
+    namedTempFile = tempfile.NamedTemporaryFile()
+    tempPath = namedTempFile.name
     print("Saving buffer to: " + tempPath)
     f = codecs.open(tempPath, mode='w', encoding='utf-8')
     f.write(bufferText)
@@ -72,15 +72,16 @@ following the instructions at:\n"""
         sublime.error_message(msg)
       return
 
-    # We're done with beautifying, remove the temporary file and change the
-    # text shown in the current buffer.
-    os.remove(tempPath)
-    self.view.erase_regions("jshint_errors")
-
     # Remove the output identification marker (first line).
     output = output[len(OUTPUT_VALID) + 1:]
+
+    # We're done with beautifying, change the text shown in the current buffer.
+    self.view.erase_regions("jshint_errors")
+
     if len(output) > 0:
-      self.view.replace(edit, sublime.Region(0, self.view.size()), output.decode("utf-8"))
+      region = sublime.Region(0, self.view.size())
+      text = output.decode("utf-8")
+      self.view.replace(edit, region, text)
 
 class HtmlprettifySetOptionsCommand(sublime_plugin.TextCommand):
   def run(self, edit):
