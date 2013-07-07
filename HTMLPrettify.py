@@ -3,7 +3,7 @@
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 import sublime, sublime_plugin
-import os, sys, subprocess, tempfile, codecs, webbrowser
+import os, sys, subprocess, codecs, webbrowser
 
 try:
   import commands
