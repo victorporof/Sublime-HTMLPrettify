@@ -33,7 +33,7 @@ following the instructions at:\n"""
     bufferText = self.view.substr(sublime.Region(0, self.view.size()))
     # ...and save it in a temporary file. This allows for scratch buffers
     # and dirty files to be beautified as well.
-    namedTempFile = tempfile.NamedTemporaryFile()
+    namedTempFile = tempfile.NamedTemporaryFile(delete=False)
     tempPath = namedTempFile.name
     print("Saving buffer to: " + tempPath)
     f = codecs.open(tempPath, mode='w', encoding='utf-8')
