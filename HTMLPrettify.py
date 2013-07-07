@@ -33,8 +33,8 @@ following the instructions at:\n"""
     bufferText = self.view.substr(sublime.Region(0, self.view.size()))
     # ...and save it in a temporary file. This allows for scratch buffers
     # and dirty files to be beautified as well.
-    namedTempFile = tempfile.NamedTemporaryFile()
-    tempPath = namedTempFile.name
+    namedTempFile = ".__temp__"
+    tempPath = PLUGIN_FOLDER + "/" + namedTempFile
     print("Saving buffer to: " + tempPath)
     f = codecs.open(tempPath, mode='w', encoding='utf-8')
     f.write(bufferText)
@@ -74,6 +74,7 @@ following the instructions at:\n"""
 
     # Remove the output identification marker (first line).
     output = output[len(OUTPUT_VALID) + 1:]
+    os.remove(tempPath)
 
     # We're done with beautifying, change the text shown in the current buffer.
     self.view.erase_regions("jshint_errors")
