@@ -54,9 +54,9 @@
   }
 
   var jsbeautifyrc = ".jsbeautifyrc";
-  var pluginFolder = __dirname.split(path.sep).slice(0, -1).join(path.sep);
-  var sourceFolder = filePath.split(path.sep).slice(0, -1).join(path.sep);
-  var sourceParent = filePath.split(path.sep).slice(0, -2).join(path.sep);
+  var pluginFolder = path.dirname(__dirname);
+  var sourceFolder = path.dirname(filePath);
+  var sourceParent = path.dirname(sourceFolder);
   var jsbeautifyrcPath;
 
   // Try and get some persistent options from the plugin folder.
