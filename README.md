@@ -72,12 +72,14 @@ The plugin looks for a `.jsbeautifyrc` file in the same directory as the source 
 These are the default options used by this plugin:
 ```json
 {
-  "brace_style": "collapse",
+  "brace_style": "collapse", // "expand", "end-expand", "expand-strict"
   "break_chained_methods": false,
+  "e4x": false,
   "eval_code": false,
   "indent_char": " ",
   "indent_level": 0,
-  "indent_size": 2,
+  "indent_scripts": "keep", // "separate", "normal"
+  "indent_size": 4,
   "indent_with_tabs": false,
   "jslint_happy": false,
   "keep_array_indentation": false,
@@ -85,6 +87,7 @@ These are the default options used by this plugin:
   "max_preserve_newlines": 10,
   "preserve_newlines": true,
   "space_before_conditional": true,
+  "space_in_paren": false,
   "unescape_strings": false,
   "unformatted": ["a", "sub", "sup", "b", "i", "u"],
   "wrap_line_length": 0
