@@ -16,7 +16,7 @@
   // The source file to be prettified, original source's path and some options.
   var tempPath = argv[2] || "";
   var filePath = argv[3] || "";
-  var options = {};
+  var options = { html: {}, css: {}, js: {} };
 
   // This stuff does all the magic.
   var html_beautify = require(path.join(__dirname, "beautify-html.js")).html_beautify;
@@ -43,12 +43,19 @@
     var obj = getOptions(file);
     for (var key in obj) {
       var value = obj[key];
-      // Special case "true" and "false" pref values as actually booleans.
-      // This avoids common accidents in .jsbeautifyrc json files.
-      if (value == "true" || value == "false") {
-        optionsStore[key] = isTrue(value);
-      } else {
-        optionsStore[key] = value;
+
+      // Options are defined as an object for each format, with keys as prefs.
+      if (key != "html" && key != "css" && key != "js") {
+        continue;
+      }
+      for (var pref in value) {
+        // Special case "true" and "false" pref values as actually booleans.
+        // This avoids common accidents in .jsbeautifyrc json files.
+        if (value == "true" || value == "false") {
+          optionsStore[key][pref] = isTrue(value[pref]) + "";
+        } else {
+          optionsStore[key][pref] = value[pref] + "";
+        }
       }
     }
   }
@@ -111,12 +118,14 @@
     // Mark the output as being from this plugin.
     log("*** HTMLPrettify output ***");
 
-    if (isCSS(filePath)) {
-      log(css_beautify(data, options).replace(/\s+$/, ""));
-    } else if (isHTML(filePath, data)) {
-      log(html_beautify(data, options).replace(/\s+$/, ""));
-    } else if (isJS(filePath, data)) {
-      log(js_beautify(data, options).replace(/\s+$/, ""));
+    if (isCSS(filePath, data)) {
+      log(css_beautify(data, options["css"]).replace(/\s+$/, ""));
+    }
+    else if (isHTML(filePath, data)) {
+      log(html_beautify(data, options["html"]).replace(/\s+$/, ""));
+    }
+    else if (isJS(filePath, data)) {
+      log(js_beautify(data, options["js"]).replace(/\s+$/, ""));
     }
   });
 }());
