@@ -52,9 +52,9 @@
         // Special case "true" and "false" pref values as actually booleans.
         // This avoids common accidents in .jsbeautifyrc json files.
         if (value == "true" || value == "false") {
-          optionsStore[key][pref] = isTrue(value[pref]) + "";
+          optionsStore[key][pref] = isTrue(value[pref]);
         } else {
-          optionsStore[key][pref] = value[pref] + "";
+          optionsStore[key][pref] = value[pref];
         }
       }
     }
