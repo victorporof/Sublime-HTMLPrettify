@@ -51,14 +51,15 @@ Open a HTML, CSS or JavaScript file, pop out the console in Sublime Text from Vi
 Writing commands in the console is ugly. Set up your own key combo for this, by going to Preferences -> Key Bindings - User, and adding a command in that array: `{ "keys": ["super+shift+h"], "command": "htmlprettify" }`. You can use any other command you want, thought most of them are already taken.
 
 ## Oh noez, command not found!
-If you get an error `sh: node: command not found` or similar, you don't have `node` in the right path. Try setting the absolute path to node in `HTMLPrettify.py`.
-This means from:
-`node = "node" if self.exists_in_path("node") else "/usr/local/bin/node"`
-change to
-`node = "node" if self.exists_in_path("node") else "/your/absolute/path/to/node"`
+If you get an error `sh: node: command not found` or similar, you don't have `node` in the right path. Try setting the absolute path to node in `HTMLPrettify.sublime-settings`.
 
 * `Ctrl+Shift+P` or `Cmd+Shift+P` in Linux/Windows/OS X
 * type `htmlprettify`, select `Set node Path`
+
+This means from:
+`"node_path": "/usr/local/bin/node"`
+change to
+`"node_path": "/your/absolute/path/to/node"`
 
 Simply using `node` without specifying a path sometimes doesn't work :(
 
