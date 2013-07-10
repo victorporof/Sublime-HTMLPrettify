@@ -11,6 +11,7 @@ except ImportError:
   pass
 
 PLUGIN_FOLDER = os.path.dirname(os.path.realpath(__file__))
+RC_FILE = ".jsbeautifyrc"
 SETTINGS_FILE = "HTMLPrettify.sublime-settings"
 OUTPUT_VALID = b"*** HTMLPrettify output ***"
 
@@ -92,10 +93,10 @@ class HtmlprettifySetNodePathCommand(sublime_plugin.TextCommand):
     open_htmlprettify_sublime_settings(self.view.window())
 
 def open_jsbeautify_rc(window):
-  window.open_file(PLUGIN_FOLDER + "/.jsbeautifyrc")
+  window.open_file(PLUGIN_FOLDER + "/" + RC_FILE)
 
 def open_htmlprettify_sublime_settings(window):
-  window.open_file(PLUGIN_FOLDER + "/HTMLPrettify.sublime-settings")
+  window.open_file(PLUGIN_FOLDER + "/" + SETTINGS_FILE)
 
 def exists_in_path(cmd):
   # Can't search the path if a directory is specified.
