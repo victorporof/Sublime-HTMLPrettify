@@ -1,6 +1,6 @@
 {
-  // Documentation: https://github.com/einars/js-beautify/#options
-  // and https://github.com/einars/js-beautify/#css--html
+  // Details: https://github.com/victorporof/Sublime-HTMLPrettify#using-your-own-jsbeautifyrc-options
+  // Documentation: https://github.com/einars/js-beautify/
   "html": {
     "brace_style": "collapse", // "expand", "end-expand", "expand-strict"
     "indent_char": " ",

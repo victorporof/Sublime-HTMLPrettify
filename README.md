@@ -72,8 +72,8 @@ The plugin looks for a `.jsbeautifyrc` file in the same directory as the source 
 These are the default options used by this plugin:
 ```javascript
 {
-  // Documentation: https://github.com/einars/js-beautify/#options
-  // and https://github.com/einars/js-beautify/#css--html
+  // Details: https://github.com/victorporof/Sublime-HTMLPrettify#using-your-own-jsbeautifyrc-options
+  // Documentation: https://github.com/einars/js-beautify/
   "html": {
     "brace_style": "collapse", // "expand", "end-expand", "expand-strict"
     "indent_char": " ",
