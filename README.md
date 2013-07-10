@@ -129,7 +129,7 @@ See documentation for [JS](https://github.com/einars/js-beautify/#options), or [
 A few persistent options are always applied from a `.jsbeautifyrc` file located in the same directory as the plugin, if not overwritten by your own `.jsbeautifyrc` file. Those are defined [here](https://github.com/victorporof/Sublime-HTMLPrettify/blob/master/.jsbeautifyrc). You can safely add stuff to that json file if you want:
 
 * `Ctrl+Shift+P` or `Cmd+Shift+P` in Linux/Windows/OS X
-* type `htmlprettify`, select `Set Default Options`
+* type `htmlprettify`, select `Set Prettify Preferences`
 
 To add different file extensions (like jsp/gsp/php) edit `scripts/run.js`.
 
