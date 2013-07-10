@@ -12,7 +12,6 @@ except ImportError:
 
 PLUGIN_FOLDER = os.path.dirname(os.path.realpath(__file__))
 OUTPUT_VALID = b"*** HTMLPrettify output ***"
-NODE_LINE = 46
 
 class HtmlprettifyCommand(sublime_plugin.TextCommand):
   def run(self, edit):
@@ -41,11 +40,10 @@ following the instructions at:\n"""
     f.close()
 
     # Simply using `node` without specifying a path sometimes doesn't work :(
-    # http://nodejs.org/#download
-    # https://github.com/victorporof/Sublime-HTMLPrettify#oh-noez-command-not-found
-    node = "node" if exists_in_path("node") else "/usr/local/bin/node"
-    output = ""
+    settings = sublime.load_settings(SETTINGS_FILE)
+    node = "node" if exists_in_path("node") else settings.get("node_path")
 
+    output = ""
     try:
       print("Plugin folder is: " + PLUGIN_FOLDER)
       scriptPath = PLUGIN_FOLDER + "/scripts/run.js"
@@ -66,7 +64,7 @@ following the instructions at:\n"""
       # Usually, it's just node.js not being found. Try to alleviate the issue.
       msg = "Node.js was not found in the default path. Please specify the location."
       if sublime.ok_cancel_dialog(msg):
-        open_htmlprettifypy(self.view.window())
+        open_htmlprettify_sublime_settings(self.view.window())
       else:
         msg = "You won't be able to use this plugin without specifying the path to Node.js."
         sublime.error_message(msg)
@@ -86,11 +84,17 @@ following the instructions at:\n"""
 
 class HtmlprettifySetPrefsCommand(sublime_plugin.TextCommand):
   def run(self, edit):
-    open_jsbeautifyrc(self.view.window())
+    open_jsbeautify_rc(self.view.window())
 
 class HtmlprettifySetNodePathCommand(sublime_plugin.TextCommand):
   def run(self, edit):
-    open_htmlprettifypy(self.view.window())
+    open_htmlprettify_sublime_settings(self.view.window())
+
+def open_jsbeautify_rc(window):
+  window.open_file(PLUGIN_FOLDER + "/.jsbeautifyrc")
+
+def open_htmlprettify_sublime_settings(window):
+  window.open_file(PLUGIN_FOLDER + "/HTMLPrettify.sublime-settings")
 
 def exists_in_path(cmd):
   # Can't search the path if a directory is specified.
@@ -121,9 +125,3 @@ def get_output(cmd):
     # Handle all OS in Python 3.
     run = '"' + '" "'.join(cmd) + '"'
     return subprocess.check_output(run, stderr=subprocess.STDOUT, shell=True)
-
-def open_jsbeautifyrc(window):
-  window.open_file(PLUGIN_FOLDER + "/.jsbeautifyrc")
-
-def open_htmlprettifypy(window):
-  window.open_file(PLUGIN_FOLDER + "/HTMLPrettify.py:" + str(NODE_LINE), sublime.ENCODED_POSITION)
