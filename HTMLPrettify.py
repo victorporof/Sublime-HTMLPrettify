@@ -84,7 +84,7 @@ following the instructions at:\n"""
       text = output.decode("utf-8")
       self.view.replace(edit, region, text)
 
-class HtmlprettifySetOptionsCommand(sublime_plugin.TextCommand):
+class HtmlprettifySetPrefsCommand(sublime_plugin.TextCommand):
   def run(self, edit):
     open_jsbeautifyrc(self.view.window())
 

@@ -2,8 +2,8 @@
   "keys": ["super+shift+h"],
   "command": "htmlprettify"
 }, {
-  "keys": ["super+alt+h", "o"],
-  "command": "htmlprettify_set_options"
+  "keys": ["super+alt+h", "p"],
+  "command": "htmlprettify_set_prefs"
 }, {
   "keys": ["super+alt+h", "n"],
   "command": "htmlprettify_set_node_path"

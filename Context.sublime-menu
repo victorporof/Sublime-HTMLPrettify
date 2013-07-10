@@ -4,8 +4,8 @@
     "caption": "Prettify Code",
     "command": "htmlprettify"
   }, {
-    "caption": "Set Default Options",
-    "command": "htmlprettify_set_options"
+    "caption": "Set Prettify Preferences",
+    "command": "htmlprettify_set_prefs"
   }, {
     "caption": "Set `node` Path",
     "command": "htmlprettify_set_node_path"
