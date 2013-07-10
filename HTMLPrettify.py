@@ -11,6 +11,7 @@ except ImportError:
   pass
 
 PLUGIN_FOLDER = os.path.dirname(os.path.realpath(__file__))
+SETTINGS_FILE = "HTMLPrettify.sublime-settings"
 OUTPUT_VALID = b"*** HTMLPrettify output ***"
 
 class HtmlprettifyCommand(sublime_plugin.TextCommand):
