@@ -90,14 +90,14 @@
   function isHTML(path, data) {
     return path.match(/\.html?$/) ||
       path.match(/\.xhtml?$/) ||
-      path.match(/\.xml?$/) ||
-      (path == "?" && data.match(/^\s*</));
+      path.match(/\.xml$/) ||
+      (path == "?" && data.match(/^\s*</)); // First non-whitespace character is &lt;
   }
 
   function isCSS(path, data) {
-    return path.match(/\.css?$/) ||
-      path.match(/\.sass?$/) ||
-      path.match(/\.less?$/);
+    return path.match(/\.css$/) ||
+      path.match(/\.sass$/) ||
+      path.match(/\.less$/);
   }
 
   function isJS(path, data) {
@@ -106,7 +106,7 @@
       path.match(/\.jshintrc$/) ||
       path.match(/\.jsbeautifyrc$/) ||
       path.match(/\.sublime-/) ||
-      (path == "?" && !data.match(/^\s*</));
+      (path == "?" && !data.match(/^\s*</)); // First non-whitespace character is not &lt;
   }
 
   // Read the source file and, when complete, beautify the code.
