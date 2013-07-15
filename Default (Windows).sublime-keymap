@@ -5,6 +5,9 @@
   "keys": ["ctrl+alt+h", "p"],
   "command": "htmlprettify_set_prefs"
 }, {
+  "keys": ["ctrl+alt+h", "k"],
+  "command": "htmlprettify_set_keyboard_shortcuts"
+}, {
   "keys": ["ctrl+alt+h", "n"],
   "command": "htmlprettify_set_node_path"
 }]

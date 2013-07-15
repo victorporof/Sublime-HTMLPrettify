@@ -5,6 +5,9 @@
   "caption": "HTMLPrettify: Set Prettify Preferences",
   "command": "htmlprettify_set_prefs"
 }, {
+  "caption": "HTMLPrettify: Set Keyboard Shortcuts",
+  "command": "htmlprettify_set_keyboard_shortcuts"
+}, {
   "caption": "HTMLPrettify: Set `node` Path",
   "command": "htmlprettify_set_node_path"
 }]

@@ -7,6 +7,9 @@
     "caption": "Set Prettify Preferences",
     "command": "htmlprettify_set_prefs"
   }, {
+    "caption": "Set Keyboard Shortcuts",
+    "command": "htmlprettify_set_keyboard_shortcuts"
+  }, {
     "caption": "Set `node` Path",
     "command": "htmlprettify_set_node_path"
   }]
