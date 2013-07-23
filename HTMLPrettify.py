@@ -132,7 +132,13 @@ def get_output(cmd):
       return commands.getoutput(run)
     else:
       # Handle Windows in Python 2.
-      return subprocess.Popen(cmd, stdout=subprocess.PIPE).communicate()[0]
+
+      # Hack to prevent console window from showing. Stolen from
+      # http://stackoverflow.com/questions/1813872/running-a-process-in-pythonw-with-popen-without-a-console
+      startupinfo = subprocess.STARTUPINFO()
+      startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
+
+      return subprocess.Popen(cmd, stdout=subprocess.PIPE, startupinfo=startupinfo).communicate()[0]
   else:
     # Handle all OS in Python 3.
     run = '"' + '" "'.join(cmd) + '"'
