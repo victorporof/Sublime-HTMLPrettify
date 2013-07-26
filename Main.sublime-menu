@@ -1,10 +1,7 @@
 [{
   "id": "tools",
   "children": [{
-    "id": "htmlprettify_tools"
-  }, {
-    "caption": "-"
-  }, {
+    "id": "htmlprettify_tools",
     "caption": "HTML/CSS/JS Prettify",
     "children": [{
       "caption": "Prettify Code",
