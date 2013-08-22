@@ -1,4 +1,4 @@
-# HTML, CSS and JavaScript and JSON code formatter for Sublime Text 2 and 3 via node.js
+# HTML, CSS, JavaScript and JSON code formatter for Sublime Text 2 and 3 via node.js
 #### [Sublime Text 3](http://www.sublimetext.com/3)
 #### [JS-beautify](https://github.com/einars/js-beautify)
 #### [Node.js download](http://nodejs.org/#download)
