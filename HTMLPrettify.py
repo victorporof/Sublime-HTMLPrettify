@@ -16,9 +16,6 @@ SETTINGS_FILE = "HTMLPrettify.sublime-settings"
 KEYMAP_FILE = "Default ($PLATFORM).sublime-keymap"
 OUTPUT_VALID = b"*** HTMLPrettify output ***"
 
-global settings
-settings = sublime.load_settings(SETTINGS_FILE)
-
 class HtmlprettifyCommand(sublime_plugin.TextCommand):
   def run(self, edit):
     if PLUGIN_FOLDER.find(u".sublime-package") != -1:
@@ -46,7 +43,7 @@ following the instructions at:\n"""
     f.close()
 
     # Simply using `node` without specifying a path sometimes doesn't work :(
-    
+    settings = sublime.load_settings(SETTINGS_FILE)
     node = "node" if exists_in_path("node") else settings.get("node_path")
 
     output = ""
@@ -90,6 +87,7 @@ following the instructions at:\n"""
 
 class PreSaveFormatListner(sublime_plugin.EventListener):
   def on_pre_save(self, view):
+    settings = sublime.load_settings(SETTINGS_FILE)
     if(settings.get("format_on_save") == True):
       view.run_command("htmlprettify")
 
