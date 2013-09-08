@@ -85,6 +85,12 @@ following the instructions at:\n"""
       text = output.decode("utf-8")
       self.view.replace(edit, region, text)
 
+class PreSaveFormatListner(sublime_plugin.EventListener):
+  def on_pre_save(self, view):
+    settings = sublime.load_settings(SETTINGS_FILE)
+    if(settings.get("format_on_save") == True):
+      view.run_command("htmlprettify")
+
 class HtmlprettifySetPrefsCommand(sublime_plugin.TextCommand):
   def run(self, edit):
     open_jsbeautify_rc(self.view.window())
