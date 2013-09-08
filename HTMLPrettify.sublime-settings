@@ -3,5 +3,5 @@
   // https://github.com/victorporof/Sublime-HTMLPrettify#oh-noez-command-not-found
   // http://nodejs.org/#download
   "node_path": "/usr/local/bin/node",
-  "format_on_save": true
+  "format_on_save": false
 }

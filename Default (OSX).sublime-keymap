@@ -3,7 +3,10 @@
   "command": "htmlprettify"
 }, {
   "keys": ["super+alt+h", "p"],
-  "command": "htmlprettify_set_prefs"
+  "command": "htmlprettify_set_prettify_prefs"
+}, {
+  "keys": ["super+alt+h", "o"],
+  "command": "htmlprettify_set_plugin_options"
 }, {
   "keys": ["super+alt+h", "k"],
   "command": "htmlprettify_set_keyboard_shortcuts"

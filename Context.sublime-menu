@@ -5,8 +5,11 @@
     "command": "htmlprettify"
   }, {
     "caption": "Set Prettify Preferences",
-    "command": "htmlprettify_set_prefs"
+    "command": "htmlprettify_set_prettify_prefs"
   }, {
+    "caption": "Set Plugin Options",
+    "command": "htmlprettify_set_plugin_options"
+  },  {
     "caption": "Set Keyboard Shortcuts",
     "command": "htmlprettify_set_keyboard_shortcuts"
   }, {

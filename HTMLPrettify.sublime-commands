@@ -3,7 +3,10 @@
   "command": "htmlprettify"
 }, {
   "caption": "HTMLPrettify: Set Prettify Preferences",
-  "command": "htmlprettify_set_prefs"
+  "command": "htmlprettify_set_prettify_prefs"
+}, {
+  "caption": "HTMLPrettify: Set Plugin Options",
+  "command": "htmlprettify_set_plugin_options"
 }, {
   "caption": "HTMLPrettify: Set Keyboard Shortcuts",
   "command": "htmlprettify_set_keyboard_shortcuts"
