@@ -67,6 +67,9 @@ For example, on Linux the path could be in `/home/<user>/.nvm/<node version>/bin
 
 On Windows, the absolute path to node.exe *must* use forward slashes.
 
+### Be very careful on Linux!
+Depending on your distribution and default package sources, `apt-get install node` (for example) *will not* install node.js, contrary to all human common sense and popular belief. You want `nodejs` instead. Best thing is to make it yourself from http://nodejs.org/#download.
+
 ## Beautify on Save
 
 To Beautify your code when saving the document, set the `format_on_save` setting to `true` in `HTMLPrettify.sublime-settings`:
