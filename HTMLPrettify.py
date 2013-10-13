@@ -44,7 +44,12 @@ following the instructions at:\n"""
 
     # Simply using `node` without specifying a path sometimes doesn't work :(
     settings = sublime.load_settings(SETTINGS_FILE)
-    node = "node" if exists_in_path("node") else settings.get("node_path")
+    if exists_in_path("nodejs"):
+      node = "nodejs"
+    elif exists_in_path("node"):
+      node = "node"
+    else:
+      node = settings.get("node_path")
 
     output = ""
     try:
