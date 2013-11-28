@@ -18,6 +18,9 @@ OUTPUT_VALID = b"*** HTMLPrettify output ***"
 
 class HtmlprettifyCommand(sublime_plugin.TextCommand):
   def run(self, edit):
+    previous_selection = [(region.a, region.b) for region in self.view.sel()]
+    previous_position = self.view.viewport_position()
+
     if PLUGIN_FOLDER.find(u".sublime-package") != -1:
       # Can't use this plugin if installed via the Package Manager in Sublime
       # Text 3, because it will be zipped into a .sublime-package archive.
@@ -94,10 +97,19 @@ following the instructions at:\n"""
         
       self.view.replace(edit, region, text)
 
+    self.view.set_viewport_position((0, 0,), False)
+    self.view.set_viewport_position(previous_position, False)
+
+    self.view.sel().clear()
+    for a, b in previous_selection:
+     self.view.sel().add(sublime.Region(a, b))
+
 class PreSaveFormatListner(sublime_plugin.EventListener):
   def on_pre_save(self, view):
     settings = sublime.load_settings(SETTINGS_FILE)
-    if settings.get("format_on_save") == True:
+    view_settings = view.settings()
+    should_format = view_settings.get('prettify_format_on_save', settings.get('format_on_save'))
+    if should_format == True:
       view.run_command("htmlprettify")
 
 class HtmlprettifySetPrettifyPrefsCommand(sublime_plugin.TextCommand):
