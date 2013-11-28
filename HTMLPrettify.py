@@ -88,10 +88,10 @@ following the instructions at:\n"""
     if len(output) > 0:
       region = sublime.Region(0, self.view.size())
       text = output.decode("utf-8")
-      
+
       if self.view.settings().get("ensure_newline_at_eof_on_save") and not text.endswith("\n"):
         text += "\n"
-        
+
       self.view.replace(edit, region, text)
 
 class PreSaveFormatListner(sublime_plugin.EventListener):
