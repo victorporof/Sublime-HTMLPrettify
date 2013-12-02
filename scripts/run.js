@@ -63,7 +63,6 @@
   var jsbeautifyrc = ".jsbeautifyrc";
   var pluginFolder = path.dirname(__dirname);
   var sourceFolder = path.dirname(filePath);
-  var sourceParent = path.dirname(sourceFolder);
   var jsbeautifyrcPath;
 
   // Older versions of node has `existsSync` in the path module, not fs. Meh.
@@ -74,21 +73,25 @@
     setOptions(jsbeautifyrcPath, options);
   }
 
-  // When a JSBeautify config file exists in the same dir as the source file or
-  // one dir above, then use this configuration to overwrite the default prefs.
+  // When a JSBeautify config file exists in the same dir as the source file,
+  // any dir above, or the user Home, then use this configuration to overwrite
+  // the default prefs.
+  var sourceFolderParts = path.resolve(sourceFolder).split(path.sep);
 
-  // Try and get more options from the source's folder.
-  if (fs.existsSync(jsbeautifyrcPath = sourceFolder + path.sep + jsbeautifyrc)) {
-    setOptions(jsbeautifyrcPath, options);
-  }
-  // ...or the parent folder.
-  else if (fs.existsSync(jsbeautifyrcPath = sourceParent + path.sep + jsbeautifyrc)) {
-    setOptions(jsbeautifyrcPath, options);
-  }
-  // ...or the user's home folder if everything else fails.
-  else if (fs.existsSync(jsbeautifyrcPath = getUserHome() + path.sep + jsbeautifyrc)) {
-    setOptions(jsbeautifyrcPath, options);
-  }
+  var pathsToLook = sourceFolderParts.map(function (value, key) {
+    return sourceFolderParts.slice(0, key + 1).join(path.sep);
+  });
+
+  pathsToLook.reverse();
+
+  pathsToLook.push(getUserHome());
+
+  pathsToLook.some(function (pathToLook) {
+    if (fs.existsSync(jsbeautifyrcPath = path.join(pathToLook, jsbeautifyrc))) {
+      setOptions(jsbeautifyrcPath, options);
+      return true;
+    }
+  });
 
   function isHTML(path, data) {
     return path.match(/\.html?$/) ||
