@@ -150,7 +150,7 @@ def exists_in_path(cmd):
     base = os.path.join(directory, cmd)
     options = [base] + [(base + ext) for ext in extensions]
     for filename in options:
-      if os.path.exists(filename):
+      if os.path.isfile(filename):
         return True
 
   return False
