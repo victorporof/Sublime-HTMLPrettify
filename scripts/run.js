@@ -100,6 +100,7 @@
   function isCSS(path, data) {
     return path.match(/\.css$/) ||
       path.match(/\.sass$/) ||
+      path.match(/\.scss$/) ||
       path.match(/\.less$/);
   }
 
