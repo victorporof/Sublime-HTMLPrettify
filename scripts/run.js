@@ -91,25 +91,49 @@
   }
 
   function isHTML(path, data) {
-    return path.match(/\.html?$/) ||
-      path.match(/\.xhtml?$/) ||
-      path.match(/\.xml$/) ||
-      (path == "?" && data.match(/^\s*</)); // First non-whitespace character is &lt;
+    var typeIsAllowed = false;
+
+    // log(options["html"]["allowed_file_extensions"])
+    var maxIndex = options["html"]["allowed_file_extensions"].length;
+    for (var i=0; i<maxIndex; i++) {
+      if (!typeIsAllowed) {
+        typeIsAllowed = path.match(new RegExp("\\." + options["html"]["allowed_file_extensions"][i] + "?$"));
+      }
+    }
+     if (!typeIsAllowed && path =="?") { // If file unsaved, check if first non-whitespace character is &lt;
+      typeIsAllowed = data.match(/^\s*</);
+     }
+
+     return typeIsAllowed;
   }
 
   function isCSS(path, data) {
-    return path.match(/\.css$/) ||
-      path.match(/\.sass$/) ||
-      path.match(/\.less$/);
+    var typeIsAllowed = false;
+
+    // log(options["html"]["allowed_file_extensions"])
+    var maxIndex = options["css"]["allowed_file_extensions"].length;
+    for (var i=0; i<maxIndex; i++) {
+      if (!typeIsAllowed) {
+        typeIsAllowed = path.match(new RegExp("\\." + options["css"]["allowed_file_extensions"][i] + "?$"));
+      }
+    }
+     return typeIsAllowed;
   }
 
   function isJS(path, data) {
-    return path.match(/\.jsm?$/) ||
-      path.match(/\.json$/) ||
-      path.match(/\.jshintrc$/) ||
-      path.match(/\.jsbeautifyrc$/) ||
-      path.match(/\.sublime-/) ||
-      (path == "?" && !data.match(/^\s*</)); // First non-whitespace character is not &lt;
+    var typeIsAllowed = false;
+
+    // log(options["html"]["allowed_file_extensions"])
+    var maxIndex = options["js"]["allowed_file_extensions"].length;
+    for (var i=0; i<maxIndex; i++) {
+      if (!typeIsAllowed) {
+        typeIsAllowed = path.match(new RegExp("\\." + options["js"]["allowed_file_extensions"][i] + "?$"));
+      }
+    }
+     if (!typeIsAllowed && path =="?") { // If file unsaved, check if first non-whitespace character is not &lt;
+      typeIsAllowed = !data.match(/^\s*</);
+     }
+     return typeIsAllowed;
   }
 
   // Read the source file and, when complete, beautify the code.
