@@ -78,7 +78,7 @@ To Beautify your code when saving the document, set the `format_on_save` setting
 * type `htmlprettify`, select `Set Plugin Options`
 
 ## Using your own .jsbeautifyrc options
-The plugin looks for a `.jsbeautifyrc` file in the same directory as the source file you're prettifying (or one directory above if it doesn't exist, or in your home folder if everything else fails) and uses those options along the default ones. [Here](https://github.com/einars/js-beautify/blob/master/js/config/defaults.json)'s an example of how it can look like.
+The plugin looks for a `.jsbeautifyrc` file in the same directory as the source file you're prettifying, and will search up to five directories above the source file until it finds a .jsbeautifyrc file to use. If all else fails, it will look in your home folder. It uses the settings that it found to override the default ones. [Here](https://github.com/einars/js-beautify/blob/master/js/config/defaults.json)'s an example of how it can look like.
 
 These are the default options used by this plugin:
 ```javascript
