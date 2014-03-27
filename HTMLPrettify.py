@@ -118,9 +118,10 @@ Alernatively, Node.js may not have been found. Please specify the location.'''
     self.view.set_viewport_position(previous_position, False)
 
     self.view.sel().clear()
-    if TextSelection.empty():
-      for a, b in previous_selection:
-        self.view.sel().add(sublime.Region(a, b))
+    for a, b in previous_selection:
+      if not TextSelection.empty():
+        a = b
+      self.view.sel().add(sublime.Region(a, b))
 
 class PreSaveFormatListner(sublime_plugin.EventListener):
   def on_pre_save(self, view):
