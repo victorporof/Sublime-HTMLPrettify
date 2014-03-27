@@ -8,7 +8,7 @@
     "indent_size": 4,
     "max_preserve_newlines": 10,
     "preserve_newlines": true,
-    "unformatted": ["a", "sub", "sup", "b", "i", "u"],
+    "unformatted": ["a", "sub", "sup", "b", "i", "u", "pre"],
     "wrap_line_length": 0
   },
   "css": {
