@@ -50,6 +50,7 @@
     preserve_newlines (default true) - whether existing line breaks before elements should be preserved
                                         Only works before elements, not inside tags or for text.
     max_preserve_newlines (default unlimited) - maximum number of line breaks to be preserved in one chunk
+    beautify_cgi (default true)      - whether code inside of <?php ?> and <% %> tags should be processed by js_beautify
 
     e.g.
 
@@ -60,7 +61,8 @@
       'brace_style': 'expand',
       'unformatted': ['a', 'sub', 'sup', 'b', 'i', 'u'],
       'preserve_newlines': true,
-      'max_preserve_newlines': 5
+      'max_preserve_newlines': 5,
+      'beautify_cgi': false
     });
 */
 
@@ -84,7 +86,8 @@
             brace_style,
             unformatted,
             preserve_newlines,
-            max_preserve_newlines;
+            max_preserve_newlines,
+            beautify_cgi;;
 
         options = options || {};
 
@@ -100,6 +103,7 @@
         unformatted = options.unformatted || ['a', 'span', 'bdo', 'em', 'strong', 'dfn', 'code', 'samp', 'kbd', 'var', 'cite', 'abbr', 'acronym', 'q', 'sub', 'sup', 'tt', 'i', 'b', 'big', 'small', 'u', 's', 'strike', 'font', 'ins', 'del', 'pre', 'address', 'dt', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6'];
         preserve_newlines = options.preserve_newlines || true;
         max_preserve_newlines = preserve_newlines ? parseInt(options.max_preserve_newlines || 32786, 10) : 0;
+        beautify_cgi = typeof options.beautify_cgi === "undefined" ? true : options.beautify_cgi;
 
         function Parser() {
 
@@ -192,7 +196,9 @@
                 }
                 var input_char = '';
                 var content = '';
-                var reg_match = new RegExp('</' + name + '\\s*>', 'igm');
+                var reg_match;
+                if (name === "CGI") reg_match = new RegExp('(\\?|%)>', 'gm'); // create a regex for 
+                else reg_match = new RegExp('</' + name + '\\s*>', 'igm');
                 reg_match.lastIndex = this.pos;
                 var reg_array = reg_match.exec(this.input);
                 var end_script = reg_array ? reg_array.index : this.input.length; //absolute end of script
@@ -288,7 +294,10 @@
                         space = false;
                     }
 
-                    if (input_char === '<' && !tag_start) {
+                    if (!tag_start && (
+                        input_char === '<' || (
+                            (input_char === '?' || input_char === '%') &&  // look for closing PHP/JSP/ASP/etc tags
+                            (this.input.charAt(this.pos) === '>')))) {
                         tag_start = this.pos - 1;
                     }
 
@@ -302,20 +311,32 @@
                         break;
                     }
 
-                } while (input_char !== '>');
+                } while (input_char !== '>' && (
+                    input_char !== ' ' || !content[1] || ( // look for opening PHP/JSP/ASP/etc tags
+                        content[1] !== '?' && content[1] !== '%')));
 
                 var tag_complete = content.join('');
                 var tag_index;
                 if (tag_complete.indexOf(' ') !== -1) { //if there's whitespace, thats where the tag name ends
                     tag_index = tag_complete.indexOf(' ');
+                } else if (tag_complete.indexOf('\n') !== -1) { //if there's a newline, thats where the tag name ends
+                    tag_index = tag_complete.indexOf('\n');
                 } else { //otherwise go with the tag ending
                     tag_index = tag_complete.indexOf('>');
                 }
-                var tag_check = tag_complete.substring(1, tag_index).toLowerCase();
+                var tag_check;
+                // preserve ending tag for CGI tags
+                if (tag_complete.charAt(0) === '?' || tag_complete.charAt(0) === '%') tag_check = tag_complete.substring(0, tag_index);
+                else tag_check = tag_complete.substring(1, tag_index).toLowerCase();
                 if (tag_complete.charAt(tag_complete.length - 2) === '/' ||
                     this.Utils.in_array(tag_check, this.Utils.single_token)) { //if this tag name is a single tag type (either in the list or has a closing /)
                     if (!peek) {
                         this.tag_type = 'SINGLE';
+                    }
+                } else if (tag_complete.charAt(1) === '?' || tag_complete.charAt(1) === '%') { // add CGI support
+                    if (!peek) {
+                        this.record_tag(tag_check);
+                        this.tag_type = 'CGI';
                     }
                 } else if (tag_check === 'script') { //for later script handling
                     if (!peek) {
@@ -346,7 +367,7 @@
                         this.traverse_whitespace();
                     }
                 } else if (!peek) {
-                    if (tag_check.charAt(0) === '/') { //this tag is a double tag so check for tag-ending
+                    if (tag_check.charAt(0) === '/' || tag_check.charAt(0) === '?' || tag_check.charAt(0) === '%') { //this tag is a double tag so check for tag-ending
                         this.retrieve_tag(tag_check.substring(1)); //remove it and all ancestors
                         this.tag_type = 'END';
                         this.traverse_whitespace();
@@ -464,8 +485,8 @@
 
             this.get_token = function() { //initial handler for token-retrieval
                 var token;
-
-                if (this.last_token === 'TK_TAG_SCRIPT' || this.last_token === 'TK_TAG_STYLE') { //check if we need to format javascript
+                // check for any type of script
+                if (this.last_token === 'TK_TAG_SCRIPT' || this.last_token === 'TK_TAG_STYLE' || this.last_token === 'TK_TAG_CGI') { //check if we need to format javascript
                     var type = this.last_token.substr(7);
                     token = this.get_contents_to(type);
                     if (typeof token !== 'string') {
@@ -627,6 +648,7 @@
                     multi_parser.current_mode = 'CONTENT';
                     break;
                 case 'TK_TAG_STYLE':
+                case 'TK_TAG_CGI':
                 case 'TK_TAG_SCRIPT':
                     multi_parser.print_newline(false, multi_parser.output);
                     multi_parser.print_token(multi_parser.token_text);
@@ -659,13 +681,16 @@
                     multi_parser.current_mode = 'TAG';
                     break;
                 case 'TK_STYLE':
+                case 'TK_CGI':
                 case 'TK_SCRIPT':
                     if (multi_parser.token_text !== '') {
                         multi_parser.print_newline(false, multi_parser.output);
                         var text = multi_parser.token_text,
                             _beautifier,
                             script_indent_level = 1;
-                        if (multi_parser.token_type === 'TK_SCRIPT') {
+                        // beautify CGI code if option is enabled
+                        if (multi_parser.token_type === 'TK_SCRIPT' || (
+                                beautify_cgi && multi_parser.token_type === 'TK_CGI')) {
                             _beautifier = typeof js_beautify === 'function' && js_beautify;
                         } else if (multi_parser.token_type === 'TK_STYLE') {
                             _beautifier = typeof css_beautify === 'function' && css_beautify;
