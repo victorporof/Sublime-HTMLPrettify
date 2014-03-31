@@ -94,6 +94,9 @@
     return path.match(/\.html?$/) ||
       path.match(/\.xhtml?$/) ||
       path.match(/\.xml$/) ||
+      path.match(/\.php$/) ||
+      path.match(/\.jsp$/) ||
+      path.match(/\.asp$/) ||
       (path == "?" && data.match(/^\s*</)); // First non-whitespace character is &lt;
   }
 
