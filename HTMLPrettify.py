@@ -58,7 +58,7 @@ following the instructions at:\n"""
     try:
       print("Plugin folder is: " + PLUGIN_FOLDER)
       scriptPath = PLUGIN_FOLDER + "/scripts/run.js"
-      filePath = self.view.file_name()
+      filePath = self.view.file_name().encode(sys.getfilesystemencoding())
       output = get_output([node, scriptPath, tempPath, filePath or "?"])
 
       # Make sure the correct/expected output is retrieved.
