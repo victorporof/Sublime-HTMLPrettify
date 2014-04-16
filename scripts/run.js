@@ -94,12 +94,14 @@
     return path.match(/\.html?$/) ||
       path.match(/\.xhtml?$/) ||
       path.match(/\.xml$/) ||
+      path.match(/\.html\.erb$/) ||
       (path == "?" && data.match(/^\s*</)); // First non-whitespace character is &lt;
   }
 
   function isCSS(path, data) {
     return path.match(/\.css$/) ||
       path.match(/\.sass$/) ||
+      path.match(/\.scss$/) ||
       path.match(/\.less$/);
   }
 
