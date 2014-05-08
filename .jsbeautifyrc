@@ -2,7 +2,7 @@
   // Details: https://github.com/victorporof/Sublime-HTMLPrettify#using-your-own-jsbeautifyrc-options
   // Documentation: https://github.com/einars/js-beautify/
   "html": {
-    "allowed_file_extensions": ["html", "xhtml", "xml"],
+    "allowed_file_extensions": ["htm", "html", "xhtml", "xml"],
     "brace_style": "collapse", // "expand", "end-expand", "expand-strict"
     "indent_char": " ",
     "indent_scripts": "keep", // "separate", "normal"

@@ -90,50 +90,31 @@
     setOptions(jsbeautifyrcPath, options);
   }
 
+  function isTypeAllowed(type, path, data) {
+    var allowedFileExtensions = options[type]["allowed_file_extensions"];
+
+    for (var i = 0, len = allowedFileExtensions.length; i < len; i++) {
+      if (path.match(new RegExp("\\." + allowedFileExtensions[i] + "$"))) {
+        return true;
+      }
+    }
+
+    // If file unsaved, check if first non-whitespace character is &lt;
+    if (path == "?") {
+      return data.match(/^\s*</);
+    }
+
+    return false;
+  }
+
   function isHTML(path, data) {
-    var typeIsAllowed = false;
-
-    // log(options["html"]["allowed_file_extensions"])
-    var maxIndex = options["html"]["allowed_file_extensions"].length;
-    for (var i=0; i<maxIndex; i++) {
-      if (!typeIsAllowed) {
-        typeIsAllowed = path.match(new RegExp("\\." + options["html"]["allowed_file_extensions"][i] + "?$"));
-      }
-    }
-    if (!typeIsAllowed && path =="?") { // If file unsaved, check if first non-whitespace character is &lt;
-     typeIsAllowed = data.match(/^\s*</);
-    }
-
-    return typeIsAllowed;
+    return isTypeAllowed("html", path, data);
   }
-
   function isCSS(path, data) {
-    var typeIsAllowed = false;
-
-    // log(options["html"]["allowed_file_extensions"])
-    var maxIndex = options["css"]["allowed_file_extensions"].length;
-    for (var i=0; i<maxIndex; i++) {
-      if (!typeIsAllowed) {
-        typeIsAllowed = path.match(new RegExp("\\." + options["css"]["allowed_file_extensions"][i] + "?$"));
-      }
-    }
-    return typeIsAllowed;
+    return isTypeAllowed("css", path, data);
   }
-
   function isJS(path, data) {
-    var typeIsAllowed = false;
-
-    // log(options["html"]["allowed_file_extensions"])
-    var maxIndex = options["js"]["allowed_file_extensions"].length;
-    for (var i=0; i<maxIndex; i++) {
-      if (!typeIsAllowed) {
-        typeIsAllowed = path.match(new RegExp("\\." + options["js"]["allowed_file_extensions"][i] + "?$"));
-      }
-    }
-    if (!typeIsAllowed && path =="?") { // If file unsaved, check if first non-whitespace character is not &lt;
-      typeIsAllowed = !data.match(/^\s*</);
-    }
-    return typeIsAllowed;
+    return isTypeAllowed("js", path, data);
   }
 
   // Read the source file and, when complete, beautify the code.
