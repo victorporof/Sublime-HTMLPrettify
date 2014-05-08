@@ -71,7 +71,6 @@ On Windows, the absolute path to node.exe *must* use forward slashes.
 Depending on your distribution and default package sources, `apt-get install node` (for example) *will not* install node.js, contrary to all human common sense and popular belief. You want `nodejs` instead. Best thing is to make it yourself from http://nodejs.org/#download.
 
 ## Beautify on Save
-
 To Beautify your code when saving the document, set the `format_on_save` setting to `true` in `HTMLPrettify.sublime-settings`:
 
 * `Ctrl+Shift+P` or `Cmd+Shift+P` in Linux/Windows/OS X
@@ -86,6 +85,7 @@ These are the default options used by this plugin:
   // Details: https://github.com/victorporof/Sublime-HTMLPrettify#using-your-own-jsbeautifyrc-options
   // Documentation: https://github.com/einars/js-beautify/
   "html": {
+    "allowed_file_extensions": ["htm", "html", "xhtml", "xml"],
     "brace_style": "collapse", // "expand", "end-expand", "expand-strict"
     "indent_char": " ",
     "indent_scripts": "keep", // "separate", "normal"
@@ -96,10 +96,12 @@ These are the default options used by this plugin:
     "wrap_line_length": 0
   },
   "css": {
+    "allowed_file_extensions": ["css", "scss", "sass", "less"],
     "indent_char": " ",
     "indent_size": 4
   },
   "js": {
+    "allowed_file_extensions": ["js", "json", "jshintrc", "jsbeautifyrc"],
     "brace_style": "collapse", // "expand", "end-expand", "expand-strict"
     "break_chained_methods": false,
     "e4x": false,
@@ -142,7 +144,8 @@ A few persistent options are always applied from a `.jsbeautifyrc` file located 
 * `Ctrl+Shift+P` or `Cmd+Shift+P` in Linux/Windows/OS X
 * type `htmlprettify`, select `Set Prettify Preferences`
 
-To add different file extensions use `allowed_file_extensions` in the `.jsbeautifyrc` file in your home folder:
+## Specifying your own file extensions
+To add different file extensions use `allowed_file_extensions` in the `.jsbeautifyrc` file:
 ```javascript
 {
   "html": {
