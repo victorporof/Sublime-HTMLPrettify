@@ -2,6 +2,7 @@
   // Details: https://github.com/victorporof/Sublime-HTMLPrettify#using-your-own-jsbeautifyrc-options
   // Documentation: https://github.com/einars/js-beautify/
   "html": {
+    "allowed_file_extensions": ["html", "xhtml", "xml"],
     "brace_style": "collapse", // "expand", "end-expand", "expand-strict"
     "indent_char": " ",
     "indent_scripts": "keep", // "separate", "normal"
@@ -12,10 +13,12 @@
     "wrap_line_length": 0
   },
   "css": {
+    "allowed_file_extensions": ["css", "scss", "sass", "less"],
     "indent_char": " ",
     "indent_size": 4
   },
   "js": {
+    "allowed_file_extensions": ["js", "json", "jshintrc", "jsbeautifyrc"],
     "brace_style": "collapse", // "expand", "end-expand", "expand-strict"
     "break_chained_methods": false,
     "e4x": false,
