@@ -90,8 +90,14 @@
     setOptions(jsbeautifyrcPath, options);
   }
 
+  var DEFAULT_TYPES = {
+    "html": ["htm", "html", "xhtml", "xml"],
+    "css": ["css", "scss", "sass", "less"],
+    "js": ["js", "json", "jshintrc", "jsbeautifyrc"]
+  };
+
   function isTypeAllowed(type, path, data) {
-    var allowedFileExtensions = options[type]["allowed_file_extensions"];
+    var allowedFileExtensions = options[type]["allowed_file_extensions"] || DEFAULT_TYPES[type];
 
     for (var i = 0, len = allowedFileExtensions.length; i < len; i++) {
       if (path.match(new RegExp("\\." + allowedFileExtensions[i] + "$"))) {
