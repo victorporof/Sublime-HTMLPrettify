@@ -35,7 +35,12 @@ following the instructions at:\n"""
       return
 
     # Get the current text in the buffer.
-    bufferText = self.view.substr(sublime.Region(0, self.view.size()))
+    TextSelection = [a for a in self.view.sel()][0]
+    if TextSelection.empty():
+      bufferText = self.view.substr(sublime.Region(0, self.view.size()))
+    else:      
+      bufferText = self.view.substr(TextSelection)
+      
     # ...and save it in a temporary file. This allows for scratch buffers
     # and dirty files to be beautified as well.
     namedTempFile = ".__temp__"
@@ -72,6 +77,14 @@ following the instructions at:\n"""
       # Something bad happened.
       print("Unexpected error({0}): {1}".format(sys.exc_info()[0], sys.exc_info()[1]))
 
+      # possibly invalid selection
+      if not TextSelection.empty():
+        msg = '''Your selection may be invalid. Please try again.
+
+Alernatively, Node.js may not have been found. Please specify the location.'''
+        sublime.error_message(msg)
+        return
+      
       # Usually, it's just node.js not being found. Try to alleviate the issue.
       msg = "Node.js was not found in the default path. Please specify the location."
       if sublime.ok_cancel_dialog(msg):
@@ -96,14 +109,19 @@ following the instructions at:\n"""
         text += "\n"
 
       if text != bufferText:
-        self.view.replace(edit, region, text)
+        if TextSelection.empty():
+          self.view.replace(edit, region, text)
+        else:
+          self.view.replace(edit, TextSelection, text)
 
     self.view.set_viewport_position((0, 0,), False)
     self.view.set_viewport_position(previous_position, False)
 
     self.view.sel().clear()
     for a, b in previous_selection:
-     self.view.sel().add(sublime.Region(a, b))
+      if not TextSelection.empty():
+        a = b
+      self.view.sel().add(sublime.Region(a, b))
 
 class PreSaveFormatListner(sublime_plugin.EventListener):
   def on_pre_save(self, view):
