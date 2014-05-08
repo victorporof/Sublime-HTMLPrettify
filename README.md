@@ -142,6 +142,19 @@ A few persistent options are always applied from a `.jsbeautifyrc` file located 
 * `Ctrl+Shift+P` or `Cmd+Shift+P` in Linux/Windows/OS X
 * type `htmlprettify`, select `Set Prettify Preferences`
 
-To add different file extensions (like jsp/gsp/php) edit `scripts/run.js`.
+To add different file extensions use `allowed_file_extensions` in the `.jsbeautifyrc` file in your home folder:
+```javascript
+{
+  "html": {
+    "allowed_file_extensions": ["html", "shtml", "aspx", "master", "xml", "xhtml"]
+  }
+  "css": {
+    "allowed_file_extensions": ["css", "scss", "sass", "less"]
+  }
+  "js": {
+    "allowed_file_extensions": ["js", "json", "jshintrc", "jsbeautifyrc"]
+  }
+}
+```
 
 Thank you!
