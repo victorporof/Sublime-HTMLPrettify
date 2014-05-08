@@ -38,9 +38,9 @@ following the instructions at:\n"""
     TextSelection = [a for a in self.view.sel()][0]
     if TextSelection.empty():
       bufferText = self.view.substr(sublime.Region(0, self.view.size()))
-    else:      
+    else:
       bufferText = self.view.substr(TextSelection)
-      
+
     # ...and save it in a temporary file. This allows for scratch buffers
     # and dirty files to be beautified as well.
     namedTempFile = ".__temp__"
@@ -79,12 +79,10 @@ following the instructions at:\n"""
 
       # possibly invalid selection
       if not TextSelection.empty():
-        msg = '''Your selection may be invalid. Please try again.
-
-Alernatively, Node.js may not have been found. Please specify the location.'''
+        msg = "Your selection may be invalid. Please try again."
         sublime.error_message(msg)
         return
-      
+
       # Usually, it's just node.js not being found. Try to alleviate the issue.
       msg = "Node.js was not found in the default path. Please specify the location."
       if sublime.ok_cancel_dialog(msg):
