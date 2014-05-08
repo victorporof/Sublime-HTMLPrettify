@@ -18,9 +18,6 @@ OUTPUT_VALID = b"*** HTMLPrettify output ***"
 
 class HtmlprettifyCommand(sublime_plugin.TextCommand):
   def run(self, edit):
-    previous_selection = [(region.a, region.b) for region in self.view.sel()]
-    previous_position = self.view.viewport_position()
-
     if PLUGIN_FOLDER.find(u".sublime-package") != -1:
       # Can't use this plugin if installed via the Package Manager in Sublime
       # Text 3, because it will be zipped into a .sublime-package archive.
@@ -34,12 +31,15 @@ following the instructions at:\n"""
       webbrowser.open(url)
       return
 
+    # Save the current viewport position to scroll to it after formatting.
+    previousPosition = self.view.viewport_position()
+
     # Get the current text in the buffer.
-    TextSelection = [a for a in self.view.sel()][0]
-    if TextSelection.empty():
+    textSelection = [a for a in self.view.sel()][0]
+    if textSelection.empty():
       bufferText = self.view.substr(sublime.Region(0, self.view.size()))
     else:
-      bufferText = self.view.substr(TextSelection)
+      bufferText = self.view.substr(textSelection)
 
     # ...and save it in a temporary file. This allows for scratch buffers
     # and dirty files to be beautified as well.
@@ -78,7 +78,7 @@ following the instructions at:\n"""
       print("Unexpected error({0}): {1}".format(sys.exc_info()[0], sys.exc_info()[1]))
 
       # possibly invalid selection
-      if not TextSelection.empty():
+      if not textSelection.empty():
         msg = "Your selection may be invalid. Please try again."
         sublime.error_message(msg)
         return
@@ -107,19 +107,13 @@ following the instructions at:\n"""
         text += "\n"
 
       if text != bufferText:
-        if TextSelection.empty():
+        if textSelection.empty():
           self.view.replace(edit, region, text)
         else:
-          self.view.replace(edit, TextSelection, text)
+          self.view.replace(edit, textSelection, text)
 
-    self.view.set_viewport_position((0, 0,), False)
-    self.view.set_viewport_position(previous_position, False)
-
+    self.view.set_viewport_position(previousPosition, False)
     self.view.sel().clear()
-    for a, b in previous_selection:
-      if not TextSelection.empty():
-        a = b
-      self.view.sel().add(sublime.Region(a, b))
 
 class PreSaveFormatListner(sublime_plugin.EventListener):
   def on_pre_save(self, view):
