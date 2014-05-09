@@ -50,7 +50,7 @@ following the instructions at:\n"""
     namedTempFile = ".__temp__"
     tempPath = PLUGIN_FOLDER + "/" + namedTempFile
     print("Saving buffer to: " + tempPath)
-    f = codecs.open(tempPath, mode='w', encoding='utf-8')
+    f = codecs.open(tempPath, mode='w', encoding="utf-8")
     f.write(bufferText)
     f.close()
 
@@ -124,7 +124,7 @@ class PreSaveFormatListner(sublime_plugin.EventListener):
   def on_pre_save(self, view):
     settings = sublime.load_settings(SETTINGS_FILE)
     viewSettings = view.settings()
-    shouldFormat = viewSettings.get('prettify_format_on_save', settings.get('format_on_save'))
+    shouldFormat = viewSettings.get("prettify_format_on_save", settings.get("format_on_save"))
     if shouldFormat == True:
       view.run_command("htmlprettify")
 
