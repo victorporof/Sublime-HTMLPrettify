@@ -96,6 +96,8 @@
     "js": ["js", "json", "jshintrc", "jsbeautifyrc"]
   };
 
+  // Checks if a file type is allowed by regexing the file name and expecting a
+  // certain extension loaded from the settings file.
   function isTypeAllowed(type, path, data) {
     var allowedFileExtensions = options[type]["allowed_file_extensions"] || DEFAULT_TYPES[type];
 
@@ -104,12 +106,10 @@
         return true;
       }
     }
-
     // If file unsaved, check if first non-whitespace character is &lt;
     if (path == "?") {
       return data.match(/^\s*</);
     }
-
     return false;
   }
 
