@@ -71,10 +71,13 @@ On Windows, the absolute path to node.exe *must* use forward slashes.
 Depending on your distribution and default package sources, `apt-get install node` (for example) *will not* install node.js, contrary to all human common sense and popular belief. You want `nodejs` instead. Best thing is to make it yourself from http://nodejs.org/#download.
 
 ## Beautify on Save
-To Beautify your code when saving the document, set the `format_on_save` setting to `true` in `HTMLPrettify.sublime-settings`:
+To beautify your code when saving the document, set the `format_on_save` setting to `true` in `HTMLPrettify.sublime-settings`:
 
 * `Ctrl+Shift+P` or `Cmd+Shift+P` in Linux/Windows/OS X
 * type `htmlprettify`, select `Set Plugin Options`
+
+## Preserving selection after formatting
+To stop beautifying only the selected text, set the `format_selection_only` setting to `false` in `HTMLPrettify.sublime-settings`.
 
 ## Using your own .jsbeautifyrc options
 The plugin looks for a `.jsbeautifyrc` file in the same directory as the source file you're prettifying (or one directory above if it doesn't exist, or in your home folder if everything else fails) and uses those options along the default ones. [Here](https://github.com/einars/js-beautify/blob/master/js/config/defaults.json)'s an example of how it can look like.
