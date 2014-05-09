@@ -18,6 +18,8 @@ OUTPUT_VALID = b"*** HTMLPrettify output ***"
 
 class HtmlprettifyCommand(sublime_plugin.TextCommand):
   def run(self, edit):
+    settings = sublime.load_settings(SETTINGS_FILE)
+
     if PLUGIN_FOLDER.find(u".sublime-package") != -1:
       # Can't use this plugin if installed via the Package Manager in Sublime
       # Text 3, because it will be zipped into a .sublime-package archive.
@@ -32,14 +34,16 @@ following the instructions at:\n"""
       return
 
     # Save the current viewport position to scroll to it after formatting.
+    previousSelection = [(region.a, region.b) for region in self.view.sel()]
     previousPosition = self.view.viewport_position()
 
     # Get the current text in the buffer.
     textSelection = [a for a in self.view.sel()][0]
-    if textSelection.empty():
-      bufferText = self.view.substr(sublime.Region(0, self.view.size()))
-    else:
+    formattingSelection = settings.get("format_selection_only") and not textSelection.empty()
+    if formattingSelection:
       bufferText = self.view.substr(textSelection)
+    else:
+      bufferText = self.view.substr(sublime.Region(0, self.view.size()))
 
     # ...and save it in a temporary file. This allows for scratch buffers
     # and dirty files to be beautified as well.
@@ -51,7 +55,6 @@ following the instructions at:\n"""
     f.close()
 
     # Simply using `node` without specifying a path sometimes doesn't work :(
-    settings = sublime.load_settings(SETTINGS_FILE)
     if exists_in_path("nodejs"):
       node = "nodejs"
     elif exists_in_path("node"):
@@ -77,12 +80,6 @@ following the instructions at:\n"""
       # Something bad happened.
       print("Unexpected error({0}): {1}".format(sys.exc_info()[0], sys.exc_info()[1]))
 
-      # possibly invalid selection
-      if not textSelection.empty():
-        msg = "Your selection may be invalid. Please try again."
-        sublime.error_message(msg)
-        return
-
       # Usually, it's just node.js not being found. Try to alleviate the issue.
       msg = "Node.js was not found in the default path. Please specify the location."
       if sublime.ok_cancel_dialog(msg):
@@ -100,20 +97,28 @@ following the instructions at:\n"""
     self.view.erase_regions("jshint_errors")
 
     if len(output) > 0:
-      region = sublime.Region(0, self.view.size())
-      text = output.decode("utf-8")
+      prettyText = output.decode("utf-8")
+      ensureNewline = self.view.settings().get("ensure_newline_at_eof_on_save")
 
-      if self.view.settings().get("ensure_newline_at_eof_on_save") and not text.endswith("\n"):
-        text += "\n"
+      # Ensure a newline is at the end of the file if preferred.
+      if ensureNewline and not formattingSelection and not prettyText.endswith("\n"):
+        prettyText += "\n"
 
-      if text != bufferText:
-        if textSelection.empty():
-          self.view.replace(edit, region, text)
+      # Replace the text only if it's different.
+      if prettyText != bufferText:
+        if formattingSelection:
+          self.view.replace(edit, textSelection, prettyText)
         else:
-          self.view.replace(edit, textSelection, text)
+          self.view.replace(edit, sublime.Region(0, self.view.size()), prettyText)
 
+    self.view.set_viewport_position((0, 0,), False)
     self.view.set_viewport_position(previousPosition, False)
     self.view.sel().clear()
+
+    # Restore the previous selection if formatting wasn't performed only for it.
+    if not formattingSelection:
+      for a, b in previousSelection:
+        self.view.sel().add(sublime.Region(a, b))
 
 class PreSaveFormatListner(sublime_plugin.EventListener):
   def on_pre_save(self, view):
