@@ -10,7 +10,7 @@ try:
 except ImportError:
   pass
 
-PLUGIN_FOLDER = os.path.dirname(os.path.realpath(__file__))
+PLUGIN_FOLDER = os.path.dirname(os.path.realpath(__file__)).encode('utf-8')
 RC_FILE = ".jsbeautifyrc"
 SETTINGS_FILE = "HTMLPrettify.sublime-settings"
 KEYMAP_FILE = "Default ($PLATFORM).sublime-keymap"
@@ -60,13 +60,13 @@ following the instructions at:\n"""
     elif exists_in_path("node"):
       node = "node"
     else:
-      node = settings.get("node_path")
+      node = settings.get("node_path").encode('utf-8')
 
     output = ""
     try:
       print("Plugin folder is: " + PLUGIN_FOLDER)
       scriptPath = PLUGIN_FOLDER + "/scripts/run.js"
-      filePath = self.view.file_name()
+      filePath = self.view.file_name().encode('utf-8')
       output = get_output([node, scriptPath, tempPath, filePath or "?"])
 
       # Make sure the correct/expected output is retrieved.
