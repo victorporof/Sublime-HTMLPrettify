@@ -2,7 +2,7 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-(function() {
+(function () {
   "use strict";
 
   // Cache the console log function and the process arguments.
@@ -16,7 +16,11 @@
   // The source file to be prettified, original source's path and some options.
   var tempPath = argv[2] || "";
   var filePath = argv[3] || "";
-  var options = { html: {}, css: {}, js: {} };
+  var options = {
+    html: {},
+    css: {},
+    js: {}
+  };
 
   // This stuff does all the magic.
   var html_beautify = require(path.join(__dirname, "beautify-html.js")).html_beautify;
@@ -24,12 +28,15 @@
   var css_beautify = require(path.join(__dirname, "beautify-css.js")).css_beautify;
 
   // Some handy utility functions.
+
   function isTrue(value) {
     return value == "true" || value == true;
   }
+
   function getUserHome() {
     return process.env.HOME || process.env.HOMEPATH || process.env.USERPROFILE;
   }
+
   function getOptions(file) {
     var data = fs.readFileSync(file, "utf8");
     var comments = /(?:\/\*(?:[\s\S]*?)\*\/)|(?:\/\/(?:.*)$)/gm;
@@ -39,6 +46,7 @@
       return Object.create(null);
     }
   }
+
   function setOptions(file, optionsStore) {
     var obj = getOptions(file);
     for (var key in obj) {
@@ -63,11 +71,34 @@
   var jsbeautifyrc = ".jsbeautifyrc";
   var pluginFolder = path.dirname(__dirname);
   var sourceFolder = path.dirname(filePath);
-  var sourceParent = path.dirname(sourceFolder);
   var jsbeautifyrcPath;
 
   // Older versions of node has `existsSync` in the path module, not fs. Meh.
   fs.existsSync = fs.existsSync || path.existsSync;
+
+  function findFileUpFolders(startingFolder, filename) {
+    // Search up to 5 directories up
+    var searchDepth = 5;
+    var searchFolder = startingFolder;
+    var fullPath;
+    for (var i = searchDepth; i >= 0; i--) {
+      if (fs.existsSync(fullPath = searchFolder + path.sep + filename)) {
+        // Found file
+        return fullPath;
+      }
+
+      // Didn't find it; get the next level up
+      searchFolder = path.dirname(searchFolder);
+
+      // If the next level up doesn't exist, don't try to continue searching
+      if (!searchFolder) {
+        return;
+      }
+    }
+
+    // Didn't find a file; return
+    return;
+  }
 
   // Try and get some persistent options from the plugin folder.
   if (fs.existsSync(jsbeautifyrcPath = pluginFolder + path.sep + jsbeautifyrc)) {
@@ -75,14 +106,12 @@
   }
 
   // When a JSBeautify config file exists in the same dir as the source file or
-  // one dir above, then use this configuration to overwrite the default prefs.
+  // in a parent folder (up to five levels up), then use this configuration to overwrite
+  // the default prefs.
 
-  // Try and get more options from the source's folder.
-  if (fs.existsSync(jsbeautifyrcPath = sourceFolder + path.sep + jsbeautifyrc)) {
-    setOptions(jsbeautifyrcPath, options);
-  }
-  // ...or the parent folder.
-  else if (fs.existsSync(jsbeautifyrcPath = sourceParent + path.sep + jsbeautifyrc)) {
+  // Try to get more options from the source's folder or up through its parent folders
+  jsbeautifyrcPath = findFileUpFolders(sourceFolder, jsbeautifyrc);
+  if (jsbeautifyrcPath) {
     setOptions(jsbeautifyrcPath, options);
   }
   // ...or the user's home folder if everything else fails.
@@ -132,7 +161,7 @@
   }
 
   // Read the source file and, when complete, beautify the code.
-  fs.readFile(tempPath, "utf8", function(err, data) {
+  fs.readFile(tempPath, "utf8", function (err, data) {
     if (err) {
       return;
     }
@@ -142,11 +171,9 @@
 
     if (isCSS(filePath, data)) {
       log(css_beautify(data, options["css"]).replace(/\s+$/, ""));
-    }
-    else if (isHTML(filePath, data)) {
+    } else if (isHTML(filePath, data)) {
       log(html_beautify(data, options["html"]).replace(/\s+$/, ""));
-    }
-    else if (isJS(filePath, data)) {
+    } else if (isJS(filePath, data)) {
       log(js_beautify(data, options["js"]).replace(/\s+$/, ""));
     }
   });
