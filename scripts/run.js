@@ -95,7 +95,7 @@
   });
 
   var DEFAULT_TYPES = {
-    "html": ["htm", "html", "xhtml", "xml"],
+    "html": ["htm", "html", "xhtml", "shtml", "xml"],
     "css": ["css", "scss", "sass", "less"],
     "js": ["js", "json", "jshintrc", "jsbeautifyrc"]
   };

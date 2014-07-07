@@ -132,7 +132,7 @@ And here's how a `.jsbeautifyrc` file in your home folder could look like:
   "html": {
     "indent_char": "\t",
     "indent_size": 1
-  }
+  },
   "js": {
     "indent_char": " ",
     "indent_size": 2
