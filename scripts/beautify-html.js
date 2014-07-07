@@ -31,7 +31,7 @@
 
   Written by Nochum Sossonko, (nsossonko@hotmail.com)
 
-  Based on code initially developed by: Einar Lielmanis, <elfz@laacz.lv>
+  Based on code initially developed by: Einar Lielmanis, <einar@jsbeautifier.org>
     http://jsbeautifier.org/
 
   Usage:
@@ -40,6 +40,7 @@
     style_html(html_source, options);
 
   The options are:
+    indent_inner_html (default false)  — indent <head> and <body> sections,
     indent_size (default 4)          — indentation size,
     indent_char (default space)      — character to indent with,
     wrap_line_length (default 250)            -  maximum amount of characters per line (0 = disable)
@@ -50,17 +51,20 @@
     preserve_newlines (default true) - whether existing line breaks before elements should be preserved
                                         Only works before elements, not inside tags or for text.
     max_preserve_newlines (default unlimited) - maximum number of line breaks to be preserved in one chunk
+    indent_handlebars (default false) - format and indent {{#foo}} and {{/foo}}
 
     e.g.
 
     style_html(html_source, {
+      'indent_inner_html': false,
       'indent_size': 2,
       'indent_char': ' ',
       'wrap_line_length': 78,
       'brace_style': 'expand',
       'unformatted': ['a', 'sub', 'sup', 'b', 'i', 'u'],
       'preserve_newlines': true,
-      'max_preserve_newlines': 5
+      'max_preserve_newlines': 5,
+      'indent_handlebars': false
     });
 */
 
@@ -78,28 +82,35 @@
         //Wrapper function to invoke all the necessary constructors and deal with the output.
 
         var multi_parser,
+            indent_inner_html,
             indent_size,
             indent_character,
             wrap_line_length,
             brace_style,
             unformatted,
             preserve_newlines,
-            max_preserve_newlines;
+            max_preserve_newlines,
+            indent_handlebars;
 
         options = options || {};
 
         // backwards compatibility to 1.3.4
-        if (options.wrap_line_length === undefined && options.max_char !== undefined) {
+        if ((options.wrap_line_length === undefined || parseInt(options.wrap_line_length, 10) === 0) &&
+                (options.max_char !== undefined && parseInt(options.max_char, 10) !== 0)) {
             options.wrap_line_length = options.max_char;
         }
 
-        indent_size = parseInt(options.indent_size || 4, 10);
-        indent_character = options.indent_char || ' ';
-        brace_style = options.brace_style || 'collapse';
-        wrap_line_length = options.wrap_line_length === 0 ? 32786 : parseInt(options.wrap_line_length || 250, 10);
+        indent_inner_html = (options.indent_inner_html === undefined) ? false : options.indent_inner_html;
+        indent_size = (options.indent_size === undefined) ? 4 : parseInt(options.indent_size, 10);
+        indent_character = (options.indent_char === undefined) ? ' ' : options.indent_char;
+        brace_style = (options.brace_style === undefined) ? 'collapse' : options.brace_style;
+        wrap_line_length =  parseInt(options.wrap_line_length, 10) === 0 ? 32786 : parseInt(options.wrap_line_length || 250, 10);
         unformatted = options.unformatted || ['a', 'span', 'bdo', 'em', 'strong', 'dfn', 'code', 'samp', 'kbd', 'var', 'cite', 'abbr', 'acronym', 'q', 'sub', 'sup', 'tt', 'i', 'b', 'big', 'small', 'u', 's', 'strike', 'font', 'ins', 'del', 'pre', 'address', 'dt', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6'];
-        preserve_newlines = options.preserve_newlines || true;
-        max_preserve_newlines = preserve_newlines ? parseInt(options.max_preserve_newlines || 32786, 10) : 0;
+        preserve_newlines = (options.preserve_newlines === undefined) ? true : options.preserve_newlines;
+        max_preserve_newlines = preserve_newlines ?
+            (isNaN(parseInt(options.max_preserve_newlines, 10)) ? 32786 : parseInt(options.max_preserve_newlines, 10))
+            : 0;
+        indent_handlebars = (options.indent_handlebars === undefined) ? false : options.indent_handlebars;
 
         function Parser() {
 
@@ -114,7 +125,7 @@
             this.tag_type = '';
             this.token_text = this.last_token = this.last_text = this.token_type = '';
             this.newlines = 0;
-            this.indent_content = false;
+            this.indent_content = indent_inner_html;
 
             this.Utils = { //Uilities made available to the various functions
                 whitespace: "\n\r\t ".split(''),
@@ -165,6 +176,22 @@
                             space = true;
                         }
                         continue; //don't want to insert unnecessary space
+                    }
+
+                    if (indent_handlebars) {
+                        // Handlebars parsing is complicated.
+                        // {{#foo}} and {{/foo}} are formatted tags.
+                        // {{something}} should get treated as content, except:
+                        // {{else}} specifically behaves like {{#if}} and {{/if}}
+                        var peek3 = this.input.substr(this.pos, 3);
+                        if (peek3 === '{{#' || peek3 === '{{/') {
+                            // These are tags and not content.
+                            break;
+                        } else if (this.input.substr(this.pos, 2) === '{{') {
+                            if (this.get_tag(true) === '{{else}}') {
+                                break;
+                            }
+                        }
                     }
 
                     input_char = this.input.charAt(this.pos);
@@ -238,12 +265,30 @@
                 }
             };
 
+            this.indent_to_tag = function(tag) {
+                // Match the indentation level to the last use of this tag, but don't remove it.
+                if (!this.tags[tag + 'count']) {
+                    return;
+                }
+                var temp_parent = this.tags.parent;
+                while (temp_parent) {
+                    if (tag + this.tags[tag + 'count'] === temp_parent) {
+                        break;
+                    }
+                    temp_parent = this.tags[temp_parent + 'parent'];
+                }
+                if (temp_parent) {
+                    this.indent_level = this.tags[tag + this.tags[tag + 'count']];
+                }
+            };
+
             this.get_tag = function(peek) { //function to get a full tag and parse its type
                 var input_char = '',
                     content = [],
                     comment = '',
                     space = false,
                     tag_start, tag_end,
+                    tag_start_char,
                     orig_pos = this.pos,
                     orig_line_char_count = this.line_char_count;
 
@@ -288,8 +333,32 @@
                         space = false;
                     }
 
-                    if (input_char === '<' && !tag_start) {
+                    if (indent_handlebars && tag_start_char === '<') {
+                        // When inside an angle-bracket tag, put spaces around
+                        // handlebars not inside of strings.
+                        if ((input_char + this.input.charAt(this.pos)) === '{{') {
+                            input_char += this.get_unformatted('}}');
+                            if (content.length && content[content.length - 1] !== ' ' && content[content.length - 1] !== '<') {
+                                input_char = ' ' + input_char;
+                            }
+                            space = true;
+                        }
+                    }
+
+                    if (input_char === '<' && !tag_start_char) {
                         tag_start = this.pos - 1;
+                        tag_start_char = '<';
+                    }
+
+                    if (indent_handlebars && !tag_start_char) {
+                        if (content.length >= 2 && content[content.length - 1] === '{' && content[content.length - 2] == '{') {
+                            if (input_char === '#' || input_char === '/') {
+                                tag_start = this.pos - 3;
+                            } else {
+                                tag_start = this.pos - 2;
+                            }
+                            tag_start_char = '{';
+                        }
                     }
 
                     this.line_char_count++;
@@ -302,27 +371,51 @@
                         break;
                     }
 
+                    if (indent_handlebars && tag_start_char === '{' && content.length > 2 && content[content.length - 2] === '}' && content[content.length - 1] === '}') {
+                        break;
+                    }
                 } while (input_char !== '>');
 
                 var tag_complete = content.join('');
                 var tag_index;
+                var tag_offset;
+
                 if (tag_complete.indexOf(' ') !== -1) { //if there's whitespace, thats where the tag name ends
                     tag_index = tag_complete.indexOf(' ');
+                } else if (tag_complete[0] === '{') {
+                    tag_index = tag_complete.indexOf('}');
                 } else { //otherwise go with the tag ending
                     tag_index = tag_complete.indexOf('>');
                 }
-                var tag_check = tag_complete.substring(1, tag_index).toLowerCase();
+                if (tag_complete[0] === '<' || !indent_handlebars) {
+                    tag_offset = 1;
+                } else {
+                    tag_offset = tag_complete[2] === '#' ? 3 : 2;
+                }
+                var tag_check = tag_complete.substring(tag_offset, tag_index).toLowerCase();
                 if (tag_complete.charAt(tag_complete.length - 2) === '/' ||
                     this.Utils.in_array(tag_check, this.Utils.single_token)) { //if this tag name is a single tag type (either in the list or has a closing /)
                     if (!peek) {
                         this.tag_type = 'SINGLE';
                     }
-                } else if (tag_check === 'script') { //for later script handling
+                } else if (indent_handlebars && tag_complete[0] === '{' && tag_check === 'else') {
+                    if (!peek) {
+                        this.indent_to_tag('if');
+                        this.tag_type = 'HANDLEBARS_ELSE';
+                        this.indent_content = true;
+                        this.traverse_whitespace();
+                    }
+                } else if (tag_check === 'script' &&
+                    (tag_complete.search('type') === -1 ||
+                    (tag_complete.search('type') > -1 &&
+                    tag_complete.search(/\b(text|application)\/(x-)?(javascript|ecmascript|jscript|livescript)/) > -1))) {
                     if (!peek) {
                         this.record_tag(tag_check);
                         this.tag_type = 'SCRIPT';
                     }
-                } else if (tag_check === 'style') { //for future style handling (for now it justs uses get_content)
+                } else if (tag_check === 'style' &&
+                    (tag_complete.search('type') === -1 ||
+                    (tag_complete.search('type') > -1 && tag_complete.search('text/css') > -1))) {
                     if (!peek) {
                         this.record_tag(tag_check);
                         this.tag_type = 'STYLE';
@@ -426,6 +519,7 @@
                 }
                 var input_char = '';
                 var content = '';
+                var min_index = 0;
                 var space = true;
                 do {
 
@@ -457,8 +551,13 @@
                     this.line_char_count++;
                     space = true;
 
-
-                } while (content.toLowerCase().indexOf(delimiter) === -1);
+                    if (indent_handlebars && input_char === '{' && content.length && content[content.length - 2] === '{') {
+                        // Handlebars expressions in strings should also be unformatted.
+                        content += this.get_unformatted('}}');
+                        // These expressions are opaque.  Ignore delimiters found in them.
+                        min_index = content.length;
+                    }
+                } while (content.toLowerCase().indexOf(delimiter, min_index) === -1);
                 return content;
             };
 
@@ -516,7 +615,7 @@
                 //unformatted?
                 var next_tag = this.get_tag(true /* peek. */ );
 
-                // tets next_tag to see if it is just html tag (no external content)
+                // test next_tag to see if it is just html tag (no external content)
                 var tag = (next_tag || "").match(/^\s*<\s*\/?([a-z]*)\s*[^>]*>\s*$/);
 
                 // if next_tag comes back but is not an isolated tag, then
@@ -636,7 +735,10 @@
                     //Print new line only if the tag has no content and has child
                     if (multi_parser.last_token === 'TK_CONTENT' && multi_parser.last_text === '') {
                         var tag_name = multi_parser.token_text.match(/\w+/)[0];
-                        var tag_extracted_from_last_output = multi_parser.output[multi_parser.output.length - 1].match(/<\s*(\w+)/);
+                        var tag_extracted_from_last_output = null;
+                        if (multi_parser.output.length) {
+                            tag_extracted_from_last_output = multi_parser.output[multi_parser.output.length - 1].match(/(?:<|{{#)\s*(\w+)/);
+                        }
                         if (tag_extracted_from_last_output === null ||
                             tag_extracted_from_last_output[1] !== tag_name) {
                             multi_parser.print_newline(false, multi_parser.output);
@@ -652,6 +754,14 @@
                         multi_parser.print_newline(false, multi_parser.output);
                     }
                     multi_parser.print_token(multi_parser.token_text);
+                    multi_parser.current_mode = 'CONTENT';
+                    break;
+                case 'TK_TAG_HANDLEBARS_ELSE':
+                    multi_parser.print_token(multi_parser.token_text);
+                    if (multi_parser.indent_content) {
+                        multi_parser.indent();
+                        multi_parser.indent_content = false;
+                    }
                     multi_parser.current_mode = 'CONTENT';
                     break;
                 case 'TK_CONTENT':
@@ -704,23 +814,26 @@
         return multi_parser.output.join('');
     }
 
-    if (typeof define === "function") {
-        // Add support for require.js
-        define(["./beautify.js", "./beautify-css.js"], function(js_beautify, css_beautify) {
+    if (typeof define === "function" && define.amd) {
+        // Add support for AMD ( https://github.com/amdjs/amdjs-api/wiki/AMD#defineamd-property- )
+        define(["require", "./beautify", "./beautify-css"], function(requireamd) {
+            var js_beautify =  requireamd("./beautify");
+            var css_beautify =  requireamd("./beautify-css");
+
             return {
               html_beautify: function(html_source, options) {
-                return style_html(html_source, options, js_beautify, css_beautify);
+                return style_html(html_source, options, js_beautify.js_beautify, css_beautify.css_beautify);
               }
             };
         });
     } else if (typeof exports !== "undefined") {
         // Add support for CommonJS. Just put this file somewhere on your require.paths
         // and you will be able to `var html_beautify = require("beautify").html_beautify`.
-        var js_beautify = require('./beautify.js').js_beautify;
-        var css_beautify = require('./beautify-css.js').css_beautify;
+        var js_beautify = require('./beautify.js');
+        var css_beautify = require('./beautify-css.js');
 
         exports.html_beautify = function(html_source, options) {
-            return style_html(html_source, options, js_beautify, css_beautify);
+            return style_html(html_source, options, js_beautify.js_beautify, css_beautify.css_beautify);
         };
     } else if (typeof window !== "undefined") {
         // If we're running a web page and don't have either of the above, add our one global
