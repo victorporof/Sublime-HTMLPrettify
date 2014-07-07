@@ -132,6 +132,7 @@
         var indentString = source_text.match(/^[\r\n]*[\t ]*/)[0];
         var singleIndent = Array(indentSize + 1).join(indentCharacter);
         var indentLevel = 0;
+        var pushNewLine = true;
 
         function indent() {
             indentLevel++;
@@ -145,14 +146,23 @@
 
         var print = {};
         print["{"] = function(ch) {
-            print.singleSpace();
+            if (pushNewLine) {
+                print.singleSpace();
+            }
             output.push(ch);
-            print.newLine();
+            if (pushNewLine) {
+                print.newLine();
+            }
+
         };
         print["}"] = function(ch) {
-            print.newLine();
+            if (pushNewLine) {
+                print.newLine();
+            }
             output.push(ch);
-            print.newLine();
+            if (pushNewLine) {
+                print.newLine();
+            }
         };
 
         print.newLine = function(keepWhitespace) {
@@ -189,11 +199,17 @@
 
 
             if (ch === '{') {
+                if (lookBack("@") && pushNewLine) {
+                    pushNewLine = false;
+                }
                 indent();
                 print["{"](ch);
             } else if (ch === '}') {
                 outdent();
                 print["}"](ch);
+                if (!pushNewLine) {
+                    pushNewLine = true;
+                }
             } else if (ch === '"' || ch === '\'') {
                 output.push(eatString(ch));
             } else if (ch === ';') {
