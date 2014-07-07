@@ -73,20 +73,20 @@
     setOptions(jsbeautifyrcPath, options);
   }
 
-  // When a JSBeautify config file exists in the same dir as the source file,
-  // any dir above, or the user Home, then use this configuration to overwrite
-  // the default prefs.
+  // When a JSBeautify config file exists in the same directory as the source
+  // file, any directory above, or the user's home folder, then use that
+  // configuration to overwrite the default prefs.
   var sourceFolderParts = path.resolve(sourceFolder).split(path.sep);
 
-  var pathsToLook = sourceFolderParts.map(function (value, key) {
+  var pathsToLook = sourceFolderParts.map(function(value, key) {
     return sourceFolderParts.slice(0, key + 1).join(path.sep);
   });
 
+  // Start with the current directory first, end with the user's home folder.
   pathsToLook.reverse();
-
   pathsToLook.push(getUserHome());
 
-  pathsToLook.some(function (pathToLook) {
+  pathsToLook.some(function(pathToLook) {
     if (fs.existsSync(jsbeautifyrcPath = path.join(pathToLook, jsbeautifyrc))) {
       setOptions(jsbeautifyrcPath, options);
       return true;
