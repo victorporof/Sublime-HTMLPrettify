@@ -31,33 +31,40 @@
 
     Written by Harutyun Amirjanyan, (amirjanyan@gmail.com)
 
-    Based on code initially developed by: Einar Lielmanis, <elfz@laacz.lv>
+    Based on code initially developed by: Einar Lielmanis, <einar@jsbeautifier.org>
         http://jsbeautifier.org/
 
     Usage:
         css_beautify(source_text);
         css_beautify(source_text, options);
 
-    The options are:
-        indent_size (default 4)          — indentation size,
-        indent_char (default space)      — character to indent with,
+    The options are (default in brackets):
+        indent_size (4)                   — indentation size,
+        indent_char (space)               — character to indent with,
+        selector_separator_newline (true) - separate selectors with newline or
+                                            not (e.g. "a,\nbr" or "a, br")
+        end_with_newline (false)          - end with a newline
 
     e.g
 
     css_beautify(css_source_text, {
       'indent_size': 1,
-      'indent_char': '\t'
+      'indent_char': '\t',
+      'selector_separator': ' ',
+      'end_with_newline': false,
     });
 */
 
 // http://www.w3.org/TR/CSS21/syndata.html#tokenization
 // http://www.w3.org/TR/css3-syntax/
 
-(function() {
+(function () {
     function css_beautify(source_text, options) {
         options = options || {};
         var indentSize = options.indent_size || 4;
         var indentCharacter = options.indent_char || ' ';
+        var selectorSeparatorNewline = (options.selector_separator_newline === undefined) ? true : options.selector_separator_newline;
+        var endWithNewline = (options.end_with_newline === undefined) ? false : options.end_with_newline;
 
         // compatibility
         if (typeof indentSize === "string") {
@@ -81,13 +88,13 @@
             return source_text.charAt(pos + 1);
         }
 
-        function eatString(comma) {
+        function eatString(endChar) {
             var start = pos;
             while (next()) {
                 if (ch === "\\") {
                     next();
                     next();
-                } else if (ch === comma) {
+                } else if (ch === endChar) {
                     break;
                 } else if (ch === "\n") {
                     break;
@@ -110,12 +117,14 @@
             return pos !== start + 1;
         }
 
-        function eatComment() {
+        function eatComment(singleLine) {
             var start = pos;
             next();
             while (next()) {
                 if (ch === "*" && peek() === "/") {
                     pos++;
+                    break;
+                } else if (singleLine && ch === "\n") {
                     break;
                 }
             }
@@ -125,13 +134,24 @@
 
 
         function lookBack(str) {
-            return source_text.substring(pos - str.length, pos).toLowerCase() === str;
+            return source_text.substring(pos - str.length, pos).toLowerCase() ===
+                str;
+        }
+
+        function isCommentOnLine() {
+            var endOfLine = source_text.indexOf('\n', pos);
+            if (endOfLine === -1) {
+                return false;
+            }
+            var restOfLine = source_text.substring(pos, endOfLine);
+            return restOfLine.indexOf('//') !== -1;
         }
 
         // printer
         var indentString = source_text.match(/^[\r\n]*[\t ]*/)[0];
-        var singleIndent = Array(indentSize + 1).join(indentCharacter);
+        var singleIndent = new Array(indentSize + 1).join(indentCharacter);
         var indentLevel = 0;
+        var nestedLevel = 0;
 
         function indent() {
             indentLevel++;
@@ -144,20 +164,24 @@
         }
 
         var print = {};
-        print["{"] = function(ch) {
+        print["{"] = function (ch) {
             print.singleSpace();
             output.push(ch);
             print.newLine();
         };
-        print["}"] = function(ch) {
+        print["}"] = function (ch) {
             print.newLine();
             output.push(ch);
             print.newLine();
         };
 
-        print.newLine = function(keepWhitespace) {
+        print._lastCharWhitespace = function () {
+            return whiteRe.test(output[output.length - 1]);
+        };
+
+        print.newLine = function (keepWhitespace) {
             if (!keepWhitespace) {
-                while (whiteRe.test(output[output.length - 1])) {
+                while (print._lastCharWhitespace()) {
                     output.pop();
                 }
             }
@@ -169,8 +193,8 @@
                 output.push(indentString);
             }
         };
-        print.singleSpace = function() {
-            if (output.length && !whiteRe.test(output[output.length - 1])) {
+        print.singleSpace = function () {
+            if (output.length && !print._lastCharWhitespace()) {
                 output.push(' ');
             }
         };
@@ -180,27 +204,87 @@
         }
         /*_____________________--------------------_____________________*/
 
+        var insideRule = false;
+        var enteringConditionalGroup = false;
+
         while (true) {
             var isAfterSpace = skipWhitespace();
 
             if (!ch) {
                 break;
-            }
+            } else if (ch === '/' && peek() === '*') { /* css comment */
+                print.newLine();
+                output.push(eatComment(), "\n", indentString);
+                var header = lookBack("");
+                if (header) {
+                    print.newLine();
+                }
+            } else if (ch === '/' && peek() === '/') { // single line comment
+                output.push(eatComment(true), indentString);
+            } else if (ch === '@') {
+                // strip trailing space, if present, for hash property checks
+                var atRule = eatString(" ").replace(/ $/, '');
 
+                // pass along the space we found as a separate item
+                output.push(atRule, ch);
 
-            if (ch === '{') {
-                indent();
-                print["{"](ch);
+                // might be a nesting at-rule
+                if (atRule in css_beautify.NESTED_AT_RULE) {
+                    nestedLevel += 1;
+                    if (atRule in css_beautify.CONDITIONAL_GROUP_RULE) {
+                        enteringConditionalGroup = true;
+                    }
+                }
+            } else if (ch === '{') {
+                eatWhitespace();
+                if (peek() === '}') {
+                    next();
+                    output.push(" {}");
+                } else {
+                    indent();
+                    print["{"](ch);
+                    // when entering conditional groups, only rulesets are allowed
+                    if (enteringConditionalGroup) {
+                        enteringConditionalGroup = false;
+                        insideRule = (indentLevel > nestedLevel);
+                    } else {
+                        // otherwise, declarations are also allowed
+                        insideRule = (indentLevel >= nestedLevel);
+                    }
+                }
             } else if (ch === '}') {
                 outdent();
                 print["}"](ch);
+                insideRule = false;
+                if (nestedLevel) {
+                    nestedLevel--;
+                }
+            } else if (ch === ":") {
+                eatWhitespace();
+                if (insideRule || enteringConditionalGroup) {
+                    // 'property: value' delimiter
+                    // which could be in a conditional group query
+                    output.push(ch, " ");
+                } else {
+                    if (peek() === ":") {
+                        // pseudo-element
+                        next();
+                        output.push("::");
+                    } else {
+                        // pseudo-class
+                        output.push(ch);
+                    }
+                }
             } else if (ch === '"' || ch === '\'') {
                 output.push(eatString(ch));
             } else if (ch === ';') {
-                output.push(ch, '\n', indentString);
-            } else if (ch === '/' && peek() === '*') { // comment
-                print.newLine();
-                output.push(eatComment(), "\n", indentString);
+                if (isCommentOnLine()) {
+                    var beforeComment = eatString('/');
+                    var comment = eatComment(true);
+                    output.push(beforeComment, comment.substring(1, comment.length - 1), '\n', indentString);
+                } else {
+                    output.push(ch, '\n', indentString);
+                }
             } else if (ch === '(') { // may be a url
                 if (lookBack("url")) {
                     output.push(ch);
@@ -224,10 +308,19 @@
             } else if (ch === ',') {
                 eatWhitespace();
                 output.push(ch);
-                print.singleSpace();
+                if (!insideRule && selectorSeparatorNewline) {
+                    print.newLine();
+                } else {
+                    print.singleSpace();
+                }
             } else if (ch === ']') {
                 output.push(ch);
-            } else if (ch === '[' || ch === '=') { // no whitespace before or after
+            } else if (ch === '[') {
+                if (isAfterSpace) {
+                    print.singleSpace();
+                }
+                output.push(ch);
+            } else if (ch === '=') { // no whitespace before or after
                 eatWhitespace();
                 output.push(ch);
             } else {
@@ -241,13 +334,40 @@
 
 
         var sweetCode = output.join('').replace(/[\n ]+$/, '');
+
+        // establish end_with_newline
+        var should = endWithNewline;
+        var actually = /\n$/.test(sweetCode);
+        if (should && !actually) {
+            sweetCode += "\n";
+        } else if (!should && actually) {
+            sweetCode = sweetCode.slice(0, -1);
+        }
+
         return sweetCode;
     }
 
-    if (typeof define === "function") {
-        // Add support for require.js
-        define(function(require, exports, module) {
-            exports.css_beautify = css_beautify;
+    // https://developer.mozilla.org/en-US/docs/Web/CSS/At-rule
+    css_beautify.NESTED_AT_RULE = {
+        "@page": true,
+        "@font-face": true,
+        "@keyframes": true,
+        // also in CONDITIONAL_GROUP_RULE below
+        "@media": true,
+        "@supports": true,
+        "@document": true
+    };
+    css_beautify.CONDITIONAL_GROUP_RULE = {
+        "@media": true,
+        "@supports": true,
+        "@document": true
+    };
+
+    /*global define */
+    if (typeof define === "function" && define.amd) {
+        // Add support for AMD ( https://github.com/amdjs/amdjs-api/wiki/AMD#defineamd-property- )
+        define([], function () {
+            return { css_beautify: css_beautify };
         });
     } else if (typeof exports !== "undefined") {
         // Add support for CommonJS. Just put this file somewhere on your require.paths
