@@ -91,6 +91,8 @@ These are the default options used by this plugin:
     "allowed_file_extensions": ["htm", "html", "xhtml", "shtml", "xml", "svg"],
     "brace_style": "collapse", // "expand", "end-expand", "expand-strict"
     "indent_char": " ",
+    "indent_handlebars": false, // e.g. {{#foo}}, {{/foo}}
+    "indent_inner_html": false,
     "indent_scripts": "keep", // "separate", "normal"
     "indent_size": 4,
     "max_preserve_newlines": 10,
@@ -100,8 +102,11 @@ These are the default options used by this plugin:
   },
   "css": {
     "allowed_file_extensions": ["css", "scss", "sass", "less"],
+    "end_with_newline": false,
     "indent_char": " ",
-    "indent_size": 4
+    "indent_size": 4,
+    "selector_separator": " ",
+    "selector_separator_newline": false
   },
   "js": {
     "allowed_file_extensions": ["js", "json", "jshintrc", "jsbeautifyrc"],
