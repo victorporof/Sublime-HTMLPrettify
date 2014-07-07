@@ -88,14 +88,14 @@ These are the default options used by this plugin:
   // Details: https://github.com/victorporof/Sublime-HTMLPrettify#using-your-own-jsbeautifyrc-options
   // Documentation: https://github.com/einars/js-beautify/
   "html": {
-    "allowed_file_extensions": ["htm", "html", "xhtml", "xml"],
+    "allowed_file_extensions": ["htm", "html", "xhtml", "shtml", "xml", "svg"],
     "brace_style": "collapse", // "expand", "end-expand", "expand-strict"
     "indent_char": " ",
     "indent_scripts": "keep", // "separate", "normal"
     "indent_size": 4,
     "max_preserve_newlines": 10,
     "preserve_newlines": true,
-    "unformatted": ["a", "sub", "sup", "b", "i", "u"],
+    "unformatted": ["a", "sub", "sup", "b", "i", "u", "pre"],
     "wrap_line_length": 0
   },
   "css": {
