@@ -30,7 +30,7 @@
   function getUserHome() {
     return process.env.HOME || process.env.HOMEPATH || process.env.USERPROFILE;
   }
-  function getOptions(file) {
+  function parseOptions(file) {
     var data = fs.readFileSync(file, "utf8");
     var comments = /(?:\/\*(?:[\s\S]*?)\*\/)|(?:\/\/(?:.*)$)/gm;
     try {
@@ -40,7 +40,8 @@
     }
   }
   function setOptions(file, optionsStore) {
-    var obj = getOptions(file);
+    var obj = parseOptions(file);
+
     for (var key in obj) {
       var value = obj[key];
 
