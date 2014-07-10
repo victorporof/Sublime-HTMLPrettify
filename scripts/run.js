@@ -95,6 +95,8 @@
     }
   });
 
+  log("Using prettify options: " + JSON.stringify(options, null, 2));
+
   var DEFAULT_TYPES = {
     "html": ["htm", "html", "xhtml", "shtml", "xml"],
     "css": ["css", "scss", "sass", "less"],
