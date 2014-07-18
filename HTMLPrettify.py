@@ -43,19 +43,18 @@ class HtmlprettifyCommand(sublime_plugin.TextCommand):
     # We're done with beautifying, change the text shown in the current buffer.
     self.view.erase_regions("jshint_errors")
 
-    if len(output) > 0:
-      ensureNewline = self.view.settings().get("ensure_newline_at_eof_on_save")
+    ensureNewline = self.view.settings().get("ensure_newline_at_eof_on_save")
 
-      # Ensure a newline is at the end of the file if preferred.
-      if ensureNewline and not is_formatting_selection_only and not output.endswith("\n"):
-        output += "\n"
+    # Ensure a newline is at the end of the file if preferred.
+    if ensureNewline and not is_formatting_selection_only and not output.endswith("\n"):
+      output += "\n"
 
-      # Replace the text only if it's different.
-      if output != buffer_text:
-        if is_formatting_selection_only:
-          self.view.replace(edit, text_selection, output)
-        else:
-          self.view.replace(edit, sublime.Region(0, self.view.size()), output)
+    # Replace the text only if it's different.
+    if output != buffer_text:
+      if is_formatting_selection_only:
+        self.view.replace(edit, text_selection, output)
+      else:
+        self.view.replace(edit, sublime.Region(0, self.view.size()), output)
 
     self.view.set_viewport_position((0, 0,), False)
     self.view.set_viewport_position(previous_position, False)
