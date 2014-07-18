@@ -19,7 +19,7 @@ OUTPUT_VALID = b"*** HTMLPrettify output ***"
 class HtmlprettifyCommand(sublime_plugin.TextCommand):
   def run(self, edit):
     # Save the current viewport position to scroll to it after formatting.
-    previous_selection = [(region.a, region.b) for region in self.view.sel()]
+    previous_selection = list(self.view.sel()) # Copy.
     previous_position = self.view.viewport_position()
 
     # Get the current text in the buffer and save it in a temporary file.
@@ -40,13 +40,11 @@ class HtmlprettifyCommand(sublime_plugin.TextCommand):
     print(self.get_output_diagnostics(output))
     output = self.get_output_data(output)
 
-    # We're done with beautifying, change the text shown in the current buffer.
-    self.view.erase_regions("jshint_errors")
-
-    ensureNewline = self.view.settings().get("ensure_newline_at_eof_on_save")
-
     # Ensure a newline is at the end of the file if preferred.
-    if ensureNewline and not is_formatting_selection_only and not output.endswith("\n"):
+    ensure_newline_at_eof = self.view.settings().get("ensure_newline_at_eof_on_save")
+    if ensure_newline_at_eof \
+      and not is_formatting_selection_only \
+      and not output.endswith("\n"):
       output += "\n"
 
     # Replace the text only if it's different.
@@ -54,16 +52,16 @@ class HtmlprettifyCommand(sublime_plugin.TextCommand):
       if is_formatting_selection_only:
         self.view.replace(edit, text_selection, output)
       else:
-        self.view.replace(edit, sublime.Region(0, self.view.size()), output)
+        self.view.replace(edit, entire_buffer, output)
 
-    self.view.set_viewport_position((0, 0,), False)
+    self.view.set_viewport_position((0, 0), False)
     self.view.set_viewport_position(previous_position, False)
     self.view.sel().clear()
 
     # Restore the previous selection if formatting wasn't performed only for it.
     if not is_formatting_selection_only:
-      for a, b in previous_selection:
-        self.view.sel().add(sublime.Region(a, b))
+      for region in previous_selection:
+        self.view.sel().add(region)
 
   def save_buffer_to_temp_file(self, region):
     buffer_text = self.view.substr(region)
