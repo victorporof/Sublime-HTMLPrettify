@@ -127,7 +127,8 @@ following the instructions at:\n"""
         self.view.sel().add(sublime.Region(a, b))
 
 class HtmlprettifyEventListeners(sublime_plugin.EventListener):
-  def on_pre_save(self, view):
+  @staticmethod
+  def on_pre_save(view):
     settings = sublime.load_settings(SETTINGS_FILE)
     shouldFormat = settings.get("format_on_save")
     if shouldFormat == True:
