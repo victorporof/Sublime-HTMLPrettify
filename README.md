@@ -56,11 +56,6 @@ If you get an error `sh: node: command not found` or similar, you don't have `no
 * `Ctrl+Shift+P` or `Cmd+Shift+P` in Linux/Windows/OS X
 * type `htmlprettify`, select `Set node Path`
 
-This means from:
-`"node_path": "/usr/local/bin/node"`
-change to
-`"node_path": "/your/absolute/path/to/node"`
-
 Simply using `node` without specifying a path sometimes doesn't work :(
 
 For example, on Linux the path could be in `/home/<user>/.nvm/<node version>/bin/node`.
