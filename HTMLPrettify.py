@@ -19,37 +19,31 @@ OUTPUT_VALID = b"*** HTMLPrettify output ***"
 class HtmlprettifyCommand(sublime_plugin.TextCommand):
   def run(self, edit):
     # Save the current viewport position to scroll to it after formatting.
-    previousSelection = [(region.a, region.b) for region in self.view.sel()]
-    previousPosition = self.view.viewport_position()
+    previous_selection = [(region.a, region.b) for region in self.view.sel()]
+    previous_position = self.view.viewport_position()
 
-    # Get the current text in the buffer.
-    textSelection = [a for a in self.view.sel()][0]
-    formattingSelection = PluginUtils.get_pref("format_selection_only") and not textSelection.empty()
-    if formattingSelection:
-      bufferText = self.view.substr(textSelection)
+    # Get the current text in the buffer and save it in a temporary file.
+    # This allows for scratch buffers and dirty files to be linted as well.
+    entire_buffer = sublime.Region(0, self.view.size())
+    text_selection = self.view.sel()[0]
+    is_formatting_selection_only = PluginUtils.get_pref("format_selection_only") and not text_selection.empty()
+
+    if is_formatting_selection_only:
+      temp_file_path, buffer_text = self.save_buffer_to_temp_file(text_selection)
     else:
-      bufferText = self.view.substr(sublime.Region(0, self.view.size()))
-
-    # ...and save it in a temporary file. This allows for scratch buffers
-    # and dirty files to be beautified as well.
-    namedTempFile = ".__temp__"
-    tempPath = PLUGIN_FOLDER + "/" + namedTempFile
-    print("Saving buffer to: " + tempPath)
-    f = codecs.open(tempPath, mode='w', encoding="utf-8")
-    f.write(bufferText)
-    f.close()
+      temp_file_path, buffer_text = self.save_buffer_to_temp_file(entire_buffer)
 
     node = PluginUtils.get_node_path()
     output = ""
     try:
       scriptPath = PLUGIN_FOLDER + "/scripts/run.js"
       filePath = self.view.file_name()
-      output = PluginUtils.get_output([node, scriptPath, tempPath, filePath or "?"])
+      output = PluginUtils.get_output([node, scriptPath, temp_file_path, filePath or "?"])
 
       # Make sure the correct/expected output is retrieved.
       if output.find(OUTPUT_VALID) == -1:
         print(output)
-        cmd = node + " " + scriptPath + " " + tempPath + " " + filePath
+        cmd = node + " " + scriptPath + " " + temp_file_path + " " + filePath
         msg = "Command " + cmd + " created invalid output"
         raise Exception(msg)
 
@@ -73,7 +67,7 @@ class HtmlprettifyCommand(sublime_plugin.TextCommand):
 
     # Remove the output identification marker (first line).
     output = output[diagEndIndex + len(OUTPUT_VALID) + 1:]
-    os.remove(tempPath)
+    os.remove(temp_file_path)
 
     # We're done with beautifying, change the text shown in the current buffer.
     self.view.erase_regions("jshint_errors")
@@ -83,24 +77,33 @@ class HtmlprettifyCommand(sublime_plugin.TextCommand):
       ensureNewline = self.view.settings().get("ensure_newline_at_eof_on_save")
 
       # Ensure a newline is at the end of the file if preferred.
-      if ensureNewline and not formattingSelection and not prettyText.endswith("\n"):
+      if ensureNewline and not is_formatting_selection_only and not prettyText.endswith("\n"):
         prettyText += "\n"
 
       # Replace the text only if it's different.
-      if prettyText != bufferText:
-        if formattingSelection:
-          self.view.replace(edit, textSelection, prettyText)
+      if prettyText != buffer_text:
+        if is_formatting_selection_only:
+          self.view.replace(edit, text_selection, prettyText)
         else:
           self.view.replace(edit, sublime.Region(0, self.view.size()), prettyText)
 
     self.view.set_viewport_position((0, 0,), False)
-    self.view.set_viewport_position(previousPosition, False)
+    self.view.set_viewport_position(previous_position, False)
     self.view.sel().clear()
 
     # Restore the previous selection if formatting wasn't performed only for it.
-    if not formattingSelection:
-      for a, b in previousSelection:
+    if not is_formatting_selection_only:
+      for a, b in previous_selection:
         self.view.sel().add(sublime.Region(a, b))
+
+  def save_buffer_to_temp_file(self, region):
+    buffer_text = self.view.substr(region)
+    temp_file_name = ".__temp__"
+    temp_file_path = PLUGIN_FOLDER + "/" + temp_file_name
+    f = codecs.open(temp_file_path, mode='w', encoding='utf-8')
+    f.write(buffer_text)
+    f.close()
+    return temp_file_path, buffer_text
 
 class HtmlprettifyEventListeners(sublime_plugin.EventListener):
   @staticmethod
