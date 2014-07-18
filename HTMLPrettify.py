@@ -60,7 +60,9 @@ following the instructions at:\n"""
     elif exists_in_path("node"):
       node = "node"
     else:
-      node = settings.get("node_path")
+      platform = sublime.platform();
+      node = settings.get("node_path").get(platform)
+      print("Using node.js path on '" + sublime.platform() + "': " + node)
 
     output = ""
     try:
