@@ -182,7 +182,7 @@ class PluginUtils:
     elif PluginUtils.exists_in_path("node"):
       return "node"
     else:
-      platform = sublime.platform();
+      platform = sublime.platform()
       node = PluginUtils.get_pref("node_path").get(platform)
       print("Using node.js path on '" + platform + "': " + node)
       return node
