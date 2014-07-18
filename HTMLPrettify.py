@@ -18,19 +18,6 @@ OUTPUT_VALID = b"*** HTMLPrettify output ***"
 
 class HtmlprettifyCommand(sublime_plugin.TextCommand):
   def run(self, edit):
-    if PLUGIN_FOLDER.find(u".sublime-package") != -1:
-      # Can't use this plugin if installed via the Package Manager in Sublime
-      # Text 3, because it will be zipped into a .sublime-package archive.
-      # Thus executing scripts *located inside this archive* via node.js
-      # will, unfortunately, not be possible.
-      url = "https://github.com/victorporof/Sublime-HTMLPrettify#manually"
-      msg = """You won't be able to use this plugin in Sublime Text 3 when \
-installed via the Package Manager.\n\nPlease remove it and install manually, \
-following the instructions at:\n"""
-      sublime.ok_cancel_dialog(msg + url)
-      webbrowser.open(url)
-      return
-
     # Save the current viewport position to scroll to it after formatting.
     previousSelection = [(region.a, region.b) for region in self.view.sel()]
     previousPosition = self.view.viewport_position()
