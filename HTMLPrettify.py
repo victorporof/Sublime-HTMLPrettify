@@ -33,59 +33,29 @@ class HtmlprettifyCommand(sublime_plugin.TextCommand):
     else:
       temp_file_path, buffer_text = self.save_buffer_to_temp_file(entire_buffer)
 
-    node = PluginUtils.get_node_path()
-    output = ""
-    try:
-      scriptPath = PLUGIN_FOLDER + "/scripts/run.js"
-      filePath = self.view.file_name()
-      output = PluginUtils.get_output([node, scriptPath, temp_file_path, filePath or "?"])
-
-      # Make sure the correct/expected output is retrieved.
-      if output.find(OUTPUT_VALID) == -1:
-        print(output)
-        cmd = node + " " + scriptPath + " " + temp_file_path + " " + filePath
-        msg = "Command " + cmd + " created invalid output"
-        raise Exception(msg)
-
-    except:
-      # Something bad happened.
-      print("Unexpected error({0}): {1}".format(sys.exc_info()[0], sys.exc_info()[1]))
-
-      # Usually, it's just node.js not being found. Try to alleviate the issue.
-      msg = "Node.js was not found in the default path. Please specify the location."
-      if sublime.ok_cancel_dialog(msg):
-        PluginUtils.open_sublime_settings(self.view.window())
-      else:
-        msg = "You won't be able to use this plugin without specifying the path to Node.js."
-        sublime.error_message(msg)
-      return
-
-    # Dump any diagnostics from run.js
-    diagEndIndex = output.find(OUTPUT_VALID)
-    diagMessage = output[:diagEndIndex]
-    print(diagMessage.decode())
-
-    # Remove the output identification marker (first line).
-    output = output[diagEndIndex + len(OUTPUT_VALID) + 1:]
+    output = self.run_script_on_file(temp_file_path)
     os.remove(temp_file_path)
+
+    # Dump any diagnostics and get the output after the identification marker.
+    print(self.get_output_diagnostics(output))
+    output = self.get_output_data(output)
 
     # We're done with beautifying, change the text shown in the current buffer.
     self.view.erase_regions("jshint_errors")
 
     if len(output) > 0:
-      prettyText = output.decode("utf-8")
       ensureNewline = self.view.settings().get("ensure_newline_at_eof_on_save")
 
       # Ensure a newline is at the end of the file if preferred.
-      if ensureNewline and not is_formatting_selection_only and not prettyText.endswith("\n"):
-        prettyText += "\n"
+      if ensureNewline and not is_formatting_selection_only and not output.endswith("\n"):
+        output += "\n"
 
       # Replace the text only if it's different.
-      if prettyText != buffer_text:
+      if output != buffer_text:
         if is_formatting_selection_only:
-          self.view.replace(edit, text_selection, prettyText)
+          self.view.replace(edit, text_selection, output)
         else:
-          self.view.replace(edit, sublime.Region(0, self.view.size()), prettyText)
+          self.view.replace(edit, sublime.Region(0, self.view.size()), output)
 
     self.view.set_viewport_position((0, 0,), False)
     self.view.set_viewport_position(previous_position, False)
@@ -100,10 +70,46 @@ class HtmlprettifyCommand(sublime_plugin.TextCommand):
     buffer_text = self.view.substr(region)
     temp_file_name = ".__temp__"
     temp_file_path = PLUGIN_FOLDER + "/" + temp_file_name
-    f = codecs.open(temp_file_path, mode='w', encoding='utf-8')
+    f = codecs.open(temp_file_path, mode="w", encoding="utf-8")
     f.write(buffer_text)
     f.close()
     return temp_file_path, buffer_text
+
+  def run_script_on_file(self, temp_file_path):
+    try:
+      node_path = PluginUtils.get_node_path()
+      script_path = PLUGIN_FOLDER + "/scripts/run.js"
+      file_path = self.view.file_name()
+      cmd = [node_path, script_path, temp_file_path, file_path or "?"]
+      output = PluginUtils.get_output(cmd)
+
+      # Make sure the correct/expected output is retrieved.
+      if output.find(OUTPUT_VALID) != -1:
+        return output
+
+      msg = "Command " + '" "'.join(cmd) + " created invalid output."
+      print(output)
+      raise Exception(msg)
+
+    except:
+      # Something bad happened.
+      print("Unexpected error({0}): {1}".format(sys.exc_info()[0], sys.exc_info()[1]))
+
+      # Usually, it's just node.js not being found. Try to alleviate the issue.
+      msg = "Node.js was not found in the default path. Please specify the location."
+      if not sublime.ok_cancel_dialog(msg):
+        msg = "You won't be able to use this plugin without specifying the path to node.js."
+        sublime.error_message(msg)
+      else:
+        PluginUtils.open_sublime_settings(self.view.window())
+
+  def get_output_diagnostics(self, output):
+    index = output.find(OUTPUT_VALID)
+    return output[:index].decode("utf-8")
+
+  def get_output_data(self, output):
+    index = output.find(OUTPUT_VALID)
+    return output[index + len(OUTPUT_VALID) + 1:].decode("utf-8")
 
 class HtmlprettifyEventListeners(sublime_plugin.EventListener):
   @staticmethod
