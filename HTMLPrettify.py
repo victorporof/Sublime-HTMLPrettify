@@ -126,7 +126,7 @@ following the instructions at:\n"""
       for a, b in previousSelection:
         self.view.sel().add(sublime.Region(a, b))
 
-class PreSaveFormatListner(sublime_plugin.EventListener):
+class HtmlprettifyEventListeners(sublime_plugin.EventListener):
   def on_pre_save(self, view):
     settings = sublime.load_settings(SETTINGS_FILE)
     viewSettings = view.settings()
