@@ -54,16 +54,7 @@ following the instructions at:\n"""
     f.write(bufferText)
     f.close()
 
-    # Simply using `node` without specifying a path sometimes doesn't work :(
-    if exists_in_path("nodejs"):
-      node = "nodejs"
-    elif exists_in_path("node"):
-      node = "node"
-    else:
-      platform = sublime.platform();
-      node = settings.get("node_path").get(platform)
-      print("Using node.js path on '" + sublime.platform() + "': " + node)
-
+    node = get_node_path()
     output = ""
     try:
       scriptPath = PLUGIN_FOLDER + "/scripts/run.js"
@@ -176,6 +167,19 @@ def exists_in_path(cmd):
         return True
 
   return False
+
+def get_node_path():
+  # Simply using `node` without specifying a path sometimes doesn't work :(
+  if exists_in_path("nodejs"):
+    return "nodejs"
+  elif exists_in_path("node"):
+    return "node"
+  else:
+    settings = sublime.load_settings(SETTINGS_FILE)
+    platform = sublime.platform();
+    node = settings.get("node_path").get(platform)
+    print("Using node.js path on '" + platform + "': " + node)
+    return node
 
 def get_output(cmd):
   if int(sublime.version()) < 3000:
