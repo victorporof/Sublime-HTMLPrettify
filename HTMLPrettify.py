@@ -129,8 +129,7 @@ following the instructions at:\n"""
 class HtmlprettifyEventListeners(sublime_plugin.EventListener):
   def on_pre_save(self, view):
     settings = sublime.load_settings(SETTINGS_FILE)
-    viewSettings = view.settings()
-    shouldFormat = viewSettings.get("prettify_format_on_save", settings.get("format_on_save"))
+    shouldFormat = settings.get("format_on_save")
     if shouldFormat == True:
       view.run_command("htmlprettify")
 
