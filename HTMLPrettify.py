@@ -42,7 +42,7 @@ class HtmlprettifyCommand(sublime_plugin.TextCommand):
     print(self.get_output_diagnostics(output))
     output = self.get_output_data(output)
 
-    # If the prettified text legth is nil, the current syntax isn't supported.
+    # If the prettified text length is nil, the current syntax isn't supported.
     if len(output) < 1:
       return
 
