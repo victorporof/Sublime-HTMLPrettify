@@ -18,8 +18,6 @@ OUTPUT_VALID = b"*** HTMLPrettify output ***"
 
 class HtmlprettifyCommand(sublime_plugin.TextCommand):
   def run(self, edit):
-    settings = sublime.load_settings(SETTINGS_FILE)
-
     if PLUGIN_FOLDER.find(u".sublime-package") != -1:
       # Can't use this plugin if installed via the Package Manager in Sublime
       # Text 3, because it will be zipped into a .sublime-package archive.
@@ -39,7 +37,7 @@ following the instructions at:\n"""
 
     # Get the current text in the buffer.
     textSelection = [a for a in self.view.sel()][0]
-    formattingSelection = settings.get("format_selection_only") and not textSelection.empty()
+    formattingSelection = PluginUtils.get_pref("format_selection_only") and not textSelection.empty()
     if formattingSelection:
       bufferText = self.view.substr(textSelection)
     else:
@@ -120,9 +118,7 @@ following the instructions at:\n"""
 class HtmlprettifyEventListeners(sublime_plugin.EventListener):
   @staticmethod
   def on_pre_save(view):
-    settings = sublime.load_settings(SETTINGS_FILE)
-    shouldFormat = settings.get("format_on_save")
-    if shouldFormat == True:
+    if PluginUtils.get_pref("format_on_save"):
       view.run_command("htmlprettify")
 
 class HtmlprettifySetPrettifyPrefsCommand(sublime_plugin.TextCommand):
@@ -146,6 +142,10 @@ class HtmlprettifySetNodePathCommand(sublime_plugin.TextCommand):
     PluginUtils.open_sublime_settings(self.view.window())
 
 class PluginUtils:
+  @staticmethod
+  def get_pref(key):
+    return sublime.load_settings(SETTINGS_FILE).get(key)
+
   @staticmethod
   def open_config_rc(window):
     window.open_file(PLUGIN_FOLDER + "/" + RC_FILE)
@@ -183,9 +183,8 @@ class PluginUtils:
     elif PluginUtils.exists_in_path("node"):
       return "node"
     else:
-      settings = sublime.load_settings(SETTINGS_FILE)
       platform = sublime.platform();
-      node = settings.get("node_path").get(platform)
+      node = PluginUtils.get_pref("node_path").get(platform)
       print("Using node.js path on '" + platform + "': " + node)
       return node
 
