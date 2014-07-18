@@ -40,6 +40,10 @@ class HtmlprettifyCommand(sublime_plugin.TextCommand):
     print(self.get_output_diagnostics(output))
     output = self.get_output_data(output)
 
+    # If the prettified text legth is nil, the current syntax isn't supported.
+    if len(output) < 1:
+      return
+
     # Ensure a newline is at the end of the file if preferred.
     ensure_newline_at_eof = self.view.settings().get("ensure_newline_at_eof_on_save")
     if ensure_newline_at_eof \
