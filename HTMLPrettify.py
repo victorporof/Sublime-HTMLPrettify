@@ -136,7 +136,9 @@ class HtmlprettifySetPluginOptionsCommand(sublime_plugin.TextCommand):
 class HtmlprettifySetKeyboardShortcutsCommand(sublime_plugin.TextCommand):
   def run(self, edit):
     PluginUtils.open_sublime_keymap(self.view.window(), {
-      "windows": "Windows", "linux": "Linux", "osx": "OSX"
+      "windows": "Windows",
+      "linux": "Linux",
+      "osx": "OSX"
     }.get(sublime.platform()))
 
 class HtmlprettifySetNodePathCommand(sublime_plugin.TextCommand):
