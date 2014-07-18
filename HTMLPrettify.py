@@ -54,12 +54,12 @@ following the instructions at:\n"""
     f.write(bufferText)
     f.close()
 
-    node = get_node_path()
+    node = PluginUtils.get_node_path()
     output = ""
     try:
       scriptPath = PLUGIN_FOLDER + "/scripts/run.js"
       filePath = self.view.file_name()
-      output = get_output([node, scriptPath, tempPath, filePath or "?"])
+      output = PluginUtils.get_output([node, scriptPath, tempPath, filePath or "?"])
 
       # Make sure the correct/expected output is retrieved.
       if output.find(OUTPUT_VALID) == -1:
@@ -75,7 +75,7 @@ following the instructions at:\n"""
       # Usually, it's just node.js not being found. Try to alleviate the issue.
       msg = "Node.js was not found in the default path. Please specify the location."
       if sublime.ok_cancel_dialog(msg):
-        open_htmlprettify_sublime_settings(self.view.window())
+        PluginUtils.open_sublime_settings(self.view.window())
       else:
         msg = "You won't be able to use this plugin without specifying the path to Node.js."
         sublime.error_message(msg)
@@ -127,73 +127,80 @@ class HtmlprettifyEventListeners(sublime_plugin.EventListener):
 
 class HtmlprettifySetPrettifyPrefsCommand(sublime_plugin.TextCommand):
   def run(self, edit):
-    open_jsbeautify_rc(self.view.window())
+    PluginUtils.open_config_rc(self.view.window())
 
 class HtmlprettifySetPluginOptionsCommand(sublime_plugin.TextCommand):
   def run(self, edit):
-    open_htmlprettify_sublime_settings(self.view.window())
+    PluginUtils.open_sublime_settings(self.view.window())
 
 class HtmlprettifySetKeyboardShortcutsCommand(sublime_plugin.TextCommand):
   def run(self, edit):
-    open_jshint_sublime_keymap(self.view.window(), {
+    PluginUtils.open_sublime_keymap(self.view.window(), {
       "windows": "Windows", "linux": "Linux", "osx": "OSX"
     }.get(sublime.platform()))
 
 class HtmlprettifySetNodePathCommand(sublime_plugin.TextCommand):
   def run(self, edit):
-    open_htmlprettify_sublime_settings(self.view.window())
+    PluginUtils.open_sublime_settings(self.view.window())
 
-def open_jsbeautify_rc(window):
-  window.open_file(PLUGIN_FOLDER + "/" + RC_FILE)
+class PluginUtils:
+  @staticmethod
+  def open_config_rc(window):
+    window.open_file(PLUGIN_FOLDER + "/" + RC_FILE)
 
-def open_htmlprettify_sublime_settings(window):
-  window.open_file(PLUGIN_FOLDER + "/" + SETTINGS_FILE)
+  @staticmethod
+  def open_sublime_settings(window):
+    window.open_file(PLUGIN_FOLDER + "/" + SETTINGS_FILE)
 
-def open_jshint_sublime_keymap(window, platform):
-  window.open_file(PLUGIN_FOLDER + "/" + KEYMAP_FILE.replace("$PLATFORM", platform))
+  @staticmethod
+  def open_sublime_keymap(window, platform):
+    window.open_file(PLUGIN_FOLDER + "/" + KEYMAP_FILE.replace("$PLATFORM", platform))
 
-def exists_in_path(cmd):
-  # Can't search the path if a directory is specified.
-  assert not os.path.dirname(cmd)
-  path = os.environ.get("PATH", "").split(os.pathsep)
-  extensions = os.environ.get("PATHEXT", "").split(os.pathsep)
+  @staticmethod
+  def exists_in_path(cmd):
+    # Can't search the path if a directory is specified.
+    assert not os.path.dirname(cmd)
+    path = os.environ.get("PATH", "").split(os.pathsep)
+    extensions = os.environ.get("PATHEXT", "").split(os.pathsep)
 
-  # For each directory in PATH, check if it contains the specified binary.
-  for directory in path:
-    base = os.path.join(directory, cmd)
-    options = [base] + [(base + ext) for ext in extensions]
-    for filename in options:
-      if os.path.exists(filename):
-        return True
+    # For each directory in PATH, check if it contains the specified binary.
+    for directory in path:
+      base = os.path.join(directory, cmd)
+      options = [base] + [(base + ext) for ext in extensions]
+      for filename in options:
+        if os.path.exists(filename):
+          return True
 
-  return False
+    return False
 
-def get_node_path():
-  # Simply using `node` without specifying a path sometimes doesn't work :(
-  if exists_in_path("nodejs"):
-    return "nodejs"
-  elif exists_in_path("node"):
-    return "node"
-  else:
-    settings = sublime.load_settings(SETTINGS_FILE)
-    platform = sublime.platform();
-    node = settings.get("node_path").get(platform)
-    print("Using node.js path on '" + platform + "': " + node)
-    return node
-
-def get_output(cmd):
-  if int(sublime.version()) < 3000:
-    if sublime.platform() != "windows":
-      # Handle Linux and OS X in Python 2.
-      run = '"' + '" "'.join(cmd) + '"'
-      return commands.getoutput(run)
+  @staticmethod
+  def get_node_path():
+    # Simply using `node` without specifying a path sometimes doesn't work :(
+    if PluginUtils.exists_in_path("nodejs"):
+      return "nodejs"
+    elif PluginUtils.exists_in_path("node"):
+      return "node"
     else:
-      # Handle Windows in Python 2.
-      # Prevent console window from showing.
-      startupinfo = subprocess.STARTUPINFO()
-      startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
-      return subprocess.Popen(cmd, stdout=subprocess.PIPE, startupinfo=startupinfo).communicate()[0]
-  else:
-    # Handle all OS in Python 3.
-    run = '"' + '" "'.join(cmd) + '"'
-    return subprocess.check_output(run, stderr=subprocess.STDOUT, shell=True)
+      settings = sublime.load_settings(SETTINGS_FILE)
+      platform = sublime.platform();
+      node = settings.get("node_path").get(platform)
+      print("Using node.js path on '" + platform + "': " + node)
+      return node
+
+  @staticmethod
+  def get_output(cmd):
+    if int(sublime.version()) < 3000:
+      if sublime.platform() != "windows":
+        # Handle Linux and OS X in Python 2.
+        run = '"' + '" "'.join(cmd) + '"'
+        return commands.getoutput(run)
+      else:
+        # Handle Windows in Python 2.
+        # Prevent console window from showing.
+        startupinfo = subprocess.STARTUPINFO()
+        startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
+        return subprocess.Popen(cmd, stdout=subprocess.PIPE, startupinfo=startupinfo).communicate()[0]
+    else:
+      # Handle all OS in Python 3.
+      run = '"' + '" "'.join(cmd) + '"'
+      return subprocess.check_output(run, stderr=subprocess.STDOUT, shell=True)
