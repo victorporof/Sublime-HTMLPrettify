@@ -24,14 +24,16 @@ class HtmlprettifyCommand(sublime_plugin.TextCommand):
 
     # Get the current text in the buffer and save it in a temporary file.
     # This allows for scratch buffers and dirty files to be linted as well.
-    entire_buffer = sublime.Region(0, self.view.size())
-    text_selection = self.view.sel()[0]
-    is_formatting_selection_only = PluginUtils.get_pref("format_selection_only") and not text_selection.empty()
+    entire_buffer_region = sublime.Region(0, self.view.size())
+    text_selection_region = self.view.sel()[0]
+    is_formatting_selection_only = \
+      PluginUtils.get_pref("format_selection_only") \
+      and not text_selection_region.empty()
 
     if is_formatting_selection_only:
-      temp_file_path, buffer_text = self.save_buffer_to_temp_file(text_selection)
+      temp_file_path, buffer_text = self.save_buffer_to_temp_file(text_selection_region)
     else:
-      temp_file_path, buffer_text = self.save_buffer_to_temp_file(entire_buffer)
+      temp_file_path, buffer_text = self.save_buffer_to_temp_file(entire_buffer_region)
 
     output = self.run_script_on_file(temp_file_path)
     os.remove(temp_file_path)
@@ -54,9 +56,9 @@ class HtmlprettifyCommand(sublime_plugin.TextCommand):
     # Replace the text only if it's different.
     if output != buffer_text:
       if is_formatting_selection_only:
-        self.view.replace(edit, text_selection, output)
+        self.view.replace(edit, text_selection_region, output)
       else:
-        self.view.replace(edit, entire_buffer, output)
+        self.view.replace(edit, entire_buffer_region, output)
 
     self.view.set_viewport_position((0, 0), False)
     self.view.set_viewport_position(previous_position, False)
@@ -197,7 +199,9 @@ class PluginUtils:
         # Prevent console window from showing.
         startupinfo = subprocess.STARTUPINFO()
         startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
-        return subprocess.Popen(cmd, stdout=subprocess.PIPE, startupinfo=startupinfo).communicate()[0]
+        return subprocess.Popen(cmd, \
+          stdout=subprocess.PIPE, \
+          startupinfo=startupinfo).communicate()[0]
     else:
       # Handle all OS in Python 3.
       run = '"' + '" "'.join(cmd) + '"'
