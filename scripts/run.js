@@ -6,6 +6,7 @@
 // Require path and file system utilities to load the jshint.js file.
 var path = require("path");
 var fs = require("fs");
+var minify = require("jsonminify");
 var html_beautify = require(path.join(__dirname, "beautify-html.js")).html_beautify;
 var js_beautify = require(path.join(__dirname, "beautify.js")).js_beautify;
 var css_beautify = require(path.join(__dirname, "beautify-css.js")).css_beautify;
@@ -23,10 +24,8 @@ function getUserHome() {
   return process.env.HOME || process.env.HOMEPATH || process.env.USERPROFILE;
 }
 function parseJSON(file) {
-  var data = fs.readFileSync(file, "utf8");
-  var comments = /(?:\/\*(?:[\s\S]*?)\*\/)|(?:\/\/(?:.*)$)/gm;
   try {
-    return JSON.parse(data.replace(comments, ""));
+    return JSON.parse(minify(fs.readFileSync(file, "utf8")));
   } catch (e) {
     return {};
   }
