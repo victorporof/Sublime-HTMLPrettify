@@ -117,7 +117,7 @@ function setOptions(file, optionsStore) {
 // certain extension loaded from the settings file.
 function isTypeAllowed(type, path) {
   var allowedFileExtensions = options[type]["allowed_file_extensions"] || {
-    "html": ["htm", "html", "xhtml", "shtml", "xml"],
+    "html": ["htm", "html", "xhtml", "shtml", "xml", "svg"],
     "css": ["css", "scss", "sass", "less"],
     "js": ["js", "json", "jshintrc", "jsbeautifyrc"]
   }[type];
