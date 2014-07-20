@@ -14,6 +14,8 @@ var css_beautify = require(path.join(__dirname, "beautify-css.js")).css_beautify
 // The source file to be prettified, original source's path and some options.
 var tempPath = process.argv[2] || "";
 var filePath = process.argv[3] || "";
+var pluginFolder = path.dirname(__dirname);
+var sourceFolder = path.dirname(filePath);
 var options = { html: {}, css: {}, js: {} };
 
 // Some handy utility functions.
@@ -53,9 +55,6 @@ function setOptions(file, optionsStore) {
   }
 }
 
-var jsbeautifyrc = ".jsbeautifyrc";
-var pluginFolder = path.dirname(__dirname);
-var sourceFolder = path.dirname(filePath);
 var jsbeautifyrcPath;
 
 // Older versions of node has `existsSync` in the path module, not fs. Meh.
@@ -63,7 +62,7 @@ fs.existsSync = fs.existsSync || path.existsSync;
 path.sep = path.sep || "/";
 
 // Try and get some persistent options from the plugin folder.
-if (fs.existsSync(jsbeautifyrcPath = pluginFolder + path.sep + jsbeautifyrc)) {
+if (fs.existsSync(jsbeautifyrcPath = pluginFolder + path.sep + ".jsbeautifyrc")) {
   setOptions(jsbeautifyrcPath, options);
 }
 
@@ -81,7 +80,7 @@ pathsToLook.reverse();
 pathsToLook.push(getUserHome());
 
 pathsToLook.some(function(pathToLook) {
-  if (fs.existsSync(jsbeautifyrcPath = path.join(pathToLook, jsbeautifyrc))) {
+  if (fs.existsSync(jsbeautifyrcPath = path.join(pathToLook, ".jsbeautifyrc"))) {
     setOptions(jsbeautifyrcPath, options);
     return true;
   }
