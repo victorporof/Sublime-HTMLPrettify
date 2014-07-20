@@ -28,7 +28,7 @@ function parseOptions(file) {
   try {
     return JSON.parse(data.replace(comments, ""));
   } catch (e) {
-    return Object.create(null);
+    return {};
   }
 }
 function setOptions(file, optionsStore) {
