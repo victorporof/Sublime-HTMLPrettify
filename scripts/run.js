@@ -49,6 +49,7 @@ pathsToLook.some(function(pathToLook) {
   }
 });
 
+// Dump some diagnostics messages, parsed out by the plugin.
 console.log("Using prettify options: " + JSON.stringify(options, null, 2));
 
 // Read the source file and, when complete, beautify the code.
