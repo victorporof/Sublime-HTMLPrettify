@@ -5,17 +5,13 @@
 (function() {
   "use strict";
 
-  // Cache the console log function and the process arguments.
-  var log = console.log;
-  var argv = process.argv;
-
   // Require path and file system utilities to load the jshint.js file.
   var path = require("path");
   var fs = require("fs");
 
   // The source file to be prettified, original source's path and some options.
-  var tempPath = argv[2] || "";
-  var filePath = argv[3] || "";
+  var tempPath = process.argv[2] || "";
+  var filePath = process.argv[3] || "";
   var options = { html: {}, css: {}, js: {} };
 
   // This stuff does all the magic.
@@ -95,7 +91,7 @@
     }
   });
 
-  log("Using prettify options: " + JSON.stringify(options, null, 2));
+  console.log("Using prettify options: " + JSON.stringify(options, null, 2));
 
   var DEFAULT_TYPES = {
     "html": ["htm", "html", "xhtml", "shtml", "xml"],
@@ -145,16 +141,16 @@
     }
 
     // Mark the output as being from this plugin.
-    log("*** HTMLPrettify output ***");
+    console.log("*** HTMLPrettify output ***");
 
     if (isCSS(filePath, data)) {
-      log(css_beautify(data, options["css"]).replace(/\s+$/, ""));
+      console.log(css_beautify(data, options["css"]).replace(/\s+$/, ""));
     }
     else if (isHTML(filePath, data)) {
-      log(html_beautify(data, options["html"]).replace(/\s+$/, ""));
+      console.log(html_beautify(data, options["html"]).replace(/\s+$/, ""));
     }
     else if (isJS(filePath, data)) {
-      log(js_beautify(data, options["js"]).replace(/\s+$/, ""));
+      console.log(js_beautify(data, options["js"]).replace(/\s+$/, ""));
     }
   });
 }());
