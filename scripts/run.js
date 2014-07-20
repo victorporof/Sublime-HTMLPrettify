@@ -22,43 +22,6 @@ var pluginFolder = path.dirname(__dirname);
 var sourceFolder = path.dirname(filePath);
 var options = { html: {}, css: {}, js: {} };
 
-// Some handy utility functions.
-function isTrue(value) {
-  return value == "true" || value == true;
-}
-function getUserHome() {
-  return process.env.HOME || process.env.HOMEPATH || process.env.USERPROFILE;
-}
-function parseJSON(file) {
-  try {
-    return JSON.parse(minify(fs.readFileSync(file, "utf8")));
-  } catch (e) {
-    console.log("Could not parse JSON at: " + file);
-    return {};
-  }
-}
-function setOptions(file, optionsStore) {
-  var obj = parseJSON(file);
-
-  for (var key in obj) {
-    var value = obj[key];
-
-    // Options are defined as an object for each format, with keys as prefs.
-    if (key != "html" && key != "css" && key != "js") {
-      continue;
-    }
-    for (var pref in value) {
-      // Special case "true" and "false" pref values as actually booleans.
-      // This avoids common accidents in .jsbeautifyrc json files.
-      if (value == "true" || value == "false") {
-        optionsStore[key][pref] = isTrue(value[pref]);
-      } else {
-        optionsStore[key][pref] = value[pref];
-      }
-    }
-  }
-}
-
 var jsbeautifyrcPath;
 
 // Try and get some persistent options from the plugin folder.
@@ -88,47 +51,6 @@ pathsToLook.some(function(pathToLook) {
 
 console.log("Using prettify options: " + JSON.stringify(options, null, 2));
 
-var DEFAULT_TYPES = {
-  "html": ["htm", "html", "xhtml", "shtml", "xml"],
-  "css": ["css", "scss", "sass", "less"],
-  "js": ["js", "json", "jshintrc", "jsbeautifyrc"]
-};
-
-// Checks if a file type is allowed by regexing the file name and expecting a
-// certain extension loaded from the settings file.
-function isTypeAllowed(type, path, data) {
-  var allowedFileExtensions = options[type]["allowed_file_extensions"] || DEFAULT_TYPES[type];
-  for (var i = 0, len = allowedFileExtensions.length; i < len; i++) {
-    if (path.match(new RegExp("\\." + allowedFileExtensions[i] + "$"))) {
-      return true;
-    }
-  }
-  return false;
-}
-
-function isHTML(path, data) {
-  // If file unsaved, check if first non-whitespace character is &lt;
-  if (path == "?") {
-    return data.match(/^\s*</);
-  }
-  return isTypeAllowed("html", path, data);
-}
-function isCSS(path, data) {
-  // If file unsaved, there's no good way to determine whether or not it's
-  // CSS based on the file contents.
-  if (path == "?") {
-    return false;
-  }
-  return isTypeAllowed("css", path, data);
-}
-function isJS(path, data) {
-  // If file unsaved, check if first non-whitespace character is NOT &lt;
-  if (path == "?") {
-    return !data.match(/^\s*</);
-  }
-  return isTypeAllowed("js", path, data);
-}
-
 // Read the source file and, when complete, beautify the code.
 fs.readFile(tempPath, "utf8", function(err, data) {
   if (err) {
@@ -148,3 +70,86 @@ fs.readFile(tempPath, "utf8", function(err, data) {
     console.log(js_beautify(data, options["js"]).replace(/\s+$/, ""));
   }
 });
+
+// Some handy utility functions.
+
+function isTrue(value) {
+  return value == "true" || value == true;
+}
+
+function getUserHome() {
+  return process.env.HOME || process.env.HOMEPATH || process.env.USERPROFILE;
+}
+
+function parseJSON(file) {
+  try {
+    return JSON.parse(minify(fs.readFileSync(file, "utf8")));
+  } catch (e) {
+    console.log("Could not parse JSON at: " + file);
+    return {};
+  }
+}
+
+function setOptions(file, optionsStore) {
+  var obj = parseJSON(file);
+
+  for (var key in obj) {
+    var value = obj[key];
+
+    // Options are defined as an object for each format, with keys as prefs.
+    if (key != "html" && key != "css" && key != "js") {
+      continue;
+    }
+    for (var pref in value) {
+      // Special case "true" and "false" pref values as actually booleans.
+      // This avoids common accidents in .jsbeautifyrc json files.
+      if (value == "true" || value == "false") {
+        optionsStore[key][pref] = isTrue(value[pref]);
+      } else {
+        optionsStore[key][pref] = value[pref];
+      }
+    }
+  }
+}
+
+// Checks if a file type is allowed by regexing the file name and expecting a
+// certain extension loaded from the settings file.
+function isTypeAllowed(type, path, data) {
+  var DEFAULT_TYPES = {
+    "html": ["htm", "html", "xhtml", "shtml", "xml"],
+    "css": ["css", "scss", "sass", "less"],
+    "js": ["js", "json", "jshintrc", "jsbeautifyrc"]
+  };
+  var allowedFileExtensions = options[type]["allowed_file_extensions"] || DEFAULT_TYPES[type];
+  for (var i = 0, len = allowedFileExtensions.length; i < len; i++) {
+    if (path.match(new RegExp("\\." + allowedFileExtensions[i] + "$"))) {
+      return true;
+    }
+  }
+  return false;
+}
+
+function isHTML(path, data) {
+  // If file unsaved, check if first non-whitespace character is &lt;
+  if (path == "?") {
+    return data.match(/^\s*</);
+  }
+  return isTypeAllowed("html", path, data);
+}
+
+function isCSS(path, data) {
+  // If file unsaved, there's no good way to determine whether or not it's
+  // CSS based on the file contents.
+  if (path == "?") {
+    return false;
+  }
+  return isTypeAllowed("css", path, data);
+}
+
+function isJS(path, data) {
+  // If file unsaved, check if first non-whitespace character is NOT &lt;
+  if (path == "?") {
+    return !data.match(/^\s*</);
+  }
+  return isTypeAllowed("js", path, data);
+}
