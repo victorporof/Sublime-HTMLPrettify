@@ -27,6 +27,7 @@ function parseJSON(file) {
   try {
     return JSON.parse(minify(fs.readFileSync(file, "utf8")));
   } catch (e) {
+    console.log("Could not parse JSON at: " + file);
     return {};
   }
 }
