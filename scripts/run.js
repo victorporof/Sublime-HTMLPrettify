@@ -22,7 +22,7 @@ function isTrue(value) {
 function getUserHome() {
   return process.env.HOME || process.env.HOMEPATH || process.env.USERPROFILE;
 }
-function parseOptions(file) {
+function parseJSON(file) {
   var data = fs.readFileSync(file, "utf8");
   var comments = /(?:\/\*(?:[\s\S]*?)\*\/)|(?:\/\/(?:.*)$)/gm;
   try {
@@ -32,7 +32,7 @@ function parseOptions(file) {
   }
 }
 function setOptions(file, optionsStore) {
-  var obj = parseOptions(file);
+  var obj = parseJSON(file);
 
   for (var key in obj) {
     var value = obj[key];
