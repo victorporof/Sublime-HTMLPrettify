@@ -11,6 +11,10 @@ var html_beautify = require(path.join(__dirname, "beautify-html.js")).html_beaut
 var js_beautify = require(path.join(__dirname, "beautify.js")).js_beautify;
 var css_beautify = require(path.join(__dirname, "beautify-css.js")).css_beautify;
 
+// Older versions of node have `existsSync` in the `path` module, not `fs`. Meh.
+fs.existsSync = fs.existsSync || path.existsSync;
+path.sep = path.sep || "/";
+
 // The source file to be prettified, original source's path and some options.
 var tempPath = process.argv[2] || "";
 var filePath = process.argv[3] || "";
@@ -56,10 +60,6 @@ function setOptions(file, optionsStore) {
 }
 
 var jsbeautifyrcPath;
-
-// Older versions of node has `existsSync` in the path module, not fs. Meh.
-fs.existsSync = fs.existsSync || path.existsSync;
-path.sep = path.sep || "/";
 
 // Try and get some persistent options from the plugin folder.
 if (fs.existsSync(jsbeautifyrcPath = pluginFolder + path.sep + ".jsbeautifyrc")) {
