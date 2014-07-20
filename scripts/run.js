@@ -7,9 +7,9 @@
 var path = require("path");
 var fs = require("fs");
 var minify = require("jsonminify");
-var html_beautify = require(path.join(__dirname, "beautify-html.js")).html_beautify;
-var js_beautify = require(path.join(__dirname, "beautify.js")).js_beautify;
-var css_beautify = require(path.join(__dirname, "beautify-css.js")).css_beautify;
+var js_beautify = require("js-beautify").js_beautify;
+var css_beautify = require("js-beautify").css;
+var html_beautify = require("js-beautify").html;
 
 // Older versions of node have `existsSync` in the `path` module, not `fs`. Meh.
 fs.existsSync = fs.existsSync || path.existsSync;
