@@ -6,16 +6,14 @@
 // Require path and file system utilities to load the jshint.js file.
 var path = require("path");
 var fs = require("fs");
+var html_beautify = require(path.join(__dirname, "beautify-html.js")).html_beautify;
+var js_beautify = require(path.join(__dirname, "beautify.js")).js_beautify;
+var css_beautify = require(path.join(__dirname, "beautify-css.js")).css_beautify;
 
 // The source file to be prettified, original source's path and some options.
 var tempPath = process.argv[2] || "";
 var filePath = process.argv[3] || "";
 var options = { html: {}, css: {}, js: {} };
-
-// This stuff does all the magic.
-var html_beautify = require(path.join(__dirname, "beautify-html.js")).html_beautify;
-var js_beautify = require(path.join(__dirname, "beautify.js")).js_beautify;
-var css_beautify = require(path.join(__dirname, "beautify-css.js")).css_beautify;
 
 // Some handy utility functions.
 function isTrue(value) {
