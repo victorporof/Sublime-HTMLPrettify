@@ -3,7 +3,6 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 "use strict";
 
-// Require path and file system utilities to load the jshint.js file.
 var path = require("path");
 var fs = require("fs");
 var minify = require("jsonminify");
