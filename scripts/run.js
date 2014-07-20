@@ -115,13 +115,12 @@ function setOptions(file, optionsStore) {
 
 // Checks if a file type is allowed by regexing the file name and expecting a
 // certain extension loaded from the settings file.
-function isTypeAllowed(type, path, data) {
-  var DEFAULT_TYPES = {
+function isTypeAllowed(type, path) {
+  var allowedFileExtensions = options[type]["allowed_file_extensions"] || {
     "html": ["htm", "html", "xhtml", "shtml", "xml"],
     "css": ["css", "scss", "sass", "less"],
     "js": ["js", "json", "jshintrc", "jsbeautifyrc"]
-  };
-  var allowedFileExtensions = options[type]["allowed_file_extensions"] || DEFAULT_TYPES[type];
+  }[type];
   for (var i = 0, len = allowedFileExtensions.length; i < len; i++) {
     if (path.match(new RegExp("\\." + allowedFileExtensions[i] + "$"))) {
       return true;
@@ -130,21 +129,21 @@ function isTypeAllowed(type, path, data) {
   return false;
 }
 
-function isHTML(path, data) {
-  // If file unsaved, check if first non-whitespace character is &lt;
-  if (path == "?") {
-    return data.match(/^\s*</);
-  }
-  return isTypeAllowed("html", path, data);
-}
-
 function isCSS(path, data) {
   // If file unsaved, there's no good way to determine whether or not it's
   // CSS based on the file contents.
   if (path == "?") {
     return false;
   }
-  return isTypeAllowed("css", path, data);
+  return isTypeAllowed("css", path);
+}
+
+function isHTML(path, data) {
+  // If file unsaved, check if first non-whitespace character is &lt;
+  if (path == "?") {
+    return data.match(/^\s*</);
+  }
+  return isTypeAllowed("html", path);
 }
 
 function isJS(path, data) {
@@ -152,5 +151,5 @@ function isJS(path, data) {
   if (path == "?") {
     return !data.match(/^\s*</);
   }
-  return isTypeAllowed("js", path, data);
+  return isTypeAllowed("js", path);
 }
