@@ -39,7 +39,8 @@ class HtmlprettifyCommand(sublime_plugin.TextCommand):
     os.remove(temp_file_path)
 
     # Dump any diagnostics and get the output after the identification marker.
-    print(self.get_output_diagnostics(output))
+    if PluginUtils.get_pref('print_diagnostics'):
+      print(self.get_output_diagnostics(output))
     output = self.get_output_data(output)
 
     # If the prettified text length is nil, the current syntax isn't supported.
@@ -205,4 +206,4 @@ class PluginUtils:
     else:
       # Handle all OS in Python 3.
       run = '"' + '" "'.join(cmd) + '"'
-      return subprocess.check_output(run, stderr=subprocess.STDOUT, shell=True)
+      return subprocess.check_output(run, stderr=subprocess.STDOUT, shell=True, env=os.environ)
