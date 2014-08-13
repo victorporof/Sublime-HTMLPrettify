@@ -39,7 +39,7 @@ class HtmlprettifyCommand(sublime_plugin.TextCommand):
     os.remove(temp_file_path)
 
     # Dump any diagnostics and get the output after the identification marker.
-    if PluginUtils.get_pref('print_diagnostics'):
+    if PluginUtils.get_pref("print_diagnostics"):
       print(self.get_output_diagnostics(output))
     output = self.get_output_data(output)
 
