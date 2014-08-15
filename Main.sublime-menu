@@ -1,47 +1,91 @@
 [{
-  "id": "tools",
-  "children": [{
-    "id": "htmlprettify_tools",
-    "caption": "HTML/CSS/JS Prettify",
+    "id": "tools",
     "children": [{
-      "caption": "Prettify Code",
-      "command": "htmlprettify"
-    }, {
-      "caption": "Set Prettify Preferences",
-      "command": "htmlprettify_set_prettify_prefs"
-    }, {
-      "caption": "Set Plugin Options",
-      "command": "htmlprettify_set_plugin_options"
-    }, {
-      "caption": "Set Keyboard Shortcuts",
-      "command": "htmlprettify_set_keyboard_shortcuts"
-    }, {
-      "caption": "Set `node` Path",
-      "command": "htmlprettify_set_node_path"
+        "id": "htmlprettify_tools",
+        "caption": "HTML/CSS/JS Prettify",
+        "children": [{
+            "caption": "Prettify Code",
+            "command": "htmlprettify"
+        }]
     }]
-  }]
 }, {
-  "id": "preferences",
-  "children": [{
-    "id": "package-settings",
+    "id": "preferences",
     "children": [{
-      "caption": "HTML/CSS/JS Prettify",
-      "children": [{
-        "caption": "Prettify Code",
-        "command": "htmlprettify"
-      }, {
-        "caption": "Set Prettify Preferences",
-        "command": "htmlprettify_set_prettify_prefs"
-      }, {
-        "caption": "Set Plugin Options",
-        "command": "htmlprettify_set_plugin_options"
-      }, {
-        "caption": "Set Keyboard Shortcuts",
-        "command": "htmlprettify_set_keyboard_shortcuts"
-      }, {
-        "caption": "Set `node` Path",
-        "command": "htmlprettify_set_node_path"
-      }]
+        "id": "package-settings",
+        "children": [{
+            "caption": "HTML/CSS/JS Prettify",
+            "children": [{
+                    "command": "open_file",
+                    "args": {
+                        "file": "${packages}/HTML-CSS-JS Prettify/HTMLPrettify.sublime-settings"
+                    },
+                    "caption": "Plugin Preferences – Default"
+                }, {
+                    "command": "open_file",
+                    "args": {
+                        "file": "${packages}/User/HTMLPrettify.sublime-settings"
+                    },
+                    "caption": "Plugin Preferences – User"
+                }, {
+                    "caption": "-"
+                }, {
+                    "command": "open_file",
+                    "args": {
+                        "file": "${packages}/HTML-CSS-JS Prettify/.jsbeautifyrc"
+                    },
+                    "caption": "Prettify Preferences – Default"
+                }, {
+                    "command": "open_file",
+                    "args": {
+                        "file": "${packages}/User/.jsbeautifyrc"
+                    },
+                    "caption": "Prettify Preferences – User"
+                }, {
+                    "caption": "-"
+                }, {
+                    "command": "open_file",
+                    "args": {
+                        "file": "${packages}/HTML-CSS-JS Prettify/Default (OSX).sublime-keymap",
+                        "platform": "OSX"
+                    },
+                    "caption": "Key Bindings – Default"
+                }, {
+                    "command": "open_file",
+                    "args": {
+                        "file": "${packages}/HTML-CSS-JS Prettify/Default (Linux).sublime-keymap",
+                        "platform": "Linux"
+                    },
+                    "caption": "Key Bindings – Default"
+                }, {
+                    "command": "open_file",
+                    "args": {
+                        "file": "${packages}/HTML-CSS-JS Prettify/Default (Windows).sublime-keymap",
+                        "platform": "Windows"
+                    },
+                    "caption": "Key Bindings – Default"
+                }, {
+                    "command": "open_file",
+                    "args": {
+                        "file": "${packages}/User/Default (OSX).sublime-keymap",
+                        "platform": "OSX"
+                    },
+                    "caption": "Key Bindings – User"
+                }, {
+                    "command": "open_file",
+                    "args": {
+                        "file": "${packages}/User/Default (Linux).sublime-keymap",
+                        "platform": "Linux"
+                    },
+                    "caption": "Key Bindings – User"
+                }, {
+                    "command": "open_file",
+                    "args": {
+                        "file": "${packages}/User/Default (Windows).sublime-keymap",
+                        "platform": "Windows"
+                    },
+                    "caption": "Key Bindings – User"
+                }
+            ]
+        }]
     }]
-  }]
 }]
