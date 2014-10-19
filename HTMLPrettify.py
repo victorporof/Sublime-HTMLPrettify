@@ -178,15 +178,15 @@ class PluginUtils:
   @staticmethod
   def get_node_path():
     # Simply using `node` without specifying a path sometimes doesn't work :(
-    if PluginUtils.exists_in_path("nodejs"):
-      return "nodejs"
-    elif PluginUtils.exists_in_path("node"):
-      return "node"
-    else:
-      platform = sublime.platform()
-      node = PluginUtils.get_pref("node_path").get(platform)
-      print("Using node.js path on '" + platform + "': " + node)
-      return node
+    #if PluginUtils.exists_in_path("nodejs"):
+      #return "nodejs"
+    #elif PluginUtils.exists_in_path("node"):
+      #return "node"
+    #else:
+    platform = sublime.platform()
+    node = PluginUtils.get_pref("node_path").get(platform)
+    print("Using node.js path on '" + platform + "': " + node)
+    return node
 
   @staticmethod
   def get_output(cmd):
