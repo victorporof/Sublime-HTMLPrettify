@@ -101,7 +101,8 @@ These are the default options used by this plugin:
     "indent_char": " ",
     "indent_size": 4,
     "selector_separator": " ",
-    "selector_separator_newline": false
+    "selector_separator_newline": false,
+    "newline_between_rules": true
   },
   "js": {
     "allowed_file_extensions": ["js", "json", "jshintrc", "jsbeautifyrc"],
