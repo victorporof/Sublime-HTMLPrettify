@@ -84,7 +84,8 @@ These are the default options used by this plugin:
   // Documentation: https://github.com/einars/js-beautify/
   "html": {
     "allowed_file_extensions": ["htm", "html", "xhtml", "shtml", "xml", "svg"],
-    "brace_style": "collapse", // "expand", "end-expand", "expand-strict"
+    "brace_style": "collapse", // "expand", "end-expand", "none"
+    "end_with_newline": false,
     "indent_char": " ",
     "indent_handlebars": false, // e.g. {{#foo}}, {{/foo}}
     "indent_inner_html": false,
@@ -92,7 +93,7 @@ These are the default options used by this plugin:
     "indent_size": 4,
     "max_preserve_newlines": 10,
     "preserve_newlines": true,
-    "unformatted": ["a", "sub", "sup", "b", "i", "u", "pre"],
+    "unformatted": ["a", "span", "img", "code", "pre", "sub", "sup", "em", "strong", "b", "i", "u", "strike", "big","small", "pre", "h1", "h2", "h3", "h4", "h5", "h6"],
     "wrap_line_length": 0
   },
   "css": {
@@ -105,9 +106,10 @@ These are the default options used by this plugin:
   },
   "js": {
     "allowed_file_extensions": ["js", "json", "jshintrc", "jsbeautifyrc"],
-    "brace_style": "collapse", // "expand", "end-expand", "expand-strict"
+    "brace_style": "collapse", // "expand", "end-expand", "none"
     "break_chained_methods": false,
     "e4x": false,
+    "end_with_newline": false,
     "eval_code": false,
     "indent_char": " ",
     "indent_level": 0,
@@ -118,7 +120,9 @@ These are the default options used by this plugin:
     "keep_function_indentation": false,
     "max_preserve_newlines": 10,
     "preserve_newlines": true,
+    "space_after_anon_function": false,
     "space_before_conditional": true,
+    "space_in_empty_paren": false,
     "space_in_paren": false,
     "unescape_strings": false,
     "wrap_line_length": 0
