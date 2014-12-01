@@ -77,6 +77,7 @@ class HtmlprettifyCommand(sublime_plugin.TextCommand):
         self.view.sel().add(region)
 
   def refold_folded_regions(self, folded_regions_content, entire_file_contents):
+    self.view.unfold(sublime.Region(0, len(entire_file_contents)))
     region_end = 0
     for content in folded_regions_content:
       region_start = entire_file_contents.index(content, region_end)
