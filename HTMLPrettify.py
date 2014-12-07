@@ -22,6 +22,11 @@ class HtmlprettifyCommand(sublime_plugin.TextCommand):
     previous_selection = list(self.view.sel()) # Copy.
     previous_position = self.view.viewport_position()
 
+    # Save the already folded code to refold it after formatting.
+    # Backup of folded code is taken instead of regions because the start and end pos
+    # of folded regions will change once formatted.
+    folded_regions_content = [self.view.substr(r) for r in self.view.folded_regions()]
+
     # Get the current text in the buffer and save it in a temporary file.
     # This allows for scratch buffers and dirty files to be linted as well.
     entire_buffer_region = sublime.Region(0, self.view.size())
@@ -54,6 +59,7 @@ class HtmlprettifyCommand(sublime_plugin.TextCommand):
       else:
         self.view.replace(edit, entire_buffer_region, output)
 
+    self.refold_folded_regions(folded_regions_content, output)
     self.view.set_viewport_position((0, 0), False)
     self.view.set_viewport_position(previous_position, False)
     self.view.sel().clear()
@@ -107,6 +113,16 @@ class HtmlprettifyCommand(sublime_plugin.TextCommand):
   def get_output_data(self, output):
     index = output.find(OUTPUT_VALID)
     return output[index + len(OUTPUT_VALID) + 1:].decode("utf-8")
+
+  def refold_folded_regions(self, folded_regions_content, entire_file_contents):
+    self.view.unfold(sublime.Region(0, len(entire_file_contents)))
+    region_end = 0
+
+    for content in folded_regions_content:
+      region_start = entire_file_contents.index(content, region_end)
+      if region_start > -1:
+        region_end = region_start + len(content)
+        self.view.fold(sublime.Region(region_start, region_end))
 
 class HtmlprettifyEventListeners(sublime_plugin.EventListener):
   @staticmethod
