@@ -90,12 +90,8 @@ class HtmlprettifyCommand(sublime_plugin.TextCommand):
       script_path = PLUGIN_FOLDER + "/scripts/run.js"
       file_path = self.view.file_name() or "?"
       if int(sublime.version()) < 3000 and sublime.platform() == "windows":
-        node_path = convert_to_local_encoding(node_path)
-        script_path = convert_to_local_encoding(script_path)
-        temp_file_path = convert_to_local_encoding(temp_file_path)
-        file_path = convert_to_local_encoding(file_path)
         os.environ['HTMLPrettify_run'] = '"{0}" "{1}" "{2}" "{3}"'.format(node_path, script_path, temp_file_path, file_path)
-        cmd = ["cmd.exe", "/c", '%HTMLPrettify_run%']
+        cmd = ["cmd.exe", "/c", convert_to_local_encoding('%HTMLPrettify_run%')]
       else:
         cmd = [node_path, script_path, temp_file_path, file_path]
 
