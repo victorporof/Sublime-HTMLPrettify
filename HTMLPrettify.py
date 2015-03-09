@@ -90,8 +90,9 @@ class HtmlprettifyCommand(sublime_plugin.TextCommand):
       script_path = PLUGIN_FOLDER + "/scripts/run.js"
       file_path = self.view.file_name() or "?"
       if int(sublime.version()) < 3000 and sublime.platform() == "windows":
-        os.environ['HTMLPrettify_run'] = '"{0}" "{1}" "{2}" "{3}"'.format(node_path, script_path, temp_file_path, file_path)
-        cmd = ["cmd.exe", "/c", convert_to_local_encoding('%HTMLPrettify_run%')]
+        HTMLPrettify_run = u'"{0}" "{1}" "{2}" "{3}"'.format(node_path, script_path, temp_file_path, file_path)
+        os.environ['HTMLPrettify_run'] = convert_to_local_encoding(HTMLPrettify_run)
+        cmd = ["cmd.exe", "/c", '%HTMLPrettify_run%']
       else:
         cmd = [node_path, script_path, temp_file_path, file_path]
 
@@ -101,7 +102,6 @@ class HtmlprettifyCommand(sublime_plugin.TextCommand):
         return output
 
       msg = "Command " + '" "'.join(cmd) + " created invalid output."
-      print(output)
       raise Exception(msg)
 
     except:
