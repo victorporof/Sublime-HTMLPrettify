@@ -102,6 +102,7 @@ class HtmlprettifyCommand(sublime_plugin.TextCommand):
         return output
 
       msg = "Command " + '" "'.join(cmd) + " created invalid output."
+      print(output)
       raise Exception(msg)
 
     except:
