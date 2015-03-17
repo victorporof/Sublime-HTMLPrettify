@@ -37,7 +37,7 @@
     "eval_code": false,
     "indent_char": " ", // Indentation character
     "indent_level": 0, // Initial indentation level
-    "indent_size": 4, // Indentation size
+    "indent_size": 2, // Indentation size
     "indent_with_tabs": false, // Indent with tabs, overrides `indent_size` and `indent_char`
     "jslint_happy": false, // Enable jslint-stricter mode
     "keep_array_indentation": false, // Preserve array indentation
