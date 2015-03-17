@@ -27,7 +27,7 @@
     "indent_size": 4, // Indentation size
     "newline_between_rules": true, // Add a new line after every css rule
     "selector_separator": " ",
-    "selector_separator_newline": false // Add a newline between multiple selectors
+    "selector_separator_newline": true // Add a newline between multiple selectors
   },
   "js": {
     "allowed_file_extensions": ["js", "json", "jshintrc", "jsbeautifyrc"],
