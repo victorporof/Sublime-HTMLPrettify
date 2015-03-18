@@ -111,7 +111,6 @@ These are the default options used by this plugin:
     "break_chained_methods": false, // Break chained method calls across subsequent lines
     "e4x": false, // Pass E4X xml literals through untouched
     "end_with_newline": false, // End output with newline
-    "eval_code": false,
     "indent_char": " ", // Indentation character
     "indent_level": 0, // Initial indentation level
     "indent_size": 4, // Indentation size
