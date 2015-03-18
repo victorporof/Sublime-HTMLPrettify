@@ -44,6 +44,7 @@
         selector_separator_newline (true) - separate selectors with newline or
                                             not (e.g. "a,\nbr" or "a, br")
         end_with_newline (false)          - end with a newline
+        newline_between_rules (true)      - add a new line after every css rule
 
     e.g
 
@@ -52,6 +53,7 @@
       'indent_char': '\t',
       'selector_separator': ' ',
       'end_with_newline': false,
+      'newline_between_rules': true
     });
 */
 
@@ -65,6 +67,7 @@
         var indentCharacter = options.indent_char || ' ';
         var selectorSeparatorNewline = (options.selector_separator_newline === undefined) ? true : options.selector_separator_newline;
         var end_with_newline = (options.end_with_newline === undefined) ? false : options.end_with_newline;
+        var newline_between_rules = (options.newline_between_rules === undefined) ? true : options.newline_between_rules;
 
         // compatibility
         if (typeof indentSize === "string") {
@@ -78,6 +81,7 @@
 
         var pos = -1,
             ch;
+        var parenLevel = 0;
 
         function next() {
             ch = source_text.charAt(++pos);
@@ -120,7 +124,7 @@
         function eatWhitespace() {
             var result = '';
             while (whiteRe.test(peek())) {
-                next()
+                next();
                 result += ch;
             }
             return result;
@@ -132,14 +136,14 @@
                 result = ch;
             }
             while (whiteRe.test(next())) {
-                result += ch
+                result += ch;
             }
             return result;
         }
 
         function eatComment(singleLine) {
             var start = pos;
-            var singleLine = peek() === "/";
+            singleLine = peek() === "/";
             next();
             while (next()) {
                 if (!singleLine && ch === "*" && peek() === "/") {
@@ -163,9 +167,9 @@
         // and the next special character found opens
         // a new block
         function foundNestedPseudoClass() {
-            for (var i = pos + 1; i < source_text.length; i++){
+            for (var i = pos + 1; i < source_text.length; i++) {
                 var ch = source_text.charAt(i);
-                if (ch === "{"){
+                if (ch === "{") {
                     return true;
                 } else if (ch === ";" || ch === "}" || ch === ")") {
                     return false;
@@ -230,7 +234,7 @@
             }
         };
 
-        
+
         var output = [];
         if (basebaseIndentString) {
             output.push(basebaseIndentString);
@@ -246,8 +250,8 @@
             var whitespace = skipWhitespace();
             var isAfterSpace = whitespace !== '';
             var isAfterNewline = whitespace.indexOf('\n') !== -1;
-            var last_top_ch = top_ch;
-            var top_ch = ch;
+            last_top_ch = top_ch;
+            top_ch = ch;
 
             if (!ch) {
                 break;
@@ -282,7 +286,7 @@
                     if (variableOrRule in css_beautify.CONDITIONAL_GROUP_RULE) {
                         enteringConditionalGroup = true;
                     }
-                } else if (': '.indexOf(variableOrRule[variableOrRule.length -1]) >= 0) {
+                } else if (': '.indexOf(variableOrRule[variableOrRule.length - 1]) >= 0) {
                     //we have a variable, add it and insert one space before continuing
                     next();
                     variableOrRule = eatString(": ").replace(/\s$/, '');
@@ -295,6 +299,10 @@
                     next();
                     print.singleSpace();
                     output.push("{}");
+                    print.newLine();
+                    if (newline_between_rules && indentLevel === 0) {
+                        print.newLine(true);
+                    }
                 } else {
                     indent();
                     print["{"](ch);
@@ -314,10 +322,13 @@
                 if (nestedLevel) {
                     nestedLevel--;
                 }
+                if (newline_between_rules && indentLevel === 0) {
+                    print.newLine(true);
+                }
             } else if (ch === ":") {
                 eatWhitespace();
-                if ((insideRule || enteringConditionalGroup) && 
-                        !(lookBack("&") || foundNestedPseudoClass())) {
+                if ((insideRule || enteringConditionalGroup) &&
+                    !(lookBack("&") || foundNestedPseudoClass())) {
                     // 'property: value' delimiter
                     // which could be in a conditional group query
                     output.push(':');
@@ -354,6 +365,7 @@
                         }
                     }
                 } else {
+                    parenLevel++;
                     if (isAfterSpace) {
                         print.singleSpace();
                     }
@@ -362,10 +374,11 @@
                 }
             } else if (ch === ')') {
                 output.push(ch);
+                parenLevel--;
             } else if (ch === ',') {
                 output.push(ch);
                 eatWhitespace();
-                if (!insideRule && selectorSeparatorNewline) {
+                if (!insideRule && selectorSeparatorNewline && parenLevel < 1) {
                     print.newLine();
                 } else {
                     print.singleSpace();
@@ -378,7 +391,8 @@
                 }
                 output.push(ch);
             } else if (ch === '=') { // no whitespace before or after
-                eatWhitespace();
+                eatWhitespace()
+                ch = '=';
                 output.push(ch);
             } else {
                 if (isAfterSpace) {
