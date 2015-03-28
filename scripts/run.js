@@ -61,13 +61,13 @@ fs.readFile(tempPath, "utf8", function(err, data) {
   console.log("*** HTMLPrettify output ***");
 
   if (isCSS(filePath, data)) {
-    console.log(css_beautify(data, options["css"]));
+    console.log(css_beautify(data, options["css"]).replace(/%/g, '%%'));
   }
   else if (isHTML(filePath, data)) {
-    console.log(html_beautify(data, options["html"]));
+    console.log(html_beautify(data, options["html"]).replace(/%/g, '%%'));
   }
   else if (isJS(filePath, data)) {
-    console.log(js_beautify(data, options["js"]));
+    console.log(js_beautify(data, options["js"]).replace(/%/g, '%%'));
   }
 });
 
