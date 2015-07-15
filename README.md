@@ -60,7 +60,7 @@ Simply using `node` without specifying a path sometimes doesn't work :(
 
 For example, on Linux the path could be in `/home/<user>/.nvm/<node version>/bin/node`.
 
-On Windows, the absolute path to node.exe *must* use forward slashes.
+On Windows, the absolute path to node.exe *must* use forward slashes. Must include nodejs.exe, like so: `C:/Program Files (x86)/Nodejs/node.exe`
 
 ### Be very careful on Debian!
 Depending on your distribution and default package sources, `apt-get install node` (for example) *will not* install node.js, contrary to all human common sense and popular belief. You want `nodejs` instead. Best thing is to make it yourself from http://nodejs.org/#download.
