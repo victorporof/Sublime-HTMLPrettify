@@ -56,7 +56,7 @@ var fs = require('fs'),
         "jslint_happy": Boolean,
         "space_after_anon_function": Boolean,
         // TODO: expand-strict is obsolete, now identical to expand.  Remove in future version
-        "brace_style": ["collapse", "expand", "end-expand", "expand-strict", "none"],
+        "brace_style": ["collapse", "expand", "end-expand", "collapse-preserve-inline", "expand-strict", "none"],
         "break_chained_methods": Boolean,
         "keep_array_indentation": Boolean,
         "unescape_strings": Boolean,
@@ -155,7 +155,7 @@ function findRecursive(dir, fileName) {
 }
 
 function getUserHome() {
-    return process.env.HOME || process.env.USERPROFILE;
+    return process.env.USERPROFILE || process.env.HOME;
 }
 
 // var cli = require('js-beautify/cli'); cli.interpret();
@@ -170,14 +170,24 @@ var interpret = exports.interpret = function(argv, slice) {
         process.exit(0);
     }
 
-    var cfg = cc(
-        parsed,
-        cleanOptions(cc.env('jsbeautify_'), knownOpts),
-        parsed.config,
-        findRecursive(process.cwd(), '.jsbeautifyrc'),
-        verifyExists(path.join(getUserHome() || "", ".jsbeautifyrc")),
-        __dirname + '/../config/defaults.json'
-    ).snapshot;
+    var cfg;
+    try {
+        cfg = cc(
+            parsed,
+            cleanOptions(cc.env('jsbeautify_'), knownOpts),
+            parsed.config,
+            findRecursive(process.cwd(), '.jsbeautifyrc'),
+            verifyExists(path.join(getUserHome() || "", ".jsbeautifyrc")),
+            __dirname + '/../config/defaults.json'
+        ).snapshot;
+    } catch (ex) {
+        debug(cfg);
+        // usage(ex);
+        console.error(ex);
+        console.error('Error while loading beautifier configuration file.');
+        console.error('Run `' + getScriptName() + ' -h` for help.');
+        process.exit(1);
+    }
 
     try {
         // Verify arguments
@@ -222,7 +232,8 @@ function usage(err) {
         '  -s, --indent-size             Indentation size [4]',
         '  -c, --indent-char             Indentation character [" "]',
         '  -t, --indent-with-tabs        Indent with tabs, overrides -s and -c',
-        '  -e, --eol                     Character(s) to use as line terminators. (default newline - "\\n")',
+        '  -e, --eol                     Character(s) to use as line terminators.',
+        '                                [first newline in file, otherwise "\\n]',
         '  -n, --end-with-newline        End output with newline'
     ];
 
@@ -235,7 +246,7 @@ function usage(err) {
             msg.push('  -E, --space-in-empty-paren        Add a single space inside empty paren, ie. f( )');
             msg.push('  -j, --jslint-happy                Enable jslint-stricter mode');
             msg.push('  -a, --space-after-anon-function   Add a space before an anonymous function\'s parens, ie. function ()');
-            msg.push('  -b, --brace-style                 [collapse|expand|end-expand|none] ["collapse"]');
+            msg.push('  -b, --brace-style                 [collapse|expand|collapse-preserve-inline|end-expand|none] ["collapse"]');
             msg.push('  -B, --break-chained-methods       Break chained method calls across subsequent lines');
             msg.push('  -k, --keep-array-indentation      Preserve array indentation');
             msg.push('  -x, --unescape-strings            Decode printable characters encoded in xNN notation');
@@ -286,6 +297,7 @@ function processInputSync(filepath) {
     if (filepath === '-') {
         input = process.stdin;
         input.resume();
+
         input.setEncoding('utf8');
 
         input.on('data', function(chunk) {
@@ -413,6 +425,13 @@ function checkType(parsed) {
 
 function checkFiles(parsed) {
     var argv = parsed.argv;
+    var isTTY = true;
+
+    try {
+        isTTY = process.stdin.isTTY;
+    } catch (ex) {
+        debug("error querying for isTTY:", ex);
+    }
 
     if (!parsed.files) {
         parsed.files = [];
@@ -426,7 +445,9 @@ function checkFiles(parsed) {
     if (argv.remain.length) {
         // assume any remaining args are files
         argv.remain.forEach(function(f) {
-            parsed.files.push(path.resolve(f));
+            if (f !== '-') {
+                parsed.files.push(path.resolve(f));
+            }
         });
     }
 
@@ -437,15 +458,15 @@ function checkFiles(parsed) {
         parsed.replace = true;
     }
 
-    if (argv.original.indexOf('-') > -1) {
-        // ensure '-' without '-f' still consumes stdin
+    if (!parsed.files.length) {
+        // read stdin by default
         parsed.files.push('-');
     }
-
-    if (!parsed.files.length) {
-        throw 'Must define at least one file.';
-    }
     debug('files.length ' + parsed.files.length);
+
+    if (parsed.files.indexOf('-') > -1 && isTTY) {
+        throw 'Must pipe input or define at least one file.';
+    }
 
     parsed.files.forEach(testFilePath);
 
