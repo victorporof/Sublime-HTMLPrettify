@@ -112,7 +112,7 @@ class HtmlprettifyCommand(sublime_plugin.TextCommand):
 
   def get_output_data(self, output):
     index = output.find(OUTPUT_VALID)
-    return output[index + len(OUTPUT_VALID) + 1:-1].decode("utf-8")
+    return output[index + len(OUTPUT_VALID) + 1:].decode("utf-8")
 
   def refold_folded_regions(self, folded_regions_content, entire_file_contents):
     self.view.unfold(sublime.Region(0, len(entire_file_contents)))
