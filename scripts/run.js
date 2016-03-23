@@ -121,7 +121,7 @@ function isTypeAllowed(type, path) {
     "js": ["js", "json", "jshintrc", "jsbeautifyrc"]
   }[type];
   for (var i = 0, len = allowedFileExtensions.length; i < len; i++) {
-    if (path.match(new RegExp("\\." + allowedFileExtensions[i] + "$"))) {
+    if (path.match(new RegExp("\\." + allowedFileExtensions[i] + "$", "i"))) {
       return true;
     }
   }
