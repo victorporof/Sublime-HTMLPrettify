@@ -98,7 +98,14 @@ var a = 1;
 ```
 
 ## Using your own .jsbeautifyrc options
-The plugin looks for a `.jsbeautifyrc` file in the same directory as the source file you're prettifying (or any directory above if it doesn't exist, or in your home folder if everything else fails) and uses those options along the default ones. [Here](https://github.com/einars/js-beautify/blob/master/js/config/defaults.json)'s an example of how it can look like.
+The plugin looks for a `.jsbeautifyrc` file in the following directories:
+
+1. The same directory as the source file you're prettifying.
+2. The source file's parent directories.
+3. Your home folder.
+4. Your personal Sublime settings folder.
+
+When one is found, it stops searching, and it uses those options along with the default ones. [Here](https://github.com/einars/js-beautify/blob/master/js/config/defaults.json)'s an example of how it can look like.
 
 These are the default options used by this plugin:
 ```javascript
