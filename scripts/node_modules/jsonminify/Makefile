@@ -1,4 +1,4 @@
-__jsdoc=node_modules/jsdoc/jsdoc
+__jsdoc=node_modules/.bin/jsdoc
 __plato=node_modules/plato/bin/plato
 __mocha=node_modules/.bin/mocha
 __jshint=node_modules/jshint/bin/jshint

@@ -4,13 +4,14 @@
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <title>Test JSON.minify()</title>
 
-<script type="text/javascript" src="json2.js"></script>
 <script type="text/javascript" src="minify.json.js"></script>
 
 </head>
 
-<body>
+<body onload="check()">
 <h1>Test JSON.minify()</h1>
+
+<pre>console.log views.</pre>
 
 <p>test #1</p>
 <textarea id="orig_json1" cols="50" rows="12">
@@ -74,15 +75,35 @@ something else */"blah"
 <textarea id="new_json4" cols="50" rows="12"></textarea>
 
 
+<p>test #5</p>
+<textarea id="orig_json5" cols="50" rows="12">
+/** a */[{"foo": "ba\"r//", "bar\\": "b\\\"a/*z",
+	"baz\\\\": /* yay */ "fo\\\\\"*/o",
+	"spa\\\\m": /* aja*/ [ { "a": [1,2,3,4]}, {"b": 2}]
+} /** aa */] //aaaa\n//aaaa
+</textarea>
+<p>result #5</p>
+<textarea id="new_json5" cols="50" rows="12"></textarea>
+
+
+<button	name="check" onclick="check()">check!!</button>
 
 <script type="text/javascript">
 
-var old;
-for (var i=1; i<=4; i++) {
-	old = document.getElementById("orig_json"+i).value;
-	document.getElementById("new_json"+i).value = JSON.minify(old);
-}
-
+	function check() {
+		var old;
+		for (var i = 1; i <= 5; i++) {
+			old = document.getElementById("orig_json" + i).value;
+			var minify = JSON.minify(old);
+			try {
+				console.log("index:", i);
+				console.log(JSON.parse(minify));
+			} catch(e) {
+				console.error(e);
+			}
+			document.getElementById("new_json" + i).value = minify;
+		}
+	}
 </script>
 
 </body>

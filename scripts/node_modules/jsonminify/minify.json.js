@@ -31,7 +31,7 @@
      */
     var minify = function (json) {
 
-        var tokenizer = /"|(\/\*)|(\*\/)|(\/\/)|\n|\r/g,
+        var tokenizer = /"|(\/\*)|(\*\/)|(\/\/)|\n|\r|\[|]/g,
             in_string = false,
             in_multiline_comment = false,
             in_singleline_comment = false,
