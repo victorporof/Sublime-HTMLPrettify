@@ -3,7 +3,7 @@
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 import sublime, sublime_plugin
-import os, sys, subprocess, codecs, webbrowser
+import os, sys, locale, subprocess, codecs, webbrowser
 
 try:
   import commands
@@ -79,13 +79,24 @@ class HtmlprettifyCommand(sublime_plugin.TextCommand):
     return temp_file_path, buffer_text
 
   def run_script_on_file(self, temp_file_path):
+    def convert_to_local_encoding(s):
+      if s:
+        if type(s) == str:
+          s = unicode(s,"utf-8")
+        return s.encode(locale.getpreferredencoding())
+      return s
     try:
       node_path = PluginUtils.get_node_path()
       script_path = PLUGIN_FOLDER + "/scripts/run.js"
-      file_path = self.view.file_name()
-      cmd = [node_path, script_path, temp_file_path, file_path or "?"]
-      output = PluginUtils.get_output(cmd)
+      file_path = self.view.file_name() or "?"
+      if int(sublime.version()) < 3000 and sublime.platform() == "windows":
+        HTMLPrettify_cmd = u'"{0}" "{1}" "{2}" "{3}"'.format(node_path, script_path, temp_file_path, file_path)
+        os.environ['HTMLPrettify_cmd'] = convert_to_local_encoding(HTMLPrettify_cmd)
+        cmd = ["cmd.exe", "/c", '%HTMLPrettify_cmd%']
+      else:
+        cmd = [node_path, script_path, temp_file_path, file_path]
 
+      output = PluginUtils.get_output(cmd)
       # Make sure the correct/expected output is retrieved.
       if output.find(OUTPUT_VALID) != -1:
         return output
