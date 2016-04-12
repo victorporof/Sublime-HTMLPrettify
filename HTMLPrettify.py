@@ -80,10 +80,10 @@ class HtmlprettifyCommand(sublime_plugin.TextCommand):
 
   def run_script_on_file(self, temp_file_path):
     try:
-      node_path = PluginUtils.get_node_path()
+      node_or_path = PluginUtils.get_node_or_node_path()
       script_path = PLUGIN_FOLDER + "/scripts/run.js"
       file_path = self.view.file_name()
-      cmd = [node_path, script_path, temp_file_path, file_path or "?"]
+      cmd = [node_or_path, script_path, temp_file_path, file_path or "?"]
       output = PluginUtils.get_output(cmd)
 
       # Make sure the correct/expected output is retrieved.
@@ -94,17 +94,20 @@ class HtmlprettifyCommand(sublime_plugin.TextCommand):
       print(output)
       raise Exception(msg)
 
-    except:
+    except (subprocess.CalledProcessError, IOError) as e:
       # Something bad happened.
       print("Unexpected error({0}): {1}".format(sys.exc_info()[0], sys.exc_info()[1]))
 
       # Usually, it's just node.js not being found. Try to alleviate the issue.
-      msg = "Node.js was not found in the default path. Please specify the location."
-      if not sublime.ok_cancel_dialog(msg):
-        msg = "You won't be able to use this plugin without specifying the path to node.js."
-        sublime.error_message(msg)
+      if not node_or_path:
+        PluginUtils.ask_to_set_node_path()
+      elif os.path.dirname(node_or_path) and not os.path.exists(node_path):
+        PluginUtils.ask_to_set_node_path()
+      elif not os.path.dirname(node_or_path) and not PluginUtils.exists_in_path(node_or_path):
+        PluginUtils.ask_to_set_node_path()
       else:
-        PluginUtils.open_sublime_settings(self.view.window())
+        raise e
+
 
   def get_output_diagnostics(self, output):
     index = output.find(OUTPUT_VALID)
@@ -185,11 +188,32 @@ class PluginUtils:
     return False
 
   @staticmethod
+  def ask_to_set_node_path():
+    # Usually, it's just node.js not being found. Try to alleviate the issue.
+    msg = "Node.js was not found in the default path. Please specify the location."
+    if not sublime.ok_cancel_dialog(msg):
+      msg = "You won't be able to use this plugin without specifying the path to node.js."
+      sublime.error_message(msg)
+    else:
+      PluginUtils.open_sublime_settings(self.view.window())
+
+  @staticmethod
   def get_node_path():
     platform = sublime.platform()
     node = PluginUtils.get_pref("node_path").get(platform)
+    if not os.path.exists(node):
+      return False
+      raise IOError
     print("Using node.js path on '" + platform + "': " + node)
     return node
+
+  @staticmethod
+  def get_node_or_node_path():
+    if PluginUtils.exists_in_path("node"):
+      print("Using node.js in path")
+      return "node"
+    else:
+      return PluginUtils.get_node_path()
 
   @staticmethod
   def get_output(cmd):
