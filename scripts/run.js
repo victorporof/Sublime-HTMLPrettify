@@ -17,6 +17,7 @@ path.sep = path.sep || "/";
 // The source file to be prettified, original source's path and some options.
 var tempPath = process.argv[2] || "";
 var filePath = process.argv[3] || "";
+var userFolder = process.argv[4] || "";
 var pluginFolder = path.dirname(__dirname);
 var sourceFolder = path.dirname(filePath);
 var options = { html: {}, css: {}, js: {} };
@@ -37,11 +38,13 @@ var pathsToLook = sourceFolderParts.map(function(value, key) {
   return sourceFolderParts.slice(0, key + 1).join(path.sep);
 });
 
-// Start with the current directory first, end with the user's home folder.
+// Start with the current directory first, then with the user's home folder, and
+// end with the user's personal sublime settings folder.
 pathsToLook.reverse();
 pathsToLook.push(getUserHome());
+pathsToLook.push(userFolder);
 
-pathsToLook.some(function(pathToLook) {
+pathsToLook.filter(Boolean).some(function(pathToLook) {
   if (fs.existsSync(jsbeautifyrcPath = path.join(pathToLook, ".jsbeautifyrc"))) {
     setOptions(jsbeautifyrcPath, options);
     return true;

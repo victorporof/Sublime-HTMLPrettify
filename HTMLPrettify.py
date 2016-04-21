@@ -11,6 +11,7 @@ except ImportError:
   pass
 
 PLUGIN_FOLDER = os.path.dirname(os.path.realpath(__file__))
+USER_FOLDER = os.path.join(sublime.packages_path(), 'User')
 RC_FILE = ".jsbeautifyrc"
 SETTINGS_FILE = "HTMLPrettify.sublime-settings"
 KEYMAP_FILE = "Default ($PLATFORM).sublime-keymap"
@@ -83,7 +84,7 @@ class HtmlprettifyCommand(sublime_plugin.TextCommand):
       node_path = PluginUtils.get_node_path()
       script_path = PLUGIN_FOLDER + "/scripts/run.js"
       file_path = self.view.file_name()
-      cmd = [node_path, script_path, temp_file_path, file_path or "?"]
+      cmd = [node_path, script_path, temp_file_path, file_path or "?", USER_FOLDER]
       output = PluginUtils.get_output(cmd)
 
       # Make sure the correct/expected output is retrieved.
