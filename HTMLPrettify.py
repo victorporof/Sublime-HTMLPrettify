@@ -190,7 +190,10 @@ class PluginUtils:
     platform = sublime.platform()
     node = PluginUtils.get_pref("node_path").get(platform)
     print("Using node.js path on '" + platform + "': " + node)
-    return node
+    if os.path.exists(node):
+      return node
+    else:
+      return os.path.abspath(os.curdir)+"/"+node
 
   @staticmethod
   def get_output(cmd):
