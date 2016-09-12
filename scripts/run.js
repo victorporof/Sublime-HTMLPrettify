@@ -117,20 +117,40 @@ function setOptions(file, optionsStore) {
   }
 }
 
-// Checks if a file type is allowed by regexing the file name and expecting a
-// certain extension loaded from the settings file.
-function isTypeAllowed(type, path) {
+// Checks if a file is allowed by regexing the file name and expecting a
+// certain extension and no disallowed regexp match, loaded from the settings file.
+function isFileAllowed(type, path) {
   var allowedFileExtensions = options[type]["allowed_file_extensions"] || {
     "html": ["htm", "html", "xhtml", "shtml", "xml", "svg"],
     "css": ["css", "scss", "sass", "less"],
     "js": ["js", "json", "jshintrc", "jsbeautifyrc"]
   }[type];
-  for (var i = 0, len = allowedFileExtensions.length; i < len; i++) {
-    if (path.match(new RegExp("\\." + allowedFileExtensions[i] + "$", "i"))) {
-      return true;
+
+  var disallowedFilePatterns = options[type]["disallowed_file_patterns"] || {
+    "html": [],
+    "css": [],
+    "js": []
+  }[type];
+
+  function matchingExtension() {
+    for (var i = 0, len = allowedFileExtensions.length; i < len; i++) {
+      if (path.match(new RegExp("\\." + allowedFileExtensions[i] + "$", "i"))) {
+        return true;
+      }
     }
+    return false;
   }
-  return false;
+
+  function matchingDisallowedFilePatterns() {
+    for (var i = 0, len = disallowedFilePatterns.length; i < len; i++) {
+      if (path.match(new RegExp(disallowedFilePatterns[i], "i"))) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  return matchingExtension() && !matchingDisallowedFilePatterns();
 }
 
 function isCSS(path, data) {
@@ -139,7 +159,7 @@ function isCSS(path, data) {
   if (path == "?") {
     return false;
   }
-  return isTypeAllowed("css", path);
+  return isFileAllowed("css", path);
 }
 
 function isHTML(path, data) {
@@ -147,7 +167,7 @@ function isHTML(path, data) {
   if (path == "?") {
     return data.match(/^\s*</);
   }
-  return isTypeAllowed("html", path);
+  return isFileAllowed("html", path);
 }
 
 function isJS(path, data) {
@@ -155,5 +175,5 @@ function isJS(path, data) {
   if (path == "?") {
     return !data.match(/^\s*</);
   }
-  return isTypeAllowed("js", path);
+  return isFileAllowed("js", path);
 }

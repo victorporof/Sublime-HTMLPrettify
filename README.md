@@ -114,6 +114,7 @@ These are the default options used by this plugin:
   // Documentation: https://github.com/einars/js-beautify/
   "html": {
     "allowed_file_extensions": ["htm", "html", "xhtml", "shtml", "xml", "svg"],
+    "disallowed_file_patterns": [], // List of regexp strings to test the file path against. If it matches any of them, then the file will be ignored. e.g. ["myFileToSkip\\.html", "myFolderToSkip"]
     "brace_style": "collapse", // [collapse|expand|end-expand|none] Put braces on the same line as control statements (default), or put braces on own line (Allman / ANSI style), or just put end braces on own line, or attempt to keep them where they are
     "end_with_newline": false, // End output with newline
     "indent_char": " ", // Indentation character
@@ -128,6 +129,7 @@ These are the default options used by this plugin:
   },
   "css": {
     "allowed_file_extensions": ["css", "scss", "sass", "less"],
+    "disallowed_file_patterns": [], // List of regexp strings to test the file path against. If it matches any of them, then the file will be ignored. e.g. ["myFileToSkip\\.css", "myFolderToSkip"]
     "end_with_newline": false, // End output with newline
     "indent_char": " ", // Indentation character
     "indent_size": 4, // Indentation size
@@ -137,6 +139,7 @@ These are the default options used by this plugin:
   },
   "js": {
     "allowed_file_extensions": ["js", "json", "jshintrc", "jsbeautifyrc"],
+    "disallowed_file_patterns": [], // List of regexp strings to test the file path against. If it matches any of them, then the file will be ignored. e.g. ["myFileToSkip\\.js", "myFolderToSkip"]
     "brace_style": "collapse", // [collapse|expand|end-expand|none] Put braces on the same line as control statements (default), or put braces on own line (Allman / ANSI style), or just put end braces on own line, or attempt to keep them where they are
     "break_chained_methods": false, // Break chained method calls across subsequent lines
     "e4x": false, // Pass E4X xml literals through untouched
@@ -196,5 +199,22 @@ To add different file extensions use `allowed_file_extensions` in the `.jsbeauti
   }
 }
 ```
+
+## Ignoring files
+To add ignore rules use `disallowed_file_patterns` in the `.jsbeautifyrc` file. If the file (including path) matches any of the regexp patterns defined in `disallowed_file_patterns` it will not be beautified:
+```javascript
+{
+  "html": {
+    "disallowed_file_patterns": ["myFileToSkip\\.js", "myFolderToSkip"]
+  }
+  "css": {
+    "disallowed_file_patterns": ["myFileToSkip\\.css", "myFolderToSkip"]
+  }
+  "js": {
+    "disallowed_file_patterns": ["myFileToSkip\\.js", "myFolderToSkip"]
+  }
+}
+```
+
 
 Thank you!
