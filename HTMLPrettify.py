@@ -210,4 +210,8 @@ class PluginUtils:
     else:
       # Handle all OS in Python 3.
       run = '"' + '" "'.join(cmd) + '"'
-      return subprocess.check_output(run, stderr=subprocess.STDOUT, shell=True, env=os.environ)
+      res = subprocess.check_output(run, stderr=subprocess.STDOUT, shell=True, env=os.environ)
+      if len(res) > 0:
+        res = res[:len(res)-1]
+
+      return res
