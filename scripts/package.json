@@ -1,0 +1,14 @@
+{
+  "name": "sublime-htmlprettify-node-script",
+  "version": "0.0.0",
+  "description": "Node script for Sublime-HTMLPrettify",
+  "main": "run.js",
+  "dependencies": {
+    "jsonminify": "^0.4.1",
+    "js-beautify": "^1.6.4"
+  },
+  "scripts": {
+    "preinstall": "NODE_ENV=production"
+  },
+  "author": "Victor Porof <vporof@mozilla.com>"
+}
