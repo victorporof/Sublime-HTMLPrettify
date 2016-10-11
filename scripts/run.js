@@ -24,6 +24,13 @@ var options = { html: {}, css: {}, js: {} };
 
 var jsbeautifyrcPath;
 
+
+// Error handling
+process.on('uncaughtException', function(err) {
+  console.log("*** HTMLPrettify error ***");
+  console.log(err.message);
+});
+
 // Try and get some persistent options from the plugin folder.
 if (fs.existsSync(jsbeautifyrcPath = pluginFolder + path.sep + ".jsbeautifyrc")) {
   setOptions(jsbeautifyrcPath, options);
@@ -56,23 +63,26 @@ console.log("Using prettify options: " + JSON.stringify(options, null, 2));
 
 // Read the source file and, when complete, beautify the code.
 fs.readFile(tempPath, "utf8", function(err, data) {
-  if (err) {
-    return;
-  }
+  if (err) { throw err }
 
-  // Mark the output as being from this plugin.
-  console.log("*** HTMLPrettify output ***");
-
+  var result;
   if (isCSS(filePath, data)) {
-    console.log(css_beautify(data, options["css"]));
-  }
-  else if (isHTML(filePath, data)) {
+    result = tryBeautify(css_beautify, data, options["css"]);
+  } else if (isHTML(filePath, data)) {
     options["html"].js = options["js"];
     options["html"].css = options["css"];
-    console.log(html_beautify(data, options["html"]));
+    result = tryBeautify(html_beautify, data, options["html"]);
+  } else if (isJS(filePath, data)) {
+    result = tryBeautify(js_beautify, data, options["js"]);
+  } else {
+    throw new Error('Unknown filetype. Please add this filetype in your .jsbeautifyrc')
   }
-  else if (isJS(filePath, data)) {
-    console.log(js_beautify(data, options["js"]));
+
+  if (result) {
+    console.log("*** HTMLPrettify output ***");
+    console.log(result);
+  } else {
+    throw new Error('No output.');
   }
 });
 
@@ -156,4 +166,12 @@ function isJS(path, data) {
     return !data.match(/^\s*</);
   }
   return isTypeAllowed("js", path);
+}
+
+function tryBeautify(method, data, options) {
+  try {
+    return method(data, options)
+  } catch (err) {
+    throw new Error('JSBeautifier Error: ' + err.message)
+  }
 }

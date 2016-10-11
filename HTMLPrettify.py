@@ -16,6 +16,7 @@ RC_FILE = ".jsbeautifyrc"
 SETTINGS_FILE = "HTMLPrettify.sublime-settings"
 KEYMAP_FILE = "Default ($PLATFORM).sublime-keymap"
 OUTPUT_VALID = b"*** HTMLPrettify output ***"
+OUTPUT_INVALID = b"*** HTMLPrettify error ***"
 
 class HtmlprettifyCommand(sublime_plugin.TextCommand):
   def run(self, edit):
@@ -87,13 +88,14 @@ class HtmlprettifyCommand(sublime_plugin.TextCommand):
       cmd = [node_path, script_path, temp_file_path, file_path or "?", USER_FOLDER]
       output = PluginUtils.get_output(cmd)
 
-      # Make sure the correct/expected output is retrieved.
       if output.find(OUTPUT_VALID) != -1:
         return output
-
-      msg = "Command " + '" "'.join(cmd) + " created invalid output."
-      print(output)
-      raise Exception(msg)
+      elif output.find(OUTPUT_INVALID) != -1:
+        sublime.error_message('HTMLPrettify Error:\n' + self.get_output_data(output, OUTPUT_INVALID))
+      else:
+        msg = "Command " + '" "'.join(cmd) + " created invalid output."
+        print(output)
+        raise Exception(msg)
 
     except:
       # Something bad happened.
@@ -111,9 +113,9 @@ class HtmlprettifyCommand(sublime_plugin.TextCommand):
     index = output.find(OUTPUT_VALID)
     return output[:index].decode("utf-8")
 
-  def get_output_data(self, output):
-    index = output.find(OUTPUT_VALID)
-    return output[index + len(OUTPUT_VALID) + 1:].decode("utf-8")
+  def get_output_data(self, output, mark=OUTPUT_VALID):
+    index = output.find(mark)
+    return output[index + len(mark) + 1:].decode("utf-8")
 
   def refold_folded_regions(self, folded_regions_content, entire_file_contents):
     self.view.unfold(sublime.Region(0, len(entire_file_contents)))
