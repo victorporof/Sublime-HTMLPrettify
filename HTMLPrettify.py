@@ -5,6 +5,11 @@
 import sublime, sublime_plugin
 import os, sys, subprocess, codecs, webbrowser
 
+sys.path.append(os.path.join(os.path.dirname(__file__), 'packages'))
+
+import jsbeautifier
+
+
 try:
   import commands
 except ImportError:
@@ -45,9 +50,9 @@ class HtmlprettifyCommand(sublime_plugin.TextCommand):
     os.remove(temp_file_path)
 
     # Dump any diagnostics and get the output after the identification marker.
-    if PluginUtils.get_pref("print_diagnostics"):
-      print(self.get_output_diagnostics(output))
-    output = self.get_output_data(output)
+    # if PluginUtils.get_pref("print_diagnostics"):
+    #   print(self.get_output_diagnostics(output))
+    # output = self.get_output_data(output)
 
     # If the prettified text length is nil, the current syntax isn't supported.
     if len(output) < 1:
@@ -81,6 +86,8 @@ class HtmlprettifyCommand(sublime_plugin.TextCommand):
 
   def run_script_on_file(self, temp_file_path):
     try:
+      return jsbeautifier.beautify_file(self.view.file_name())
+      
       node_path = PluginUtils.get_node_path()
       script_path = PLUGIN_FOLDER + "/scripts/run.js"
       file_path = self.view.file_name()
