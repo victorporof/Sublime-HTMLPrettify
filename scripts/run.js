@@ -18,6 +18,7 @@ path.sep = path.sep || "/";
 var tempPath = process.argv[2] || "";
 var filePath = process.argv[3] || "";
 var userFolder = process.argv[4] || "";
+var syntax = process.argv[5] || "";
 var pluginFolder = path.dirname(__dirname);
 var sourceFolder = path.dirname(filePath);
 var options = { html: {}, css: {}, js: {} };
@@ -134,6 +135,7 @@ function isTypeAllowed(type, path) {
 }
 
 function isCSS(path, data) {
+  if (syntax) return syntax.toLowerCase().includes('css');
   // If file unsaved, there's no good way to determine whether or not it's
   // CSS based on the file contents.
   if (path == "?") {
@@ -143,6 +145,7 @@ function isCSS(path, data) {
 }
 
 function isHTML(path, data) {
+  if (syntax) return syntax.toLowerCase().includes('html');
   // If file unsaved, check if first non-whitespace character is &lt;
   if (path == "?") {
     return data.match(/^\s*</);
@@ -151,6 +154,7 @@ function isHTML(path, data) {
 }
 
 function isJS(path, data) {
+  if (syntax) return syntax.toLowerCase().includes('javascript');
   // If file unsaved, check if first non-whitespace character is NOT &lt;
   if (path == "?") {
     return !data.match(/^\s*</);
