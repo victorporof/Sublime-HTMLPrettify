@@ -15,5 +15,8 @@
   "format_selection_only": true,
 
   // Log the settings passed to the prettifier from `.jsbeautifyrc`.
-  "print_diagnostics": true
+  "print_diagnostics": true,
+
+  // Use selected file syntax to determine file type
+  "use_syntax_for_filetype": true
 }

@@ -84,7 +84,9 @@ class HtmlprettifyCommand(sublime_plugin.TextCommand):
       node_path = PluginUtils.get_node_path()
       script_path = PLUGIN_FOLDER + "/scripts/run.js"
       file_path = self.view.file_name()
-      cmd = [node_path, script_path, temp_file_path, file_path or "?", USER_FOLDER]
+      if PluginUtils.get_pref("use_syntax_for_filetype"):
+        syntax = self.view.settings().get("syntax")
+      cmd = [node_path, script_path, temp_file_path, file_path or "?", USER_FOLDER, syntax]
       output = PluginUtils.get_output(cmd)
 
       # Make sure the correct/expected output is retrieved.
@@ -211,3 +213,13 @@ class PluginUtils:
       # Handle all OS in Python 3.
       run = '"' + '" "'.join(cmd) + '"'
       return subprocess.check_output(run, stderr=subprocess.STDOUT, shell=True, env=os.environ)
+
+  @staticmethod
+  def tmp_file():
+      '''
+          Create a temp file and return the filepath to it.
+          Caller is responsible for clean up
+      '''
+      fd, filepath = tempfile.mkstemp(prefix='html_prettify_')
+      os.close(fd)
+      return filepath
