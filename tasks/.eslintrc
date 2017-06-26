@@ -1,0 +1,7 @@
+{
+  "rules": {
+    // Build scripts are allowed to import from `devDependencies`, don't
+    // force using the `dependencies` in this directory.
+    "import/no-extraneous-dependencies": ["off"]
+  }
+}
