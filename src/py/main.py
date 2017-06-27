@@ -6,7 +6,8 @@ from __future__ import print_function
 import os
 
 from .utils.window_utils import get_pref
-from .utils.editor_utils import get_syntax, get_editor_selections_copy, get_editor_folded_contents
+from .utils.editor_utils import get_syntax, get_indent_size, get_indent_with_tabs
+from .utils.editor_utils import get_editor_selections_copy, get_editor_folded_contents
 from .utils.editor_utils import get_entire_buffer_text, get_first_selected_text
 from .utils.editor_utils import has_selection
 from .utils.editor_utils import force_set_viewport_position
@@ -17,7 +18,12 @@ from .utils.script_utils import prettify_verbose
 
 
 def main(view, edit):
-    editor_file_syntax = get_syntax(view) if get_pref("use_syntax") else "?"
+    editor_file_syntax = get_syntax(view) if get_pref(
+        "use_editor_syntax") else "?"
+    editor_indent_size = get_indent_size(view) if get_pref(
+        "use_editor_indentation") else "?"
+    editor_indent_with_tabs = get_indent_with_tabs(view) if get_pref(
+        "use_editor_indentation") else "?"
     original_file_path = view.file_name() or "?"
 
     previous_viewport_position = view.viewport_position()
@@ -37,7 +43,8 @@ def main(view, edit):
         editor_text_file_path = save_text_to_temp_file(text_to_prettify)
 
     prettified_text = prettify_verbose(view.window(), [
-        editor_file_syntax, editor_text_file_path, original_file_path
+        editor_file_syntax, editor_indent_size, editor_indent_with_tabs,
+        editor_text_file_path, original_file_path
     ])
 
     os.remove(editor_text_file_path)

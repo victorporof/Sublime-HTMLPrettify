@@ -75,7 +75,10 @@ To beautify your code when saving the document, set the `format_on_save` setting
 To stop beautifying only the selected text, set the `format_selection_only` setting to `false` in `HTMLPrettify.sublime-settings`.
 
 ## Using editor syntax for determining file type
-To stop beautifying only the selected text, set the `use_syntax` setting to `false` in `HTMLPrettify.sublime-settings`.
+To stop beautifying only the selected text, set the `use_editor_syntax` setting to `false` in `HTMLPrettify.sublime-settings`.
+
+## Using editor indentation settings to determine formatting style
+To stop using the formatting style regarding indentation size and whether or not to use tabs or spaces (defined in the `.jsbeautifyrc` config file), and use sublime's settings instead, then set the `use_editor_indentation` setting to `true` in `HTMLPrettify.sublime-settings`.
 
 ## Ignoring certain files
 To add ignore rules use `disallowed_file_patterns` in the `.jsbeautifyrc` file. If the file(including path) matches any of the regexp patterns defined in `disallowed_file_patterns` it will not be beautified:

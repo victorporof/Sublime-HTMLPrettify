@@ -15,7 +15,10 @@
   "format_selection_only": true,
 
   // Use current syntax to determine file type, instead of the extension.
-  "use_syntax": true,
+  "use_editor_syntax": true,
+
+  // Use current identation settings to overwrite the ones from `.jsbeautifyrc`.
+  "use_editor_indentation": false,
 
   // Log the settings passed to the prettifier from `.jsbeautifyrc`.
   "print_diagnostics": true

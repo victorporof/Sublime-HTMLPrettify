@@ -47,3 +47,39 @@ export const extendJsbeautifyConfigFromFolders = async (folderPaths, oldJsbeauti
 
   return clone(oldJsbeautifyConfig);
 };
+
+// Clones and extends a given .jsbeautifyrc with some additonal meta-options
+// following some specific rules.
+export const finalizeJsbeautifyConfig = (
+  jsbeautifyConfig, editorIndentSize, editorIndentWithTabs,
+) => {
+  const newJsbeautifyConfig = clone(jsbeautifyConfig);
+
+  if (editorIndentSize !== '?') {
+    newJsbeautifyConfig.html.indent_size = +editorIndentSize;
+    newJsbeautifyConfig.css.indent_size = +editorIndentSize;
+    newJsbeautifyConfig.js.indent_size = +editorIndentSize;
+  }
+  if (editorIndentWithTabs !== '?') {
+    if (editorIndentWithTabs === 'True') {
+      newJsbeautifyConfig.html.indent_with_tabs = true;
+      newJsbeautifyConfig.html.indent_char = '\t';
+      newJsbeautifyConfig.css.indent_with_tabs = true;
+      newJsbeautifyConfig.css.indent_char = '\t';
+      newJsbeautifyConfig.js.indent_with_tabs = true;
+      newJsbeautifyConfig.js.indent_char = '\t';
+    } else {
+      newJsbeautifyConfig.html.indent_with_tabs = false;
+      newJsbeautifyConfig.html.indent_char = ' ';
+      newJsbeautifyConfig.css.indent_with_tabs = false;
+      newJsbeautifyConfig.css.indent_char = ' ';
+      newJsbeautifyConfig.js.indent_with_tabs = false;
+      newJsbeautifyConfig.js.indent_char = ' ';
+    }
+  }
+
+  newJsbeautifyConfig.html.js = newJsbeautifyConfig.js;
+  newJsbeautifyConfig.html.css = newJsbeautifyConfig.css;
+
+  return newJsbeautifyConfig;
+};
