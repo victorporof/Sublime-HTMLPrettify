@@ -77,6 +77,22 @@ To stop beautifying only the selected text, set the `format_selection_only` sett
 ## Using editor syntax for determining file type
 To stop beautifying only the selected text, set the `use_syntax` setting to `false` in `HTMLPrettify.sublime-settings`.
 
+## Ignoring certain files
+To add ignore rules use `disallowed_file_patterns` in the `.jsbeautifyrc` file. If the file(including path) matches any of the regexp patterns defined in `disallowed_file_patterns` it will not be beautified:
+```js
+{
+  "html": {
+    "disallowed_file_patterns": ["myFileToSkip\\.js", "myFolderToSkip"]
+  }
+  "css": {
+    "disallowed_file_patterns": ["myFileToSkip\\.css", "myFolderToSkip"]
+  }
+  "js": {
+    "disallowed_file_patterns": ["myFileToSkip\\.js", "myFolderToSkip"]
+  }
+}
+```
+
 ## Ignoring certain blocks of code
 Parts of code that shouldn't be formatted can be ignored with `beautify preserve` and `beautify ignore` directive comments. This allows you to tell the beautifier to preserve the formtatting of or completely ignore part of a file. The example inputs below will remain changed after beautification.
 

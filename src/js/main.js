@@ -10,7 +10,7 @@ import * as beautify from 'js-beautify';
 import * as stdio from './utils/stdioUtils';
 import { parseDefaultJsbeautifyConfig, extendJsbeautifyConfigFromFolders } from './utils/configUtils';
 import { getPotentialConfigDirs } from './utils/pathUtils';
-import { isCSS, isHTML, isJS } from './utils/fileTypeUtils';
+import { isCSS, isHTML, isJS, isAllowedFilePath } from './utils/fileUtils';
 import { EDITOR_FILE_SYNTAX, EDITOR_TEXT_FILE_PATH, ORIGINAL_FILE_PATH } from './utils/constants';
 
 process.on('uncaughtException', (err) => {
