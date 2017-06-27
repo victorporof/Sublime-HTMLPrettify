@@ -4,7 +4,7 @@
 
 import pick from 'lodash/pick';
 
-const VALID_JSBEAUTIFY_CONFIG_KEYS = ['html', 'css', 'js'];
+const VALID_JSBEAUTIFY_CONFIG_KEYS = ['html', 'css', 'js', 'json'];
 
 // Utility function special casing "true" and "false" values as being
 // actually booleans. This avoids common accidents in json files.

@@ -11,7 +11,7 @@ import * as stdio from './utils/stdioUtils';
 import { parseDefaultJsbeautifyConfig, extendJsbeautifyConfigFromFolders } from './utils/configUtils';
 import { finalizeJsbeautifyConfig } from './utils/configUtils';
 import { getPotentialConfigDirs } from './utils/pathUtils';
-import { isCSS, isHTML, isJS, isAllowedFilePath } from './utils/fileUtils';
+import { isCSS, isHTML, isJSON, isJS, isAllowedFilePath } from './utils/fileUtils';
 import { EDITOR_FILE_SYNTAX, EDITOR_INDENT_SIZE, EDITOR_INDENT_WITH_TABS } from './utils/constants';
 import { EDITOR_TEXT_FILE_PATH, ORIGINAL_FILE_PATH } from './utils/constants';
 
@@ -53,6 +53,12 @@ async function main() {
     stdio.endDiagnostics();
     stdio.beginPrettifiedCode();
     stdio.out(beautify.html(fileContents, finalConfig.html));
+    stdio.endPrettifiedCode();
+  } else if (isJSON(EDITOR_FILE_SYNTAX, ORIGINAL_FILE_PATH, fileContents, finalConfig)) {
+    stdio.info('Attempting to prettify what seems to be a JSON file.');
+    stdio.endDiagnostics();
+    stdio.beginPrettifiedCode();
+    stdio.out(beautify.js(fileContents, finalConfig.json));
     stdio.endPrettifiedCode();
   } else if (isJS(EDITOR_FILE_SYNTAX, ORIGINAL_FILE_PATH, fileContents, finalConfig)) {
     stdio.info('Attempting to prettify what seems to be a JS file.');

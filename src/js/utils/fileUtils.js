@@ -64,6 +64,21 @@ export const isHTML = (fileSyntax, filePath, bufferContents, jsbeautifyConfig) =
   return hasAllowedFileSyntax('html', fileSyntax, jsbeautifyConfig);
 };
 
+export const isJSON = (fileSyntax, filePath, bufferContents, jsbeautifyConfig) => {
+  // If file unsaved, there's no good way to determine whether or not it's
+  // JSON based on the file contents, so just bail.
+  if (filePath === '?') {
+    return false;
+  }
+  if (isDisallowedFilePath('json', filePath, jsbeautifyConfig)) {
+    return false;
+  }
+  if (fileSyntax === '?') {
+    return hasAllowedFileExtension('json', filePath, jsbeautifyConfig);
+  }
+  return hasAllowedFileSyntax('json', fileSyntax, jsbeautifyConfig);
+};
+
 export const isJS = (fileSyntax, filePath, bufferContents, jsbeautifyConfig) => {
   // If file unsaved, check if first non-whitespace character is NOT &lt;
   if (filePath === '?') {
