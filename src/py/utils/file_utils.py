@@ -30,6 +30,17 @@ def save_text_to_temp_file(text):
     return temp_file_path
 
 
+def read_text_from_file(file_path, default_contents=None):
+    """Reads the text from a file if it exists; if it doens't, some default contents are returned"""
+    if isfile(file_path):
+        handle = fopen(file_path, mode="r", encoding="utf-8")
+        text = handle.read()
+        handle.close()
+        return text
+
+    return default_contents
+
+
 def ensure_file(file_path, default_contents="{\n}"):
     """Ensures a file exists; if it doesn't, one is created with some contents"""
     if not isdir(dirname(file_path)):

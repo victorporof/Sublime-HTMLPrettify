@@ -9,7 +9,7 @@ from sublime import load_settings
 
 from .paths import SETTINGS_FILENAME, KEYMAP_FILENAME
 from .paths import get_root_dir, get_plugin_user_dir
-from .file_utils import ensure_file
+from .file_utils import read_text_from_file, ensure_file
 
 
 def get_pref(key):
@@ -19,13 +19,17 @@ def get_pref(key):
 
 def open_config_rc(window):
     """Opens the default .jsbeautifyrc file for editing in a new tab"""
-    window.open_file(join(get_root_dir(), '.jsbeautifyrc'))
+    window.open_file(join(get_root_dir(), '.jsbeautifyrc.defaults'))
 
 
 def open_u_config_rc(window):
     """Opens the user's .jsbeautifyrc file for editing in a new tab"""
+    old_jsbeautifyrc = read_text_from_file(
+        join(get_root_dir(), '.jsbeautifyrc'), default_contents="{\n}")
+
     window.open_file(
-        ensure_file(join(get_plugin_user_dir(), '.jsbeautifyrc')))
+        ensure_file(
+            join(get_plugin_user_dir(), '.jsbeautifyrc'), old_jsbeautifyrc))
 
 
 def open_sublime_settings(window):

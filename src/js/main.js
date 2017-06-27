@@ -11,7 +11,7 @@ import * as stdio from './utils/stdioUtils';
 import { parseDefaultJsbeautifyConfig, extendJsbeautifyConfigFromFolders } from './utils/configUtils';
 import { getPotentialConfigDirs } from './utils/pathUtils';
 import { isCSS, isHTML, isJS } from './utils/fileTypeUtils';
-import { EDITOR_TEXT_FILE_PATH, ORIGINAL_FILE_PATH, PLUGIN_USER_DIR_PATH } from './utils/constants';
+import { EDITOR_TEXT_FILE_PATH, ORIGINAL_FILE_PATH } from './utils/constants';
 
 process.on('uncaughtException', (err) => {
   stdio.err('Uncaught exception', err);
@@ -34,7 +34,6 @@ async function main() {
   // Dump some diagnostics messages, parsed out by the plugin.
   stdio.info(`Using editor text path: ${EDITOR_TEXT_FILE_PATH}`);
   stdio.info(`Using original file path: ${ORIGINAL_FILE_PATH}`);
-  stdio.info(`Using sublime user folder: ${PLUGIN_USER_DIR_PATH}`);
   stdio.info(`Using paths for .jsbeautifyrc: ${JSON.stringify(pathsToLook)}`);
   stdio.info(`Using prettify options: ${JSON.stringify(extendedConfig)}`);
 

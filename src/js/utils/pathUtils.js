@@ -5,7 +5,7 @@
 import path from 'path';
 
 import { PATH_SEP, USER_HOME_DIR } from './paths';
-import { ORIGINAL_FILE_PATH, PLUGIN_USER_DIR_PATH } from './constants';
+import { ORIGINAL_FILE_PATH, CONFIG_EXTRA_LOOKUP_PATHS } from './constants';
 
 // Returns a list of all absolute ancestor paths starting from a given path.
 export const getAncestorPaths = (givenPath) => {
@@ -21,7 +21,7 @@ export const getPotentialConfigDirs = (givenPath) => {
   // and end with the user's personal sublime settings folder.
   potentialConfigDirs.reverse();
   potentialConfigDirs.push(USER_HOME_DIR);
-  potentialConfigDirs.push(PLUGIN_USER_DIR_PATH);
+  potentialConfigDirs.push(...CONFIG_EXTRA_LOOKUP_PATHS);
 
   return potentialConfigDirs.filter(Boolean);
 };
