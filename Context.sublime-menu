@@ -4,14 +4,23 @@
     "caption": "Prettify Code",
     "command": "htmlprettify"
   }, {
-    "caption": "Set Prettify Preferences",
+    "caption": "Prettify Preferences - Default",
     "command": "htmlprettify_set_prettify_prefs"
   }, {
-    "caption": "Set Plugin Options",
+    "caption": "Prettify Preferences - User",
+    "command": "htmlprettify_set_user_prettify_prefs"
+  }, {
+    "caption": "Plugin Options - Default",
     "command": "htmlprettify_set_plugin_options"
-  },  {
-    "caption": "Set Keyboard Shortcuts",
+  }, {
+    "caption": "Plugin Options - User",
+    "command": "htmlprettify_set_user_plugin_options"
+  }, {
+    "caption": "Keyboard Shortcuts - Default",
     "command": "htmlprettify_set_keyboard_shortcuts"
+  }, {
+    "caption": "Keyboard Shortcuts - User",
+    "command": "htmlprettify_set_user_keyboard_shortcuts"
   }, {
     "caption": "Set `node` Path",
     "command": "htmlprettify_set_node_path"

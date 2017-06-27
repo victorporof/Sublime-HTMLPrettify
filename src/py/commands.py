@@ -7,6 +7,7 @@ from sublime_plugin import TextCommand
 
 from .utils.constants import PLATFORM
 from .utils.window_utils import open_config_rc, open_sublime_settings, open_sublime_keymap
+from .utils.window_utils import open_u_config_rc, open_u_sublime_settings, open_u_sublime_keymap
 
 
 class HtmlprettifySetPrettifyPrefsCommand(TextCommand):
@@ -14,14 +15,33 @@ class HtmlprettifySetPrettifyPrefsCommand(TextCommand):
         open_config_rc(self.view.window())
 
 
+class HtmlprettifySetUserPrettifyPrefsCommand(TextCommand):
+    def run(self, _):
+        open_u_config_rc(self.view.window())
+
+
 class HtmlprettifySetPluginOptionsCommand(TextCommand):
     def run(self, _):
         open_sublime_settings(self.view.window())
 
 
+class HtmlprettifySetUserPluginOptionsCommand(TextCommand):
+    def run(self, _):
+        open_u_sublime_settings(self.view.window())
+
+
 class HtmlprettifySetKeyboardShortcutsCommand(TextCommand):
     def run(self, _):
         open_sublime_keymap(self.view.window(), {
+            "windows": "Windows",
+            "linux": "Linux",
+            "osx": "OSX"
+        }.get(PLATFORM))
+
+
+class HtmlprettifySetUserKeyboardShortcutsCommand(TextCommand):
+    def run(self, _):
+        open_u_sublime_keymap(self.view.window(), {
             "windows": "Windows",
             "linux": "Linux",
             "osx": "OSX"

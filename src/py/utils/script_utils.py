@@ -9,14 +9,14 @@ from sublime import ok_cancel_dialog
 
 from .constants import DIAGNOSTICS_MARKER_BEGIN, DIAGNOSTICS_MARKER_END
 from .constants import PRETTIFIED_CODE_MARKER_BEGIN, PRETTIFIED_CODE_MARKER_END
-from .paths import USER_FOLDER, JS_MAIN_FILE
+from .paths import get_plugin_user_dir, get_main_js_file
 from .env_utils import get_node_path, run_command
 from .window_utils import get_pref, open_sublime_settings
 
 
 def run_main_js(args):
     """Runs the main node.js script and returns the generated output"""
-    return run_command([get_node_path(), JS_MAIN_FILE] + args)
+    return run_command([get_node_path(), get_main_js_file()] + args)
 
 
 def get_output_between(output, first, second):
@@ -42,7 +42,7 @@ def get_prettified_code(output):
 
 def prettify(args):
     """Prettifies the code at the given file path"""
-    stdout, stderr = run_main_js(args + [USER_FOLDER])
+    stdout, stderr = run_main_js(args + [get_plugin_user_dir()])
     return get_prettified_code(stdout), get_diagnostics(stdout), stderr
 
 

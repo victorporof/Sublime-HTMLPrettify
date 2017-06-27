@@ -4,10 +4,12 @@
 """Various utility functions used by this plugin"""
 
 from __future__ import print_function
-from os import path
+from os.path import join
 from sublime import load_settings
 
-from .paths import ROOT_DIR, JSBEAUTIFYRC_FILE, SETTINGS_FILENAME, KEYMAP_FILENAME
+from .paths import SETTINGS_FILENAME, KEYMAP_FILENAME
+from .paths import get_root_dir, get_plugin_user_dir
+from .file_utils import ensure_file
 
 
 def get_pref(key):
@@ -17,15 +19,35 @@ def get_pref(key):
 
 def open_config_rc(window):
     """Opens the default .jsbeautifyrc file for editing in a new tab"""
-    window.open_file(path.join(ROOT_DIR, JSBEAUTIFYRC_FILE))
+    window.open_file(join(get_root_dir(), '.jsbeautifyrc'))
+
+
+def open_u_config_rc(window):
+    """Opens the user's .jsbeautifyrc file for editing in a new tab"""
+    window.open_file(
+        ensure_file(join(get_plugin_user_dir(), '.jsbeautifyrc')))
 
 
 def open_sublime_settings(window):
     """Opens the default plugin settings file for editing in a new tab"""
-    window.open_file(path.join(ROOT_DIR, SETTINGS_FILENAME))
+    window.open_file(join(get_root_dir(), SETTINGS_FILENAME))
+
+
+def open_u_sublime_settings(window):
+    """Opens the user's plugin settings file for editing in a new tab"""
+    window.open_file(
+        ensure_file(join(get_plugin_user_dir(), SETTINGS_FILENAME)))
 
 
 def open_sublime_keymap(window, platform):
     """Opens the default plugin keyboard bindings file for editing in a new tab"""
     window.open_file(
-        path.join(ROOT_DIR, KEYMAP_FILENAME.replace("$PLATFORM", platform)))
+        join(get_root_dir(), KEYMAP_FILENAME.replace("$PLATFORM", platform)))
+
+
+def open_u_sublime_keymap(window, platform):
+    """Opens the user's plugin keyboard bindings file for editing in a new tab"""
+    window.open_file(
+        ensure_file(
+            join(get_plugin_user_dir(),
+                 KEYMAP_FILENAME.replace("$PLATFORM", platform))))
