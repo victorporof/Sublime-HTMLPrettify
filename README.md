@@ -74,6 +74,9 @@ To beautify your code when saving the document, set the `format_on_save` setting
 ## Preserving selection after formatting
 To stop beautifying only the selected text, set the `format_selection_only` setting to `false` in `HTMLPrettify.sublime-settings`.
 
+## Using editor syntax for determining file type
+To stop beautifying only the selected text, set the `use_syntax` setting to `false` in `HTMLPrettify.sublime-settings`.
+
 ## Ignoring certain blocks of code
 Parts of code that shouldn't be formatted can be ignored with `beautify preserve` and `beautify ignore` directive comments. This allows you to tell the beautifier to preserve the formtatting of or completely ignore part of a file. The example inputs below will remain changed after beautification.
 
@@ -89,7 +92,7 @@ Use `preserve` when the content is javascript, but you don't want it reformatted
 /* beautify preserve:end */
 ```
 
-Use `ignore` when the content is not parsable as javascript.  
+Use `ignore` when the content is not parsable as javascript.
 ```js
 var a = 1;
 /* beautify ignore:start */

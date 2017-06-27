@@ -8,6 +8,7 @@ export const PRETTIFIED_CODE_MARKER_BEGIN = '### HTMLPrettify prettified code be
 export const PRETTIFIED_CODE_MARKER_END = '### HTMLPrettify prettified code end ###';
 
 // The source file to be prettified, original source's path and some options.
-export const EDITOR_TEXT_FILE_PATH = process.argv[2] || '';
-export const ORIGINAL_FILE_PATH = process.argv[3] || '';
-export const CONFIG_EXTRA_LOOKUP_PATHS = [process.argv[4] || '', process.argv[5] || ''];
+export const EDITOR_FILE_SYNTAX = process.argv[2] || '';
+export const EDITOR_TEXT_FILE_PATH = process.argv[3] || '';
+export const ORIGINAL_FILE_PATH = process.argv[4] || '';
+export const CONFIG_EXTRA_LOOKUP_PATHS = [process.argv[5] || '', process.argv[6] || ''];

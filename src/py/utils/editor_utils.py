@@ -6,6 +6,11 @@
 from sublime import Region
 
 
+def get_syntax(view):
+    """Gets the given view's current syntax"""
+    return view.settings().get("syntax")
+
+
 def get_editor_selections_copy(view):
     """Gets a copy of the given view's selections"""
     return list(view.sel())

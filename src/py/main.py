@@ -6,7 +6,7 @@ from __future__ import print_function
 import os
 
 from .utils.window_utils import get_pref
-from .utils.editor_utils import get_editor_selections_copy, get_editor_folded_contents
+from .utils.editor_utils import get_syntax, get_editor_selections_copy, get_editor_folded_contents
 from .utils.editor_utils import get_entire_buffer_text, get_first_selected_text
 from .utils.editor_utils import has_selection
 from .utils.editor_utils import force_set_viewport_position
@@ -17,6 +17,7 @@ from .utils.script_utils import prettify_verbose
 
 
 def main(view, edit):
+    editor_file_syntax = get_syntax(view) if get_pref("use_syntax") else "?"
     original_file_path = view.file_name() or "?"
 
     previous_viewport_position = view.viewport_position()
@@ -35,8 +36,9 @@ def main(view, edit):
         text_to_prettify, formatting_region = get_entire_buffer_text(view)
         editor_text_file_path = save_text_to_temp_file(text_to_prettify)
 
-    prettified_text = prettify_verbose(
-        view.window(), [editor_text_file_path, original_file_path])
+    prettified_text = prettify_verbose(view.window(), [
+        editor_file_syntax, editor_text_file_path, original_file_path
+    ])
 
     os.remove(editor_text_file_path)
 

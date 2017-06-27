@@ -14,6 +14,9 @@
   // Only format the selection if there's one available.
   "format_selection_only": true,
 
+  // Use current syntax to determine file type, instead of the extension.
+  "use_syntax": true,
+
   // Log the settings passed to the prettifier from `.jsbeautifyrc`.
   "print_diagnostics": true
 }
