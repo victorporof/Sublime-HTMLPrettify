@@ -51,7 +51,7 @@ Open a HTML, CSS or JavaScript file, pop out the console in Sublime Text from Vi
 Writing commands in the console is ugly. Set up your own key combo for this, by going to Preferences -> Key Bindings - User, and adding a command in that array: `{ "keys": ["super+shift+h"], "command": "htmlprettify" }`. You can use any other command you want, thought most of them are already taken.
 
 ## Oh noez, command not found!
-If you get an error `sh: node: command not found` or similar, you don't have `node` in the right path. Try setting the absolute path to node in `HTMLPrettify.sublime-settings`.
+If you get an error about Node.js not being found or similar, you don't have `node` in the right path. Try setting the absolute path to node in `HTMLPrettify.sublime-settings`.
 
 * `Ctrl+Shift+P` or `Cmd+Shift+P` in Linux/Windows/OS X
 * type `htmlprettify`, select `Set node Path`
@@ -62,7 +62,7 @@ For example, on Linux the path could be in `/home/<user>/.nvm/<node version>/bin
 
 On Windows, the absolute path to node.exe *must* use forward slashes. Must include nodejs.exe, like so: `C:/Program Files (x86)/Nodejs/node.exe`
 
-### Be very careful on Debian!
+### Be very careful on Linux!
 Depending on your distribution and default package sources, `apt-get install node` (for example) *will not* install node.js, contrary to all human common sense and popular belief. You want `nodejs` instead. Best thing is to make it yourself from http://nodejs.org/#download.
 
 ## Beautify on Save
@@ -74,24 +74,68 @@ To beautify your code when saving the document, set the `format_on_save` setting
 ## Preserving selection after formatting
 To stop beautifying only the selected text, set the `format_selection_only` setting to `false` in `HTMLPrettify.sublime-settings`.
 
+## Using editor indentation settings to determine formatting style
+To stop using the formatting style defined in the `.jsbeautifyrc` config file regarding indentation size and whether or not to use tabs or spaces, in order to use sublime's settings instead, then set the `use_editor_indentation` setting to `true` in `HTMLPrettify.sublime-settings`.
+
 ## Using editor syntax for determining file type
 To stop beautifying only the selected text, set the `use_editor_syntax` setting to `false` in `HTMLPrettify.sublime-settings`.
 
-## Using editor indentation settings to determine formatting style
-To stop using the formatting style regarding indentation size and whether or not to use tabs or spaces (defined in the `.jsbeautifyrc` config file), and use sublime's settings instead, then set the `use_editor_indentation` setting to `true` in `HTMLPrettify.sublime-settings`.
+## Specifying which files can be prettified
+To add different file extensions use `allowed_file_extensions` or `allowed_file_syntaxes` in `HTMLPrettify.sublime-settings`.
+
+If the `use_editor_syntax` setting is false, then the following apply:
+```javascript
+{
+  "html": {
+    "allowed_file_extensions": ["htm", "html", "xhtml", "shtml", "xml", "svg"],
+  },
+  "css": {
+    "allowed_file_extensions": ["css", "scss", "sass", "less"]
+  },
+  "js": {
+    "allowed_file_extensions": ["js"]
+  },
+  "json": {
+    "allowed_file_extensions": ["json", "jshintrc", "jsbeautifyrc"],
+  }
+}
+```
+
+If the `use_editor_syntax` setting is true, then the following apply:
+```javascript
+{
+  "html": {
+    "allowed_file_syntaxes": ["html", "xml"],
+  },
+  "css": {
+    "allowed_file_syntaxes": ["css", "sass", "less"],
+  },
+  "js": {
+    "allowed_file_syntaxes": ["javascript", "ecma"],
+  },
+  "json": {
+    "allowed_file_syntaxes": ["json"],
+  }
+}
+```
 
 ## Ignoring certain files
-To add ignore rules use `disallowed_file_patterns` in the `.jsbeautifyrc` file. If the file(including path) matches any of the regexp patterns defined in `disallowed_file_patterns` it will not be beautified:
+To add ignore rules use `disallowed_file_patterns` in `HTMLPrettify.sublime-settings`. If the file(including path) matches any of the regexp patterns defined in `disallowed_file_patterns` it will not be beautified.
+
+The following apply regardless of the `use_editor_syntax` setting's value:
 ```js
 {
   "html": {
-    "disallowed_file_patterns": ["myFileToSkip\\.js", "myFolderToSkip"]
-  }
+    "disallowed_file_patterns": ["myFileToSkip\\.html", "myFolderToSkip"]
+  },
   "css": {
     "disallowed_file_patterns": ["myFileToSkip\\.css", "myFolderToSkip"]
-  }
+  },
   "js": {
     "disallowed_file_patterns": ["myFileToSkip\\.js", "myFolderToSkip"]
+  },
+  "json": {
+    "disallowed_file_patterns": ["myFileToSkip\\.json", "myFolderToSkip"]
   }
 }
 ```
@@ -140,9 +184,6 @@ These are the default options used by this plugin:
   // Details: https://github.com/victorporof/Sublime-HTMLPrettify#using-your-own-jsbeautifyrc-options
   // Documentation: https://github.com/einars/js-beautify/
   "html": {
-    "allowed_file_extensions": ["htm", "html", "xhtml", "shtml", "xml", "svg"],
-    "allowed_file_syntaxes": ["html", "xml"],
-    "disallowed_file_patterns": [], // List of regexp strings to test the file path against. If it matches any of them, then the file will be ignored. e.g. ["myFileToSkip\\.html", "myFolderToSkip"]
     "brace_style": "collapse", // [collapse|expand|end-expand|none] Put braces on the same line as control statements (default), or put braces on own line (Allman / ANSI style), or put end braces on own line, or attempt to keep them where they are
     "end_with_newline": false, // End output with newline
     "indent_char": " ", // Indentation character
@@ -156,9 +197,6 @@ These are the default options used by this plugin:
     "wrap_line_length": 0 // Lines should wrap at next opportunity after this number of characters (0 disables)
   },
   "css": {
-    "allowed_file_extensions": ["css", "scss", "sass", "less"],
-    "allowed_file_syntaxes": ["css", "sass", "less"],
-    "disallowed_file_patterns": [], // List of regexp strings to test the file path against. If it matches any of them, then the file will be ignored. e.g. ["myFileToSkip\\.html", "myFolderToSkip"]
     "end_with_newline": false, // End output with newline
     "indent_char": " ", // Indentation character
     "indent_size": 4, // Indentation size
@@ -167,9 +205,6 @@ These are the default options used by this plugin:
     "selector_separator_newline": true // Separate selectors with newline or not (e.g. "a,\nbr" or "a, br")
   },
   "js": {
-    "allowed_file_extensions": ["js"],
-    "allowed_file_syntaxes": ["javascript", "ecma"],
-    "disallowed_file_patterns": [], // List of regexp strings to test the file path against. If it matches any of them, then the file will be ignored. e.g. ["myFileToSkip\\.html", "myFolderToSkip"]
     "brace_style": "collapse-preserve-inline", // [collapse|collapse-preserve-inline|expand|end-expand|none] Put braces on the same line as control statements (default), or put braces on own line (Allman / ANSI style), or put end braces on own line, or attempt to keep them where they are
     "break_chained_methods": false, // Break chained method calls across subsequent lines
     "e4x": false, // Pass E4X xml literals through untouched
@@ -191,9 +226,6 @@ These are the default options used by this plugin:
     "wrap_line_length": 0 // Lines should wrap at next opportunity after this number of characters (0 disables)
   },
   "json": {
-    "allowed_file_extensions": ["json", "jshintrc", "jsbeautifyrc", "sublime-settings", "sublime-keymap"],
-    "allowed_file_syntaxes": ["json"],
-    "disallowed_file_patterns": [], // List of regexp strings to test the file path against. If it matches any of them, then the file will be ignored. e.g. ["myFileToSkip\\.html", "myFolderToSkip"]
     "brace_style": "expand", // [collapse|collapse-preserve-inline|expand|end-expand|none] Put braces on the same line as control statements (default), or put braces on own line (Allman / ANSI style), or put end braces on own line, or attempt to keep them where they are
     "end_with_newline": false, // End output with newline
     "indent_char": " ", // Indentation character
@@ -229,21 +261,5 @@ A few persistent options are always applied from a `.jsbeautifyrc` file located 
 
 * `Ctrl+Shift+P` or `Cmd+Shift+P` in Linux/Windows/OS X
 * type `htmlprettify`, select `Set Prettify Preferences`
-
-## Specifying your own file extensions
-To add different file extensions use `allowed_file_extensions` in the `.jsbeautifyrc` file:
-```javascript
-{
-  "html": {
-    "allowed_file_extensions": ["html", "shtml", "aspx", "master", "xml", "xhtml"]
-  }
-  "css": {
-    "allowed_file_extensions": ["css", "scss", "sass", "less"]
-  }
-  "js": {
-    "allowed_file_extensions": ["js", "json", "jshintrc", "jsbeautifyrc"]
-  }
-}
-```
 
 Thank you!
