@@ -5,12 +5,15 @@
 import fs from 'fs-extra';
 import JSON5 from 'json5';
 
+import * as stdio from './stdioUtils';
+
 // Parses some json text if it's well formed, otherwise silently fails and
 // returns undefined.
 export const parseJSON5 = (string) => {
   try {
     return JSON5.parse(string);
   } catch (e) {
+    stdio.info('Failed to parse:', string);
     return undefined;
   }
 };

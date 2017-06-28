@@ -10,10 +10,11 @@ export const PRETTIFIED_CODE_MARKER_BEGIN = '### HTMLPrettify prettified code be
 export const PRETTIFIED_CODE_MARKER_END = '### HTMLPrettify prettified code end ###';
 
 // The source file to be prettified, original source's path and some options.
-export const GLOBAL_FILE_RULES = parseJSON5(process.argv[2]);
+export const EDITOR_FILE_SYNTAX = process.argv[2];
 export const EDITOR_INDENT_SIZE = process.argv[3];
 export const EDITOR_INDENT_WITH_TABS = process.argv[4];
-export const EDITOR_FILE_SYNTAX = process.argv[5];
-export const EDITOR_TEXT_FILE_PATH = process.argv[6];
-export const ORIGINAL_FILE_PATH = process.argv[7];
-export const CONFIG_EXTRA_LOOKUP_PATHS = [process.argv[8], process.argv[9]];
+export const RESPECT_EDITORCONFIG_FILES = process.argv[5];
+export const GLOBAL_FILE_RULES = parseJSON5(process.argv[6]);
+export const EDITOR_TEXT_FILE_PATH = process.argv[7];
+export const ORIGINAL_FILE_PATH = process.argv[8];
+export const CONFIG_EXTRA_LOOKUP_PATHS = [process.argv[9], process.argv[10]];

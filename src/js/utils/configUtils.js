@@ -8,7 +8,8 @@ import clone from 'lodash/clone';
 import promiseArrays from 'promise-arrays';
 
 import { parseJSON5File } from './jsonUtils';
-import { sanitizeJsbeautifyConfig } from './configSanitizers';
+import { parseEditorConfigFile } from './editorconfigUtils';
+import { sanitizeJsbeautifyConfig, translateEditorConfigToJsbeautifyConfig } from './configSanitizers';
 import { ROOT_DIR } from './paths';
 
 // Parses a .jsbeautifyrc json file and returns a sanitized object
@@ -22,8 +23,7 @@ export const parseDefaultJsbeautifyConfig = () =>
 
 // Clones and extends a given .jsbeautifyrc object with the one located at a
 // file path. If none exists, a clone of the original is returned.
-export const extendJsbeautifyConfigFromFile = async (filePath, oldJsbeautifyConfig) => {
-  const newJsbeautifyConfig = await parseJsbeautifyConfig(filePath);
+export const extendJsbeautifyConfig = async (newJsbeautifyConfig, oldJsbeautifyConfig) => {
   const oldClonedJsbeautifyConfig = clone(oldJsbeautifyConfig);
 
   for (const [fileType, newFileConfig] of Object.entries(newJsbeautifyConfig)) {
@@ -35,6 +35,21 @@ export const extendJsbeautifyConfigFromFile = async (filePath, oldJsbeautifyConf
   return oldClonedJsbeautifyConfig;
 };
 
+// Clones and extends a given .jsbeautifyrc object with the one located at a
+// file path. If none exists, a clone of the original is returned.
+export const extendJsbeautifyConfigFromFile = async (filePath, oldJsbeautifyConfig) => {
+  const newJsbeautifyConfig = await parseJsbeautifyConfig(filePath);
+  return extendJsbeautifyConfig(newJsbeautifyConfig, oldJsbeautifyConfig);
+};
+
+// Clones and extends a given .jsbeautifyrc object with an .editorconfig file
+// located at a file path. If none exists, a clone of the original is returned.
+export const extendJsbeautifyConfigFromEditorConfigFile = async (filePath, oldJsbeautifyConfig) => {
+  const newEditorConfig = await parseEditorConfigFile(filePath);
+  const newJsbeautifyConfig = sanitizeJsbeautifyConfig(translateEditorConfigToJsbeautifyConfig(newEditorConfig));
+  return extendJsbeautifyConfig(newJsbeautifyConfig, oldJsbeautifyConfig);
+};
+
 // Clones and extends a given .jsbeautifyrc object with the first one found in
 // a list of folder paths. If none exists, a clone of the original is returned.
 export const extendJsbeautifyConfigFromFolders = async (folderPaths, oldJsbeautifyConfig) => {
@@ -43,6 +58,20 @@ export const extendJsbeautifyConfigFromFolders = async (folderPaths, oldJsbeauti
 
   if (newJsbeautifyConfigPath) {
     return extendJsbeautifyConfigFromFile(newJsbeautifyConfigPath, oldJsbeautifyConfig);
+  }
+
+  return clone(oldJsbeautifyConfig);
+};
+
+// Clones and extends a given .jsbeautifyrc object with the first .editorconfig
+// file found in a list of folder paths. If none exists, a clone of the original
+// is returned.
+export const extendJsbeautifyConfigFromEditorConfigInFolders = async (folderPaths, oldJsbeautifyConfig) => {
+  const filesToCheck = folderPaths.map(f => path.join(f, '.editorconfig'));
+  const newEditorConfigPath = (await promiseArrays.filter(filesToCheck, fs.pathExists))[0];
+
+  if (newEditorConfigPath) {
+    return extendJsbeautifyConfigFromEditorConfigFile(newEditorConfigPath, oldJsbeautifyConfig);
   }
 
   return clone(oldJsbeautifyConfig);

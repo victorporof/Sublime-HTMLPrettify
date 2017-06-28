@@ -2,3 +2,5 @@
 .vscode
 *.pyc
 /node_modules
+.jsbeautifyrc
+.editorconfig

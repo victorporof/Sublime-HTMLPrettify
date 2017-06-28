@@ -80,6 +80,9 @@ To stop using the formatting style defined in the `.jsbeautifyrc` config file re
 ## Using editor syntax for determining file type
 To stop beautifying only the selected text, set the `use_editor_syntax` setting to `false` in `HTMLPrettify.sublime-settings`.
 
+## Respecting [.editorconfig](http://editorconfig.org) files
+These configuration files can be placed wherever a `.jsbeautifyrc` could. To stop respecting `.editorconfig` files, which override the prettifier's rules, set the `use_editorconfig` setting to `false` in `HTMLPrettify.sublime-settings`. Note that `use_editor_syntax` and `use_editor_indentation` have precedence and will always override any other settings from any configuration file like `.jsbeautifyrc` and `.editorconfig`.
+
 ## Specifying which files can be prettified
 To add different file extensions use `allowed_file_extensions` or `allowed_file_syntaxes` in `HTMLPrettify.sublime-settings`.
 

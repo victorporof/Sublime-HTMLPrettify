@@ -18,15 +18,16 @@ from .utils.script_utils import prettify_verbose
 
 
 def main(view, edit):
-    global_file_rules = json.dumps(get_pref("file_rules"))
+    editor_file_syntax = get_syntax(view) if get_pref(
+        "use_editor_syntax") else "?"
     editor_indent_size = get_indent_size(view) if get_pref(
         "use_editor_indentation") else "?"
     editor_indent_with_tabs = get_indent_with_tabs(view) if get_pref(
         "use_editor_indentation") else "?"
-    editor_file_syntax = get_syntax(view) if get_pref(
-        "use_editor_syntax") else "?"
-    original_file_path = view.file_name() or "?"
+    respect_editorconfig_files = get_pref("respect_editorconfig")
+    global_file_rules = get_pref("file_rules")
 
+    original_file_path = view.file_name() or "?"
     previous_viewport_position = view.viewport_position()
     previous_selections = get_editor_selections_copy(view)
     folded_regions_content = get_editor_folded_contents(view)
@@ -44,8 +45,12 @@ def main(view, edit):
         editor_text_file_path = save_text_to_temp_file(text_to_prettify)
 
     prettified_text = prettify_verbose(view.window(), [
-        global_file_rules, editor_indent_size,
-        editor_indent_with_tabs, editor_file_syntax, editor_text_file_path,
+        editor_file_syntax,
+        str(editor_indent_size),
+        str(editor_indent_with_tabs),
+        str(respect_editorconfig_files),
+        json.dumps(global_file_rules),
+        editor_text_file_path,
         original_file_path
     ])
 

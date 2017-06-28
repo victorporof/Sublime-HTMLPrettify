@@ -13,12 +13,12 @@ def get_syntax(view):
 
 def get_indent_size(view):
     """Gets the given view's indentation size"""
-    return str(view.settings().get("tab_size"))
+    return view.settings().get("tab_size")
 
 
 def get_indent_with_tabs(view):
     """Gets the given view's indentation character"""
-    return str(view.settings().get("use_tab_stops"))
+    return view.settings().get("use_tab_stops")
 
 
 def get_editor_selections_copy(view):
