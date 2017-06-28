@@ -10,13 +10,27 @@ from .constants import PLATFORM, SUBLIME_VERSION
 from .window_utils import get_pref
 
 
+class NodeNotFoundError(OSError):
+    def __init__(self, original_exception, node_path):
+        msg = "Node.js was not found in the default path"
+        OSError.__init__(self, msg + (": %s" % original_exception))
+        self.node_path = node_path
+
+class NodeRuntimeError(RuntimeError):
+    def __init__(self, stdout, stderr):
+        msg = "Node.js encountered a runtime error"
+        RuntimeError.__init__(self, msg + (": %s\n%s" % (stderr, stdout)))
+        self.stdout = stdout
+        self.stderr = stderr
+
+
 def get_node_path():
     """Gets the node.js path specified in this plugin's settings file"""
     node = get_pref("node_path").get(PLATFORM)
     return node
 
 
-def run_command(cmd):
+def run_command(args):
     """Runs a command in a shell and returns the output"""
     popen_args = {
         "stdout": subprocess.PIPE,
@@ -29,4 +43,23 @@ def run_command(cmd):
         startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
         popen_args["startupinfo"] = startupinfo
 
-    return subprocess.Popen(cmd, **popen_args).communicate()
+    stdout, stderr = subprocess.Popen(args, **popen_args).communicate()
+    if stderr:
+        raise NodeRuntimeError(stdout.decode('utf-8'), stderr.decode('utf-8'))
+
+    return stdout
+
+
+def run_node_command(args):
+    """Runs a node command in a shell and returns the output"""
+
+    node_path = get_node_path()
+    try:
+        stdout = run_command([node_path] + args)
+    except OSError as err:
+        if node_path in err.strerror:
+            raise NodeNotFoundError(err, node_path)
+        else:
+            raise err
+
+    return stdout

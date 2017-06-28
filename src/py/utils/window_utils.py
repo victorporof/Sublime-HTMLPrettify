@@ -3,7 +3,6 @@
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 """Various utility functions used by this plugin"""
 
-from __future__ import print_function
 from os.path import join
 from sublime import load_settings
 

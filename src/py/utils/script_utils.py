@@ -10,13 +10,14 @@ from sublime import ok_cancel_dialog
 from .constants import DIAGNOSTICS_MARKER_BEGIN, DIAGNOSTICS_MARKER_END
 from .constants import PRETTIFIED_CODE_MARKER_BEGIN, PRETTIFIED_CODE_MARKER_END
 from .paths import get_root_dir, get_plugin_user_dir, get_main_js_file
-from .env_utils import get_node_path, run_command
+from .env_utils import NodeNotFoundError, NodeRuntimeError, run_node_command
 from .window_utils import get_pref, open_sublime_settings
+from .web_utils import file_bug
 
 
 def run_main_js(args):
     """Runs the main node.js script and returns the generated output"""
-    return run_command([get_node_path(), get_main_js_file()] + args)
+    return run_node_command([get_main_js_file()] + args)
 
 
 def get_output_between(output, first, second):
@@ -42,41 +43,46 @@ def get_prettified_code(output):
 
 def prettify(args):
     """Prettifies the code at the given file path"""
-    stdout, stderr = run_main_js(args + [get_plugin_user_dir(), get_root_dir()])
-    return get_prettified_code(stdout), get_diagnostics(stdout), stderr
+    stdout = run_main_js(args + [get_plugin_user_dir(), get_root_dir()])
+    prettified_code = get_prettified_code(stdout)
+    output_diagnostics = get_diagnostics(stdout)
+    return prettified_code, output_diagnostics
 
 
 def prettify_verbose(window, args):
     """Prettifies the code at the given file path and handles errors and exceptions"""
 
-    def handle_os_error(err):
+    def handle_node_error(err):
         print(err)
-        if get_node_path() in err.strerror:
-            msg = "Node.js was not found in the default path. Please specify the location."
-            if ok_cancel_dialog(msg):
-                open_sublime_settings(window)
-            return None
-        else:
-            raise err
-
-    def handle_output_error(err):
-        print(err)
-        msg = "A script error was encountered in the prettifier. Care to file a bug?"
+        msg = "Node.js was not found in the default path. Please specify the location."
         if ok_cancel_dialog(msg):
-            open_new_tab(
-                "https://github.com/victorporof/Sublime-HTMLPrettify/issues/new"
-            )
+            open_sublime_settings(window)
+        return None
+
+    def handle_runtime_error(err):
+        print(err)
+        msg = "A runtime error was encountered in the prettifier. Care to file a bug?"
+        if ok_cancel_dialog(msg):
+            file_bug()
+        return None
+
+    def handle_unknown_error(err):
+        print(err)
+        msg = "An unhandled error was encountered while prettifying. Care to file a bug?"
+        if ok_cancel_dialog(msg):
+            file_bug()
         return None
 
     try:
-        prettified_code, output_diagnostics, output_errors = prettify(args)
-    except OSError as err:
-        return handle_os_error(err)
+        prettified_code, output_diagnostics = prettify(args)
+    except NodeNotFoundError as err:
+        return handle_node_error(err)
+    except NodeRuntimeError as err:
+        return handle_runtime_error(err)
+    except BaseException as err:
+        return handle_unknown_error(err)
 
     if output_diagnostics and get_pref("print_diagnostics"):
         print(output_diagnostics)
-
-    if output_errors:
-        return handle_output_error(output_errors)
 
     return prettified_code
