@@ -4,8 +4,8 @@
 
 // Checks if a file path is allowed by regexing the file name and expecting
 // it not to match certain expressions.
-const isDisallowedFilePath = (fileType, filePath, jsbeautifyConfig) => {
-  for (const pattern of jsbeautifyConfig[fileType].disallowed_file_patterns || []) {
+const isDisallowedFilePath = (fileType, filePath, globalFileRules) => {
+  for (const pattern of globalFileRules[fileType].disallowed_file_patterns || []) {
     if (filePath.match(new RegExp(pattern, 'i'))) {
       return true;
     }
@@ -15,8 +15,8 @@ const isDisallowedFilePath = (fileType, filePath, jsbeautifyConfig) => {
 
 // Checks if a file is of a particular type by regexing the file name and
 // expecting a certain extension.
-const hasAllowedFileExtension = (expectedType, filePath, jsbeautifyConfig) => {
-  for (const extension of jsbeautifyConfig[expectedType].allowed_file_extensions || []) {
+const hasAllowedFileExtension = (expectedType, filePath, globalFileRules) => {
+  for (const extension of globalFileRules[expectedType].allowed_file_extensions || []) {
     if (filePath.match(new RegExp(`\\.${extension}$`, 'i'))) {
       return true;
     }
@@ -26,8 +26,8 @@ const hasAllowedFileExtension = (expectedType, filePath, jsbeautifyConfig) => {
 
 // Checks if a file is of a particular type by regexing the syntax name and
 // expecting a pattern.
-const hasAllowedFileSyntax = (expectedType, fileSyntax, jsbeautifyConfig) => {
-  for (const pattern of jsbeautifyConfig[expectedType].allowed_file_syntaxes || []) {
+const hasAllowedFileSyntax = (expectedType, fileSyntax, globalFileRules) => {
+  for (const pattern of globalFileRules[expectedType].allowed_file_syntaxes || []) {
     if (fileSyntax.toLowerCase().includes(pattern)) {
       return true;
     }
@@ -35,60 +35,60 @@ const hasAllowedFileSyntax = (expectedType, fileSyntax, jsbeautifyConfig) => {
   return false;
 };
 
-export const isCSS = (fileSyntax, filePath, jsbeautifyConfig) => {
+export const isCSS = (globalFileRules, fileSyntax, filePath) => {
   // If file unsaved, there's no good way to determine whether or not it's
   // CSS based on the file contents, so just bail.
   if (filePath === '?') {
     return false;
   }
-  if (isDisallowedFilePath('css', filePath, jsbeautifyConfig)) {
+  if (isDisallowedFilePath('css', filePath, globalFileRules)) {
     return false;
   }
   if (fileSyntax === '?') {
-    return hasAllowedFileExtension('css', filePath, jsbeautifyConfig);
+    return hasAllowedFileExtension('css', filePath, globalFileRules);
   }
-  return hasAllowedFileSyntax('css', fileSyntax, jsbeautifyConfig);
+  return hasAllowedFileSyntax('css', fileSyntax, globalFileRules);
 };
 
-export const isHTML = (fileSyntax, filePath, bufferContents, jsbeautifyConfig) => {
+export const isHTML = (globalFileRules, fileSyntax, filePath, bufferContents) => {
   // If file unsaved, check if first non-whitespace character is &lt;
   if (filePath === '?') {
     return bufferContents.match(/^\s*</);
   }
-  if (isDisallowedFilePath('html', filePath, jsbeautifyConfig)) {
+  if (isDisallowedFilePath('html', filePath, globalFileRules)) {
     return false;
   }
   if (fileSyntax === '?') {
-    return hasAllowedFileExtension('html', filePath, jsbeautifyConfig);
+    return hasAllowedFileExtension('html', filePath, globalFileRules);
   }
-  return hasAllowedFileSyntax('html', fileSyntax, jsbeautifyConfig);
+  return hasAllowedFileSyntax('html', fileSyntax, globalFileRules);
 };
 
-export const isJSON = (fileSyntax, filePath, bufferContents, jsbeautifyConfig) => {
+export const isJSON = (globalFileRules, fileSyntax, filePath) => {
   // If file unsaved, there's no good way to determine whether or not it's
   // JSON based on the file contents, so just bail.
   if (filePath === '?') {
     return false;
   }
-  if (isDisallowedFilePath('json', filePath, jsbeautifyConfig)) {
+  if (isDisallowedFilePath('json', filePath, globalFileRules)) {
     return false;
   }
   if (fileSyntax === '?') {
-    return hasAllowedFileExtension('json', filePath, jsbeautifyConfig);
+    return hasAllowedFileExtension('json', filePath, globalFileRules);
   }
-  return hasAllowedFileSyntax('json', fileSyntax, jsbeautifyConfig);
+  return hasAllowedFileSyntax('json', fileSyntax, globalFileRules);
 };
 
-export const isJS = (fileSyntax, filePath, bufferContents, jsbeautifyConfig) => {
+export const isJS = (globalFileRules, fileSyntax, filePath, bufferContents) => {
   // If file unsaved, check if first non-whitespace character is NOT &lt;
   if (filePath === '?') {
     return !bufferContents.match(/^\s*</);
   }
-  if (isDisallowedFilePath('js', filePath, jsbeautifyConfig)) {
+  if (isDisallowedFilePath('js', filePath, globalFileRules)) {
     return false;
   }
   if (fileSyntax === '?') {
-    return hasAllowedFileExtension('js', filePath, jsbeautifyConfig);
+    return hasAllowedFileExtension('js', filePath, globalFileRules);
   }
-  return hasAllowedFileSyntax('js', fileSyntax, jsbeautifyConfig);
+  return hasAllowedFileSyntax('js', fileSyntax, globalFileRules);
 };

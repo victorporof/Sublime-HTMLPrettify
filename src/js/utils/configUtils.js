@@ -7,14 +7,14 @@ import fs from 'fs-extra';
 import clone from 'lodash/clone';
 import promiseArrays from 'promise-arrays';
 
-import parseJson5 from './jsonUtils';
+import { parseJSON5File } from './jsonUtils';
 import { sanitizeJsbeautifyConfig } from './configSanitizers';
 import { ROOT_DIR } from './paths';
 
 // Parses a .jsbeautifyrc json file and returns a sanitized object
 // with a consistent and expected format.
 export const parseJsbeautifyConfig = async filePath =>
-  sanitizeJsbeautifyConfig(await parseJson5(filePath));
+  sanitizeJsbeautifyConfig(await parseJSON5File(filePath));
 
 // Parses the default .jsbeautifyrc json file coming with this plugin.
 export const parseDefaultJsbeautifyConfig = () =>

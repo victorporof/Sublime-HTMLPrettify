@@ -12,8 +12,8 @@ import { parseDefaultJsbeautifyConfig, extendJsbeautifyConfigFromFolders } from 
 import { finalizeJsbeautifyConfig } from './utils/configUtils';
 import { getPotentialConfigDirs } from './utils/pathUtils';
 import { isCSS, isHTML, isJSON, isJS, isAllowedFilePath } from './utils/fileUtils';
-import { EDITOR_FILE_SYNTAX, EDITOR_INDENT_SIZE, EDITOR_INDENT_WITH_TABS } from './utils/constants';
-import { EDITOR_TEXT_FILE_PATH, ORIGINAL_FILE_PATH } from './utils/constants';
+import { GLOBAL_FILE_RULES, EDITOR_INDENT_SIZE, EDITOR_INDENT_WITH_TABS } from './utils/constants';
+import { EDITOR_FILE_SYNTAX, EDITOR_TEXT_FILE_PATH, ORIGINAL_FILE_PATH } from './utils/constants';
 
 process.on('uncaughtException', (err) => {
   stdio.err('Uncaught exception', err);
@@ -32,6 +32,7 @@ async function main() {
   const finalConfig = finalizeJsbeautifyConfig(extendedConfig, EDITOR_INDENT_SIZE, EDITOR_INDENT_WITH_TABS);
 
   // Dump some diagnostics messages, parsed out by the plugin.
+  stdio.info(`Using editor global file rules: ${JSON.stringify(GLOBAL_FILE_RULES)}`);
   stdio.info(`Using editor file syntax: ${EDITOR_FILE_SYNTAX}`);
   stdio.info(`Using editor indent size: ${EDITOR_INDENT_SIZE}`);
   stdio.info(`Using editor indent with tabs: ${EDITOR_INDENT_WITH_TABS}`);
@@ -42,25 +43,25 @@ async function main() {
 
   const fileContents = await fs.readFile(EDITOR_TEXT_FILE_PATH, { encoding: 'utf8' });
 
-  if (isCSS(EDITOR_FILE_SYNTAX, ORIGINAL_FILE_PATH, finalConfig)) {
+  if (isCSS(GLOBAL_FILE_RULES, EDITOR_FILE_SYNTAX, ORIGINAL_FILE_PATH)) {
     stdio.info('Attempting to prettify what seems to be a CSS file.');
     stdio.endDiagnostics();
     stdio.beginPrettifiedCode();
     stdio.out(beautify.css(fileContents, finalConfig.css));
     stdio.endPrettifiedCode();
-  } else if (isHTML(EDITOR_FILE_SYNTAX, ORIGINAL_FILE_PATH, fileContents, finalConfig)) {
+  } else if (isHTML(GLOBAL_FILE_RULES, EDITOR_FILE_SYNTAX, ORIGINAL_FILE_PATH, fileContents)) {
     stdio.info('Attempting to prettify what seems to be a HTML file.');
     stdio.endDiagnostics();
     stdio.beginPrettifiedCode();
     stdio.out(beautify.html(fileContents, finalConfig.html));
     stdio.endPrettifiedCode();
-  } else if (isJSON(EDITOR_FILE_SYNTAX, ORIGINAL_FILE_PATH, fileContents, finalConfig)) {
+  } else if (isJSON(GLOBAL_FILE_RULES, EDITOR_FILE_SYNTAX, ORIGINAL_FILE_PATH, fileContents)) {
     stdio.info('Attempting to prettify what seems to be a JSON file.');
     stdio.endDiagnostics();
     stdio.beginPrettifiedCode();
     stdio.out(beautify.js(fileContents, finalConfig.json));
     stdio.endPrettifiedCode();
-  } else if (isJS(EDITOR_FILE_SYNTAX, ORIGINAL_FILE_PATH, fileContents, finalConfig)) {
+  } else if (isJS(GLOBAL_FILE_RULES, EDITOR_FILE_SYNTAX, ORIGINAL_FILE_PATH, fileContents)) {
     stdio.info('Attempting to prettify what seems to be a JS file.');
     stdio.endDiagnostics();
     stdio.beginPrettifiedCode();

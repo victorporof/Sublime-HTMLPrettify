@@ -5,12 +5,17 @@
 import fs from 'fs-extra';
 import JSON5 from 'json5';
 
-// Parses a json file at a given path and returns an object if it exists
-// and isn't malformed, otherwise silently fails and returns undefined.
-export default async (filePath) => {
+// Parses some json text if it's well formed, otherwise silently fails and
+// returns undefined.
+export const parseJSON5 = (string) => {
   try {
-    return JSON5.parse(await fs.readFile(filePath, { encoding: 'utf8' }));
+    return JSON5.parse(string);
   } catch (e) {
     return undefined;
   }
 };
+
+// Parses a json file at a given path and returns an object if it exists
+// and isn't malformed, otherwise silently fails and returns undefined.
+export const parseJSON5File = async filePath =>
+  parseJSON5(await fs.readFile(filePath, { encoding: 'utf8' }));

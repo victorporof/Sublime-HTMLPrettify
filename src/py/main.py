@@ -4,7 +4,7 @@
 
 from __future__ import print_function
 import os
-
+import json
 from .utils.window_utils import get_pref
 from .utils.editor_utils import get_syntax, get_indent_size, get_indent_with_tabs
 from .utils.editor_utils import get_editor_selections_copy, get_editor_folded_contents
@@ -18,12 +18,13 @@ from .utils.script_utils import prettify_verbose
 
 
 def main(view, edit):
-    editor_file_syntax = get_syntax(view) if get_pref(
-        "use_editor_syntax") else "?"
+    global_file_rules = json.dumps(get_pref("file_rules"))
     editor_indent_size = get_indent_size(view) if get_pref(
         "use_editor_indentation") else "?"
     editor_indent_with_tabs = get_indent_with_tabs(view) if get_pref(
         "use_editor_indentation") else "?"
+    editor_file_syntax = get_syntax(view) if get_pref(
+        "use_editor_syntax") else "?"
     original_file_path = view.file_name() or "?"
 
     previous_viewport_position = view.viewport_position()
@@ -43,8 +44,9 @@ def main(view, edit):
         editor_text_file_path = save_text_to_temp_file(text_to_prettify)
 
     prettified_text = prettify_verbose(view.window(), [
-        editor_file_syntax, editor_indent_size, editor_indent_with_tabs,
-        editor_text_file_path, original_file_path
+        global_file_rules, editor_indent_size,
+        editor_indent_with_tabs, editor_file_syntax, editor_text_file_path,
+        original_file_path
     ])
 
     os.remove(editor_text_file_path)

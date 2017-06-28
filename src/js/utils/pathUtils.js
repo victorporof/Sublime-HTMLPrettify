@@ -5,7 +5,7 @@
 import path from 'path';
 
 import { PATH_SEP, USER_HOME_DIR } from './paths';
-import { ORIGINAL_FILE_PATH, CONFIG_EXTRA_LOOKUP_PATHS } from './constants';
+import { CONFIG_EXTRA_LOOKUP_PATHS } from './constants';
 
 // Returns a list of all absolute ancestor paths starting from a given path.
 export const getAncestorPaths = (givenPath) => {
