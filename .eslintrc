@@ -6,6 +6,10 @@
   ],
 
   "rules": {
+    "max-len": ["error", {
+      "code": 120,
+      "ignoreUrls": true
+    }],
     "no-restricted-syntax": "off",
     "no-console": "off"
   }
