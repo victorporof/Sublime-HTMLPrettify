@@ -6,7 +6,6 @@ from __future__ import print_function
 import os
 import json
 from .utils.window_utils import get_pref
-from .utils.editor_utils import get_syntax, get_indent_size, get_indent_with_tabs
 from .utils.editor_utils import get_editor_selections_copy, get_editor_folded_contents
 from .utils.editor_utils import get_entire_buffer_text, get_first_selected_text
 from .utils.editor_utils import has_selection
@@ -18,11 +17,11 @@ from .utils.script_utils import prettify_verbose
 
 
 def main(view, edit):
-    editor_file_syntax = get_syntax(view) if get_pref(
+    editor_file_syntax = view.settings().get("syntax") if get_pref(
         "use_editor_syntax") else "?"
-    editor_indent_size = get_indent_size(view) if get_pref(
+    editor_indent_size = view.settings().get("tab_size") if get_pref(
         "use_editor_indentation") else "?"
-    editor_indent_with_tabs = get_indent_with_tabs(view) if get_pref(
+    editor_indent_with_tabs = view.settings().get("use_tab_stops") if get_pref(
         "use_editor_indentation") else "?"
     respect_editorconfig_files = get_pref("respect_editorconfig")
     global_file_rules = get_pref("file_rules")
