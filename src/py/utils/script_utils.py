@@ -4,7 +4,6 @@
 """Various utility functions used by this plugin"""
 
 from __future__ import print_function
-from webbrowser import open_new_tab
 from sublime import ok_cancel_dialog
 
 from .constants import DIAGNOSTICS_MARKER_BEGIN, DIAGNOSTICS_MARKER_END

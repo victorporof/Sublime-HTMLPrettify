@@ -7,5 +7,6 @@ from webbrowser import open_new_tab
 
 
 def file_bug():
-    open_new_tab(
-        "https://github.com/victorporof/Sublime-HTMLPrettify/issues/new")
+    """Opens a new tab in the default browser at this plugin's repo"""
+    url = "https://github.com/victorporof/Sublime-HTMLPrettify/issues/new"
+    open_new_tab(url)

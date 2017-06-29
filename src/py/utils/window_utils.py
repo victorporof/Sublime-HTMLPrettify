@@ -18,39 +18,41 @@ def get_pref(key):
 
 def open_config_rc(window):
     """Opens the default .jsbeautifyrc file for editing in a new tab"""
-    window.open_file(join(get_root_dir(), '.jsbeautifyrc.defaults'))
+    file_path = join(get_root_dir(), '.jsbeautifyrc.defaults')
+    window.open_file(file_path)
 
 
 def open_u_config_rc(window):
     """Opens the user's .jsbeautifyrc file for editing in a new tab"""
-    old_jsbeautifyrc = read_text_from_file(
-        join(get_root_dir(), '.jsbeautifyrc'), default_contents="{\n}")
+    defaults = "{\n}"
+    old_jsbeautifyrc_path = join(get_root_dir(), '.jsbeautifyrc')
+    old_jsbeautifyrc = read_text_from_file(old_jsbeautifyrc_path, defaults)
 
-    window.open_file(
-        ensure_file(
-            join(get_plugin_user_dir(), '.jsbeautifyrc'), old_jsbeautifyrc))
+    file_path = join(get_plugin_user_dir(), '.jsbeautifyrc')
+    window.open_file(ensure_file(file_path, default_contents=old_jsbeautifyrc))
 
 
 def open_sublime_settings(window):
     """Opens the default plugin settings file for editing in a new tab"""
-    window.open_file(join(get_root_dir(), SETTINGS_FILENAME))
+    file_path = join(get_root_dir(), SETTINGS_FILENAME)
+    window.open_file(file_path)
 
 
 def open_u_sublime_settings(window):
     """Opens the user's plugin settings file for editing in a new tab"""
-    window.open_file(
-        ensure_file(join(get_plugin_user_dir(), SETTINGS_FILENAME)))
+    file_path = join(get_plugin_user_dir(), SETTINGS_FILENAME)
+    window.open_file(ensure_file(file_path, default_contents="{\n}"))
 
 
 def open_sublime_keymap(window, platform):
     """Opens the default plugin keyboard bindings file for editing in a new tab"""
-    window.open_file(
-        join(get_root_dir(), KEYMAP_FILENAME.replace("$PLATFORM", platform)))
+    file_name = KEYMAP_FILENAME.replace("$PLATFORM", platform)
+    file_path = join(get_root_dir(), file_name)
+    window.open_file(file_path)
 
 
 def open_u_sublime_keymap(window, platform):
     """Opens the user's plugin keyboard bindings file for editing in a new tab"""
-    window.open_file(
-        ensure_file(
-            join(get_plugin_user_dir(),
-                 KEYMAP_FILENAME.replace("$PLATFORM", platform))))
+    file_name = KEYMAP_FILENAME.replace("$PLATFORM", platform)
+    file_path = join(get_plugin_user_dir(), file_name)
+    window.open_file(ensure_file(file_path, default_contents="{\n}"))

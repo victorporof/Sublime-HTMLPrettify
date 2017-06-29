@@ -41,7 +41,7 @@ def read_text_from_file(file_path, default_contents=None):
     return default_contents
 
 
-def ensure_file(file_path, default_contents="{\n}"):
+def ensure_file(file_path, default_contents=None):
     """Ensures a file exists; if it doesn't, one is created with some contents"""
     if not isdir(dirname(file_path)):
         makedirs(dirname(file_path))
