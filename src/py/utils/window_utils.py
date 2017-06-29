@@ -55,4 +55,4 @@ def open_u_sublime_keymap(window, platform):
     """Opens the user's plugin keyboard bindings file for editing in a new tab"""
     file_name = KEYMAP_FILENAME.replace("$PLATFORM", platform)
     file_path = join(get_plugin_user_dir(), file_name)
-    window.open_file(ensure_file(file_path, default_contents="{\n}"))
+    window.open_file(ensure_file(file_path, default_contents="[\n]"))
