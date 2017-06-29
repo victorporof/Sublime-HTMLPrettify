@@ -12,6 +12,7 @@ import { EDITOR_INDENT_SIZE, EDITOR_INDENT_WITH_TABS } from './constants';
 import { parseJSON5File } from './jsonUtils';
 import { parseEditorConfigFile } from './editorconfigUtils';
 import { sanitizeJsbeautifyConfig, translateEditorConfigToJsbeautifyConfig } from './configSanitizers';
+import { isMatchingGlob } from './fileUtils';
 
 // Parses a .jsbeautifyrc json file and returns a sanitized object
 // with a consistent and expected format.
@@ -24,12 +25,31 @@ export const parseDefaultJsbeautifyConfig = () =>
 
 // Clones and extends a given .jsbeautifyrc object with the one located at a
 // file path. If none exists, a clone of the original is returned.
-export const extendJsbeautifyConfig = async (newJsbeautifyConfig, oldJsbeautifyConfig) => {
+export const extendJsbeautifyConfig = (newJsbeautifyConfig, oldJsbeautifyConfig) => {
   const oldClonedJsbeautifyConfig = clone(oldJsbeautifyConfig);
 
-  for (const [fileType, newFileConfig] of Object.entries(newJsbeautifyConfig)) {
-    for (const [prefName, newPrefValue] of Object.entries(newFileConfig)) {
-      oldClonedJsbeautifyConfig[fileType][prefName] = newPrefValue;
+  for (const [fileType, newFileSettings] of Object.entries(newJsbeautifyConfig)) {
+    switch (fileType) {
+      case 'all':
+      case 'html':
+      case 'css':
+      case 'js':
+      case 'json':
+        oldClonedJsbeautifyConfig[fileType] = {
+          ...oldClonedJsbeautifyConfig[fileType] || {},
+          ...newFileSettings,
+        };
+        break;
+      case 'custom':
+        for (const [globString, newGlobConfig] of Object.entries(newFileSettings)) {
+          oldClonedJsbeautifyConfig.custom[globString] = {
+            ...oldClonedJsbeautifyConfig.custom[globString] || {},
+            ...newGlobConfig,
+          };
+        }
+        break;
+      default:
+        throw new Error(`Unknown .jsbeautifyrc file type: ${fileType}`);
     }
   }
 
@@ -78,41 +98,91 @@ export const extendJsbeautifyConfigFromEditorConfigInFolders = async (folderPath
   return clone(oldJsbeautifyConfig);
 };
 
-// Clones and extends a given .jsbeautifyrc with some additonal meta-options
-// following some specific rules respecting global editor settings.
-export const finalizeJsbeautifyConfig = (jsbeautifyConfig) => {
-  const newJsbeautifyConfig = clone(jsbeautifyConfig);
+// Clones and extends a given .jsbeautifyrc with some additonal custom options
+// defined in the "custom" field, which contains globs defining additional
+// prettification rules for certain files paths.
+export const extendJsbeautifyConfigWithCurrentFileMatchRules = (jsbeautifyConfig) => {
+  const clonedJsbeautifyConfig = clone(jsbeautifyConfig);
+  clonedJsbeautifyConfig.currentFileMatchRules = {};
 
-  if (EDITOR_INDENT_SIZE !== '?') {
-    newJsbeautifyConfig.html.indent_size = +EDITOR_INDENT_SIZE;
-    newJsbeautifyConfig.css.indent_size = +EDITOR_INDENT_SIZE;
-    newJsbeautifyConfig.js.indent_size = +EDITOR_INDENT_SIZE;
-    newJsbeautifyConfig.json.indent_size = +EDITOR_INDENT_SIZE;
-  }
-  if (EDITOR_INDENT_WITH_TABS !== '?') {
-    if (EDITOR_INDENT_WITH_TABS === 'True') {
-      newJsbeautifyConfig.html.indent_with_tabs = true;
-      newJsbeautifyConfig.html.indent_char = '\t';
-      newJsbeautifyConfig.css.indent_with_tabs = true;
-      newJsbeautifyConfig.css.indent_char = '\t';
-      newJsbeautifyConfig.js.indent_with_tabs = true;
-      newJsbeautifyConfig.js.indent_char = '\t';
-      newJsbeautifyConfig.json.indent_with_tabs = true;
-      newJsbeautifyConfig.json.indent_char = '\t';
-    } else {
-      newJsbeautifyConfig.html.indent_with_tabs = false;
-      newJsbeautifyConfig.html.indent_char = ' ';
-      newJsbeautifyConfig.css.indent_with_tabs = false;
-      newJsbeautifyConfig.css.indent_char = ' ';
-      newJsbeautifyConfig.js.indent_with_tabs = false;
-      newJsbeautifyConfig.js.indent_char = ' ';
-      newJsbeautifyConfig.json.indent_with_tabs = false;
-      newJsbeautifyConfig.json.indent_char = ' ';
+  for (const [globString, globFileConfig] of Object.entries(clonedJsbeautifyConfig.custom)) {
+    for (const [prefName, globPrefValue] of Object.entries(globFileConfig)) {
+      if (isMatchingGlob(globString)) {
+        clonedJsbeautifyConfig.currentFileMatchRules[prefName] = globPrefValue;
+      }
     }
   }
 
-  newJsbeautifyConfig.html.js = newJsbeautifyConfig.js;
-  newJsbeautifyConfig.html.css = newJsbeautifyConfig.css;
+  return clonedJsbeautifyConfig;
+};
 
-  return newJsbeautifyConfig;
+// Clones and extends a given .jsbeautifyrc with some additonal custom options
+// retrieved from the editor settings.
+export const extendJsbeautifyConfigWithEditorOverrides = (jsbeautifyConfig) => {
+  const clonedJsbeautifyConfig = clone(jsbeautifyConfig);
+  clonedJsbeautifyConfig.editorOverrides = {};
+
+  if (EDITOR_INDENT_SIZE !== '?') {
+    clonedJsbeautifyConfig.editorOverrides.indent_size = +EDITOR_INDENT_SIZE;
+  }
+
+  if (EDITOR_INDENT_WITH_TABS !== '?') {
+    if (EDITOR_INDENT_WITH_TABS === 'True') {
+      clonedJsbeautifyConfig.editorOverrides.indent_with_tabs = true;
+      clonedJsbeautifyConfig.editorOverrides.indent_char = '\t';
+    } else {
+      clonedJsbeautifyConfig.editorOverrides.indent_with_tabs = false;
+      clonedJsbeautifyConfig.editorOverrides.indent_char = ' ';
+    }
+  }
+
+  return clonedJsbeautifyConfig;
+};
+
+// Clones and extends a given .jsbeautifyrc with some additonal meta-options
+// following some specific rules respecting global editor settings.
+export const finalizeJsbeautifyConfig = (jsbeautifyConfig) => {
+  const extendedJsbeautifyConfig =
+    extendJsbeautifyConfigWithCurrentFileMatchRules(
+      extendJsbeautifyConfigWithEditorOverrides(
+        jsbeautifyConfig,
+      ),
+    );
+
+  extendedJsbeautifyConfig.html = {
+    ...extendedJsbeautifyConfig.all,
+    ...extendedJsbeautifyConfig.html,
+    css: extendedJsbeautifyConfig.css,
+    js: extendedJsbeautifyConfig.js,
+    ...extendedJsbeautifyConfig.currentFileMatchRules,
+    ...extendedJsbeautifyConfig.editorOverrides,
+  };
+
+  extendedJsbeautifyConfig.css = {
+    ...extendedJsbeautifyConfig.all,
+    ...extendedJsbeautifyConfig.css,
+    ...extendedJsbeautifyConfig.currentFileMatchRules,
+    ...extendedJsbeautifyConfig.editorOverrides,
+  };
+
+  extendedJsbeautifyConfig.js = {
+    ...extendedJsbeautifyConfig.all,
+    ...extendedJsbeautifyConfig.js,
+    ...extendedJsbeautifyConfig.currentFileMatchRules,
+    ...extendedJsbeautifyConfig.editorOverrides,
+  };
+
+  extendedJsbeautifyConfig.json = {
+    ...extendedJsbeautifyConfig.all,
+    ...extendedJsbeautifyConfig.json,
+    ...extendedJsbeautifyConfig.currentFileMatchRules,
+    ...extendedJsbeautifyConfig.editorOverrides,
+  };
+
+  // delete extendedJsbeautifyConfig.all;
+  // delete extendedJsbeautifyConfig.custom;
+  // delete extendedJsbeautifyConfig.currentFileMatchRules;
+  // delete extendedJsbeautifyConfig.editorOverrides;
+
+  return extendedJsbeautifyConfig;
 };

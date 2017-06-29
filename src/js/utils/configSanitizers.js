@@ -4,9 +4,15 @@
 
 import pick from 'lodash/pick';
 import mapObj from 'map-obj';
-import minimatch from 'minimatch';
 
-const VALID_JSBEAUTIFY_CONFIG_KEYS = ['html', 'css', 'js', 'json'];
+const VALID_JSBEAUTIFY_CONFIG_KEYS = [
+  'all',
+  'html',
+  'css',
+  'js',
+  'json',
+  'custom',
+];
 
 // Utility function special casing "true" and "false" values as being
 // actually booleans. This avoids common accidents in json files.
@@ -36,41 +42,41 @@ export const sanitizeCharishValues = (prefValue) => {
 
 // Utility function massaging .jsbeautifyrc objects into a consistent and
 // expected format, discarding unknown keys and sanitizing values.
-export const sanitizeJsbeautifyConfig = (jsbeautifyConfig) => {
-  const sanitizedJsbeautifyConfig = pick(jsbeautifyConfig, VALID_JSBEAUTIFY_CONFIG_KEYS);
-
-  for (const [fileType, fileConfig] of Object.entries(sanitizedJsbeautifyConfig)) {
-    for (const [prefName, prefValue] of Object.entries(fileConfig)) {
-      sanitizedJsbeautifyConfig[fileType][prefName] = sanitizeBooleanishValues(prefValue);
+export const sanitizeJsbeautifyConfig = jsbeautifyConfig =>
+  mapObj(pick(jsbeautifyConfig, VALID_JSBEAUTIFY_CONFIG_KEYS), (fileType, fileSettings) => {
+    switch (fileType) {
+      case 'all':
+      case 'html':
+      case 'css':
+      case 'js':
+      case 'json':
+        return [fileType, mapObj(fileSettings, (prefName, prefValue) =>
+          [prefName, sanitizeBooleanishValues(prefValue)],
+        )];
+      case 'custom':
+        return [fileType, mapObj(fileSettings, (globString, globConfig) =>
+          [globString, mapObj(globConfig, (prefName, prefValue) =>
+            [prefName, sanitizeBooleanishValues(prefValue)],
+          )],
+        )];
+      default:
+        throw new Error(`Unknown .jsbeautifyrc file type: ${fileType}`);
     }
-  }
-
-  return sanitizedJsbeautifyConfig;
-};
-
-// Maps an .editorconfig object to its respective .jsbeautifyconfig form.
-export const translateEditorConfigToJsbeautifyConfig = (editorConfig, { root = true } = {}) =>
-  mapObj(editorConfig, (key, value) => {
-    if (root) {
-      if (minimatch('*.html', key)) {
-        return ['html', translateEditorConfigToJsbeautifyConfig(value, { root: false })];
-      }
-      if (minimatch('*.css', key)) {
-        return ['css', translateEditorConfigToJsbeautifyConfig(value, { root: false })];
-      }
-      if (minimatch('*.js', key)) {
-        return ['js', translateEditorConfigToJsbeautifyConfig(value, { root: false })];
-      }
-      if (minimatch('*.json', key)) {
-        return ['json', translateEditorConfigToJsbeautifyConfig(value, { root: false })];
-      }
-      return [key, value];
-    }
-    if (key === 'indent_style') {
-      return ['indent_char', sanitizeCharishValues(value)];
-    }
-    if (key === 'insert_final_newline') {
-      return ['end_with_newline', value];
-    }
-    return [key, value];
   });
+
+// Maps an .editorconfig object to its respective .jsbeautifyrc form.
+export const translateEditorConfigToJsbeautifyConfig = editorConfig =>
+  mapObj(editorConfig, (globString, globConfig) =>
+    ['custom', {
+      [globString]: mapObj(globConfig, (prefName, prefValue) => {
+        switch (prefName) {
+          case 'indent_style':
+            return ['indent_char', sanitizeCharishValues(prefValue)];
+          case 'insert_final_newline':
+            return ['end_with_newline', prefValue];
+          default:
+            return [prefName, prefValue];
+        }
+      }),
+    }],
+  );

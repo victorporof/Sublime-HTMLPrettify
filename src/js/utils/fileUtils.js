@@ -2,6 +2,10 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
+import { basename } from 'path';
+
+import minimatch from 'minimatch';
+
 import { GLOBAL_FILE_RULES_JSON, ORIGINAL_FILE_PATH, EDITOR_FILE_SYNTAX } from './constants';
 import { parseJSON5 } from './jsonUtils';
 
@@ -97,3 +101,13 @@ export const isJS = (bufferContents) => {
   }
   return hasAllowedFileSyntax('js', EDITOR_FILE_SYNTAX);
 };
+
+// Checks if a file path matches a particular glob string.
+export const isMatchingGlob = (globString) => {
+  // If file unsaved, reject globl matching;
+  if (ORIGINAL_FILE_PATH === '?') {
+    return false;
+  }
+  return minimatch(ORIGINAL_FILE_PATH, globString) || minimatch(basename(ORIGINAL_FILE_PATH), globString);
+};
+

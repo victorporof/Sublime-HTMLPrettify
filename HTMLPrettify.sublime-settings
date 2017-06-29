@@ -47,7 +47,15 @@
       "disallowed_file_patterns": []
     },
     "json": {
-      "allowed_file_extensions": ["json", "jshintrc", "jsbeautifyrc", "sublime-settings", "sublime-keymap"],
+      "allowed_file_extensions": [
+        "json",
+        "jshintrc",
+        "jsbeautifyrc",
+        "sublime-settings",
+        "sublime-keymap",
+        "sublime-commands",
+        "sublime-menu"
+      ],
       "allowed_file_syntaxes": ["json"],
       "disallowed_file_patterns": []
     }
