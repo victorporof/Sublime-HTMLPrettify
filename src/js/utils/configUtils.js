@@ -7,10 +7,11 @@ import fs from 'fs-extra';
 import clone from 'lodash/clone';
 import promiseArrays from 'promise-arrays';
 
+import { ROOT_DIR } from './paths';
+import { EDITOR_INDENT_SIZE, EDITOR_INDENT_WITH_TABS } from './constants';
 import { parseJSON5File } from './jsonUtils';
 import { parseEditorConfigFile } from './editorconfigUtils';
 import { sanitizeJsbeautifyConfig, translateEditorConfigToJsbeautifyConfig } from './configSanitizers';
-import { ROOT_DIR } from './paths';
 
 // Parses a .jsbeautifyrc json file and returns a sanitized object
 // with a consistent and expected format.
@@ -78,25 +79,26 @@ export const extendJsbeautifyConfigFromEditorConfigInFolders = async (folderPath
 };
 
 // Clones and extends a given .jsbeautifyrc with some additonal meta-options
-// following some specific rules.
-export const finalizeJsbeautifyConfig = (
-  jsbeautifyConfig, editorIndentSize, editorIndentWithTabs,
-) => {
+// following some specific rules respecting global editor settings.
+export const finalizeJsbeautifyConfig = (jsbeautifyConfig) => {
   const newJsbeautifyConfig = clone(jsbeautifyConfig);
 
-  if (editorIndentSize !== '?') {
-    newJsbeautifyConfig.html.indent_size = +editorIndentSize;
-    newJsbeautifyConfig.css.indent_size = +editorIndentSize;
-    newJsbeautifyConfig.js.indent_size = +editorIndentSize;
+  if (EDITOR_INDENT_SIZE !== '?') {
+    newJsbeautifyConfig.html.indent_size = +EDITOR_INDENT_SIZE;
+    newJsbeautifyConfig.css.indent_size = +EDITOR_INDENT_SIZE;
+    newJsbeautifyConfig.js.indent_size = +EDITOR_INDENT_SIZE;
+    newJsbeautifyConfig.json.indent_size = +EDITOR_INDENT_SIZE;
   }
-  if (editorIndentWithTabs !== '?') {
-    if (editorIndentWithTabs === 'True') {
+  if (EDITOR_INDENT_WITH_TABS !== '?') {
+    if (EDITOR_INDENT_WITH_TABS === 'True') {
       newJsbeautifyConfig.html.indent_with_tabs = true;
       newJsbeautifyConfig.html.indent_char = '\t';
       newJsbeautifyConfig.css.indent_with_tabs = true;
       newJsbeautifyConfig.css.indent_char = '\t';
       newJsbeautifyConfig.js.indent_with_tabs = true;
       newJsbeautifyConfig.js.indent_char = '\t';
+      newJsbeautifyConfig.json.indent_with_tabs = true;
+      newJsbeautifyConfig.json.indent_char = '\t';
     } else {
       newJsbeautifyConfig.html.indent_with_tabs = false;
       newJsbeautifyConfig.html.indent_char = ' ';
@@ -104,6 +106,8 @@ export const finalizeJsbeautifyConfig = (
       newJsbeautifyConfig.css.indent_char = ' ';
       newJsbeautifyConfig.js.indent_with_tabs = false;
       newJsbeautifyConfig.js.indent_char = ' ';
+      newJsbeautifyConfig.json.indent_with_tabs = false;
+      newJsbeautifyConfig.json.indent_char = ' ';
     }
   }
 

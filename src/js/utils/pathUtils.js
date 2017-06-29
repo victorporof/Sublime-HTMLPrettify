@@ -5,7 +5,7 @@
 import path from 'path';
 
 import { PATH_SEP, USER_HOME_DIR } from './paths';
-import { CONFIG_EXTRA_LOOKUP_PATHS } from './constants';
+import { ORIGINAL_FILE_PATH, CONFIG_EXTRA_LOOKUP_PATHS } from './constants';
 
 // Returns a list of all absolute ancestor paths starting from a given path.
 export const getAncestorPaths = (givenPath) => {
@@ -14,8 +14,8 @@ export const getAncestorPaths = (givenPath) => {
 };
 
 // Returns all potential directories where a configuration file could exist.
-export const getPotentialConfigDirs = (givenPath) => {
-  const potentialConfigDirs = getAncestorPaths(givenPath);
+export const getPotentialConfigDirs = () => {
+  const potentialConfigDirs = getAncestorPaths(path.dirname(ORIGINAL_FILE_PATH));
 
   // Start with the current directory first, then with the user's home folder,
   // and end with the user's personal sublime settings folder.

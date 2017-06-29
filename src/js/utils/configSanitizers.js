@@ -11,25 +11,27 @@ const VALID_JSBEAUTIFY_CONFIG_KEYS = ['html', 'css', 'js', 'json'];
 // Utility function special casing "true" and "false" values as being
 // actually booleans. This avoids common accidents in json files.
 export const sanitizeBooleanishValues = (prefValue) => {
-  if (prefValue === 'true') {
-    return true;
+  switch (prefValue) {
+    case 'true':
+      return true;
+    case 'false':
+      return false;
+    default:
+      return prefValue;
   }
-  if (prefValue === 'false') {
-    return false;
-  }
-  return prefValue;
 };
 
 // Utility function special casing "tab" and "space" values as being
 // actually \t and \s.
 export const sanitizeCharishValues = (prefValue) => {
-  if (prefValue === 'tab') {
-    return '\t';
+  switch (prefValue) {
+    case 'tab':
+      return '\t';
+    case 'space':
+      return ' ';
+    default:
+      return prefValue;
   }
-  if (prefValue === 'space') {
-    return ' ';
-  }
-  return prefValue;
 };
 
 // Utility function massaging .jsbeautifyrc objects into a consistent and
