@@ -1,0 +1,15 @@
+{
+    "spaceUnits": 4,
+    "useTabChar": false,
+    "language": {
+        "javascript": {
+            "linting.prefer": [
+                "JSHint"
+            ],
+            "linting.usePreferredOnly": true
+        },
+        "markdown": {
+            "wordWrap": true
+        }
+    }
+}

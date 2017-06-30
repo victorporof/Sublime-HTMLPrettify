@@ -1,0 +1,46 @@
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.getPotentialConfigDirs = exports.getAncestorPaths = undefined;
+
+var _toConsumableArray2 = require('babel-runtime/helpers/toConsumableArray');
+
+var _toConsumableArray3 = _interopRequireDefault(_toConsumableArray2);
+
+var _path = require('path');
+
+var _path2 = _interopRequireDefault(_path);
+
+var _paths = require('./paths');
+
+var _constants = require('./constants');
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+// Returns a list of all absolute ancestor paths starting from a given path.
+var getAncestorPaths = exports.getAncestorPaths = function getAncestorPaths(givenPath) {
+  var pathParts = _path2.default.resolve(givenPath).split(_paths.PATH_SEP);
+  return pathParts.map(function (value, key) {
+    return pathParts.slice(0, key + 1).join(_paths.PATH_SEP);
+  });
+};
+
+// Returns all potential directories where a configuration file could exist.
+/* This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
+
+var getPotentialConfigDirs = exports.getPotentialConfigDirs = function getPotentialConfigDirs() {
+  var potentialConfigDirs = getAncestorPaths(_path2.default.dirname(_constants.ORIGINAL_FILE_PATH));
+
+  // Start with the current directory first, then with the user's home folder,
+  // and end with the user's personal sublime settings folder.
+  potentialConfigDirs.reverse();
+  potentialConfigDirs.push(_paths.USER_HOME_DIR);
+  potentialConfigDirs.push.apply(potentialConfigDirs, (0, _toConsumableArray3.default)(_constants.CONFIG_EXTRA_LOOKUP_PATHS));
+
+  return potentialConfigDirs.filter(Boolean);
+};
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInV0aWxzL3BhdGhVdGlscy5qcyJdLCJuYW1lcyI6WyJnZXRBbmNlc3RvclBhdGhzIiwiZ2l2ZW5QYXRoIiwicGF0aFBhcnRzIiwicmVzb2x2ZSIsInNwbGl0IiwibWFwIiwidmFsdWUiLCJrZXkiLCJzbGljZSIsImpvaW4iLCJnZXRQb3RlbnRpYWxDb25maWdEaXJzIiwicG90ZW50aWFsQ29uZmlnRGlycyIsImRpcm5hbWUiLCJyZXZlcnNlIiwicHVzaCIsImZpbHRlciIsIkJvb2xlYW4iXSwibWFwcGluZ3MiOiI7Ozs7Ozs7Ozs7O0FBSUE7Ozs7QUFFQTs7QUFDQTs7OztBQUVBO0FBQ08sSUFBTUEsOENBQW1CLFNBQW5CQSxnQkFBbUIsQ0FBQ0MsU0FBRCxFQUFlO0FBQzdDLE1BQU1DLFlBQVksZUFBS0MsT0FBTCxDQUFhRixTQUFiLEVBQXdCRyxLQUF4QixpQkFBbEI7QUFDQSxTQUFPRixVQUFVRyxHQUFWLENBQWMsVUFBQ0MsS0FBRCxFQUFRQyxHQUFSO0FBQUEsV0FBZ0JMLFVBQVVNLEtBQVYsQ0FBZ0IsQ0FBaEIsRUFBbUJELE1BQU0sQ0FBekIsRUFBNEJFLElBQTVCLGlCQUFoQjtBQUFBLEdBQWQsQ0FBUDtBQUNELENBSE07O0FBS1A7QUFmQTs7OztBQWdCTyxJQUFNQywwREFBeUIsU0FBekJBLHNCQUF5QixHQUFNO0FBQzFDLE1BQU1DLHNCQUFzQlgsaUJBQWlCLGVBQUtZLE9BQUwsK0JBQWpCLENBQTVCOztBQUVBO0FBQ0E7QUFDQUQsc0JBQW9CRSxPQUFwQjtBQUNBRixzQkFBb0JHLElBQXBCO0FBQ0FILHNCQUFvQkcsSUFBcEI7O0FBRUEsU0FBT0gsb0JBQW9CSSxNQUFwQixDQUEyQkMsT0FBM0IsQ0FBUDtBQUNELENBVk0iLCJmaWxlIjoidXRpbHMvcGF0aFV0aWxzLmpzIiwic291cmNlc0NvbnRlbnQiOlsiLyogVGhpcyBTb3VyY2UgQ29kZSBGb3JtIGlzIHN1YmplY3QgdG8gdGhlIHRlcm1zIG9mIHRoZSBNb3ppbGxhIFB1YmxpY1xuICogTGljZW5zZSwgdi4gMi4wLiBJZiBhIGNvcHkgb2YgdGhlIE1QTCB3YXMgbm90IGRpc3RyaWJ1dGVkIHdpdGggdGhpc1xuICogZmlsZSwgWW91IGNhbiBvYnRhaW4gb25lIGF0IGh0dHA6Ly9tb3ppbGxhLm9yZy9NUEwvMi4wLy4gKi9cblxuaW1wb3J0IHBhdGggZnJvbSAncGF0aCc7XG5cbmltcG9ydCB7IFBBVEhfU0VQLCBVU0VSX0hPTUVfRElSIH0gZnJvbSAnLi9wYXRocyc7XG5pbXBvcnQgeyBPUklHSU5BTF9GSUxFX1BBVEgsIENPTkZJR19FWFRSQV9MT09LVVBfUEFUSFMgfSBmcm9tICcuL2NvbnN0YW50cyc7XG5cbi8vIFJldHVybnMgYSBsaXN0IG9mIGFsbCBhYnNvbHV0ZSBhbmNlc3RvciBwYXRocyBzdGFydGluZyBmcm9tIGEgZ2l2ZW4gcGF0aC5cbmV4cG9ydCBjb25zdCBnZXRBbmNlc3RvclBhdGhzID0gKGdpdmVuUGF0aCkgPT4ge1xuICBjb25zdCBwYXRoUGFydHMgPSBwYXRoLnJlc29sdmUoZ2l2ZW5QYXRoKS5zcGxpdChQQVRIX1NFUCk7XG4gIHJldHVybiBwYXRoUGFydHMubWFwKCh2YWx1ZSwga2V5KSA9PiBwYXRoUGFydHMuc2xpY2UoMCwga2V5ICsgMSkuam9pbihQQVRIX1NFUCkpO1xufTtcblxuLy8gUmV0dXJucyBhbGwgcG90ZW50aWFsIGRpcmVjdG9yaWVzIHdoZXJlIGEgY29uZmlndXJhdGlvbiBmaWxlIGNvdWxkIGV4aXN0LlxuZXhwb3J0IGNvbnN0IGdldFBvdGVudGlhbENvbmZpZ0RpcnMgPSAoKSA9PiB7XG4gIGNvbnN0IHBvdGVudGlhbENvbmZpZ0RpcnMgPSBnZXRBbmNlc3RvclBhdGhzKHBhdGguZGlybmFtZShPUklHSU5BTF9GSUxFX1BBVEgpKTtcblxuICAvLyBTdGFydCB3aXRoIHRoZSBjdXJyZW50IGRpcmVjdG9yeSBmaXJzdCwgdGhlbiB3aXRoIHRoZSB1c2VyJ3MgaG9tZSBmb2xkZXIsXG4gIC8vIGFuZCBlbmQgd2l0aCB0aGUgdXNlcidzIHBlcnNvbmFsIHN1YmxpbWUgc2V0dGluZ3MgZm9sZGVyLlxuICBwb3RlbnRpYWxDb25maWdEaXJzLnJldmVyc2UoKTtcbiAgcG90ZW50aWFsQ29uZmlnRGlycy5wdXNoKFVTRVJfSE9NRV9ESVIpO1xuICBwb3RlbnRpYWxDb25maWdEaXJzLnB1c2goLi4uQ09ORklHX0VYVFJBX0xPT0tVUF9QQVRIUyk7XG5cbiAgcmV0dXJuIHBvdGVudGlhbENvbmZpZ0RpcnMuZmlsdGVyKEJvb2xlYW4pO1xufTtcbiJdLCJzb3VyY2VSb290IjoiL3NvdXJjZS8ifQ==
