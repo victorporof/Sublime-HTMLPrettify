@@ -11,6 +11,18 @@
   // Automatically format when a file is saved.
   "format_on_save": false,
 
+  // Automatically format when a file is opened. (Sublime Text 3 only)
+  "format_on_open": false,
+
+  // Automatically format when a file is focused. (Sublime Text 3 only)
+  "format_on_focus": false,
+
+  // Automatically format when a file loses focus. (Sublime Text 3 only)
+  "format_on_focus_lost": false,
+
+  // Automatically format while a file is being edited. (Sublime Text 3 only)
+  "format_while_editing": false,
+
   // Only format the selection if there's one available.
   "format_selection_only": true,
 

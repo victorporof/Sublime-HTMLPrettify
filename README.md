@@ -71,6 +71,12 @@ To beautify your code when saving the document, set the `format_on_save` setting
 * `Ctrl+Shift+P` or `Cmd+Shift+P` in Linux/Windows/OS X
 * type `htmlprettify`, select `Set Plugin Options`
 
+## Beautify while editing (Experimental / Sublime Text 3 only)
+To beautify your code when while editing a document, set the `format_while_editing` setting to `true` in `HTMLPrettify.sublime-settings`.
+
+## Auto-beautify when opening, focusing or bluring a file (Sublime Text 3 only)
+To beautify your code when on any of these events, set the `format_on_open`, `format_on_focus`, `format_on_focus_lost` settings to `true` in `HTMLPrettify.sublime-settings`.
+
 ## Preserving selection after formatting
 To stop beautifying only the selected text, set the `format_selection_only` setting to `false` in `HTMLPrettify.sublime-settings`.
 
