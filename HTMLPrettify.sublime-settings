@@ -49,6 +49,8 @@
     "json": {
       "allowed_file_extensions": [
         "json",
+        "babelrc",
+        "eslintrc",
         "jshintrc",
         "jsbeautifyrc",
         "sublime-settings",
