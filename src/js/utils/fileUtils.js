@@ -13,7 +13,7 @@ const GLOBAL_FILE_RULES = parseJSON5(GLOBAL_FILE_RULES_JSON);
 
 // Checks if a file path is allowed by regexing the file name and expecting
 // it not to match certain expressions.
-const isDisallowedFilePath = (fileType, filePath) => {
+const isDisallowedFilePattern = (fileType, filePath) => {
   for (const pattern of GLOBAL_FILE_RULES[fileType].disallowed_file_patterns || []) {
     if (filePath.match(new RegExp(pattern, 'i'))) {
       return true;
@@ -50,13 +50,15 @@ export const isCSS = () => {
   if (ORIGINAL_FILE_PATH === '?') {
     return false;
   }
-  if (isDisallowedFilePath('css', ORIGINAL_FILE_PATH)) {
+  if (isDisallowedFilePattern('css', ORIGINAL_FILE_PATH)) {
     return false;
   }
+  const allowedExtension = hasAllowedFileExtension('css', ORIGINAL_FILE_PATH);
   if (EDITOR_FILE_SYNTAX === '?') {
-    return hasAllowedFileExtension('css', ORIGINAL_FILE_PATH);
+    return allowedExtension;
   }
-  return hasAllowedFileSyntax('css', EDITOR_FILE_SYNTAX);
+  const allowedSyntax = hasAllowedFileSyntax('css', EDITOR_FILE_SYNTAX);
+  return allowedSyntax || allowedExtension;
 };
 
 export const isHTML = (bufferContents) => {
@@ -64,13 +66,15 @@ export const isHTML = (bufferContents) => {
   if (ORIGINAL_FILE_PATH === '?') {
     return bufferContents.match(/^\s*</);
   }
-  if (isDisallowedFilePath('html', ORIGINAL_FILE_PATH)) {
+  if (isDisallowedFilePattern('html', ORIGINAL_FILE_PATH)) {
     return false;
   }
+  const allowedExtension = hasAllowedFileExtension('html', ORIGINAL_FILE_PATH);
   if (EDITOR_FILE_SYNTAX === '?') {
-    return hasAllowedFileExtension('html', ORIGINAL_FILE_PATH);
+    return allowedExtension;
   }
-  return hasAllowedFileSyntax('html', EDITOR_FILE_SYNTAX);
+  const allowedSyntax = hasAllowedFileSyntax('html', EDITOR_FILE_SYNTAX);
+  return allowedSyntax || allowedExtension;
 };
 
 export const isJSON = () => {
@@ -79,13 +83,15 @@ export const isJSON = () => {
   if (ORIGINAL_FILE_PATH === '?') {
     return false;
   }
-  if (isDisallowedFilePath('json', ORIGINAL_FILE_PATH)) {
+  if (isDisallowedFilePattern('json', ORIGINAL_FILE_PATH)) {
     return false;
   }
+  const allowedExtension = hasAllowedFileExtension('json', ORIGINAL_FILE_PATH);
   if (EDITOR_FILE_SYNTAX === '?') {
-    return hasAllowedFileExtension('json', ORIGINAL_FILE_PATH);
+    return allowedExtension;
   }
-  return hasAllowedFileSyntax('json', EDITOR_FILE_SYNTAX);
+  const allowedSyntax = hasAllowedFileSyntax('json', EDITOR_FILE_SYNTAX);
+  return allowedSyntax || allowedExtension;
 };
 
 export const isJS = (bufferContents) => {
@@ -93,13 +99,15 @@ export const isJS = (bufferContents) => {
   if (ORIGINAL_FILE_PATH === '?') {
     return !bufferContents.match(/^\s*</);
   }
-  if (isDisallowedFilePath('js', ORIGINAL_FILE_PATH)) {
+  if (isDisallowedFilePattern('js', ORIGINAL_FILE_PATH)) {
     return false;
   }
+  const allowedExtension = hasAllowedFileExtension('js', ORIGINAL_FILE_PATH);
   if (EDITOR_FILE_SYNTAX === '?') {
-    return hasAllowedFileExtension('js', ORIGINAL_FILE_PATH);
+    return allowedExtension;
   }
-  return hasAllowedFileSyntax('js', EDITOR_FILE_SYNTAX);
+  const allowedSyntax = hasAllowedFileSyntax('js', EDITOR_FILE_SYNTAX);
+  return allowedSyntax || allowedExtension;
 };
 
 // Checks if a file path matches a particular glob string.
