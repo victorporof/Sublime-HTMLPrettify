@@ -202,6 +202,9 @@ When one is found, it stops searching, and it uses those options along with the 
     // End output with newline
     "end_with_newline": false,
 
+    // Character(s) to use as line terminators.
+    "eol": "\n",
+
     // Initial indentation level
     "indent_level": 0,
 
@@ -271,6 +274,9 @@ When one is found, it stops searching, and it uses those options along with the 
     // Break chained method calls across subsequent lines
     "break_chained_methods": false,
 
+    // Put commas at the beginning of new line instead of end
+    "comma_first": false,
+
     // Pass E4X xml literals through untouched
     "e4x": false,
 
@@ -282,6 +288,9 @@ When one is found, it stops searching, and it uses those options along with the 
 
     // Preserve function indentation
     "keep_function_indentation": false,
+
+    // [before-newline|after-newline|preserve-newline] Set operator position
+    "operator_position": "before-newline",
 
     // Should the space before an anonymous function's parens be added, "function()" vs "function ()"
     "space_after_anon_function": false,
