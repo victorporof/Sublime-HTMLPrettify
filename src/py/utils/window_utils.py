@@ -18,7 +18,7 @@ def get_pref(key):
 
 def open_config_rc(window):
     """Opens the default .jsbeautifyrc file for editing in a new tab"""
-    file_path = join(get_root_dir(), '.jsbeautifyrc.defaults')
+    file_path = join(get_root_dir(), '.jsbeautifyrc.defaults.json')
     window.open_file(file_path)
 
 

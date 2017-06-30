@@ -21,7 +21,7 @@ export const parseJsbeautifyConfig = async filePath =>
 
 // Parses the default .jsbeautifyrc json file coming with this plugin.
 export const parseDefaultJsbeautifyConfig = () =>
-  parseJsbeautifyConfig(path.join(ROOT_DIR, '.jsbeautifyrc.defaults'));
+  parseJsbeautifyConfig(path.join(ROOT_DIR, '.jsbeautifyrc.defaults.json'));
 
 // Clones and extends a given .jsbeautifyrc object with the one located at a
 // file path. If none exists, a clone of the original is returned.
