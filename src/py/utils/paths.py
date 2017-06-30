@@ -8,10 +8,11 @@ from sublime import packages_path
 
 SETTINGS_FILENAME = 'HTMLPrettify.sublime-settings'
 KEYMAP_FILENAME = 'Default ($PLATFORM).sublime-keymap'
+PLUGIN_ROOT_DIR = abspath(join(dirname(abspath(__file__)), '..', '..', '..'))
 
 
 def get_root_dir():
-    return abspath(join(dirname(realpath(__file__)), '..', '..', '..'))
+    return PLUGIN_ROOT_DIR
 
 
 def get_user_dir():
