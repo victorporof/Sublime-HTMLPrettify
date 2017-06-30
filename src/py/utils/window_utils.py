@@ -7,7 +7,7 @@ from os.path import join
 from sublime import load_settings
 
 from .paths import SETTINGS_FILENAME, KEYMAP_FILENAME
-from .paths import get_root_dir, get_plugin_user_dir
+from .paths import get_root_dir, get_user_dir
 from .file_utils import read_text_from_file, ensure_file
 
 
@@ -28,7 +28,7 @@ def open_u_config_rc(window):
     old_jsbeautifyrc_path = join(get_root_dir(), '.jsbeautifyrc')
     old_jsbeautifyrc = read_text_from_file(old_jsbeautifyrc_path, defaults)
 
-    file_path = join(get_plugin_user_dir(), '.jsbeautifyrc')
+    file_path = join(get_user_dir(), '.jsbeautifyrc')
     window.open_file(ensure_file(file_path, default_contents=old_jsbeautifyrc))
 
 
@@ -40,7 +40,7 @@ def open_sublime_settings(window):
 
 def open_u_sublime_settings(window):
     """Opens the user's plugin settings file for editing in a new tab"""
-    file_path = join(get_plugin_user_dir(), SETTINGS_FILENAME)
+    file_path = join(get_user_dir(), SETTINGS_FILENAME)
     window.open_file(ensure_file(file_path, default_contents="{\n}"))
 
 
@@ -54,5 +54,5 @@ def open_sublime_keymap(window, platform):
 def open_u_sublime_keymap(window, platform):
     """Opens the user's plugin keyboard bindings file for editing in a new tab"""
     file_name = KEYMAP_FILENAME.replace("$PLATFORM", platform)
-    file_path = join(get_plugin_user_dir(), file_name)
+    file_path = join(get_user_dir(), file_name)
     window.open_file(ensure_file(file_path, default_contents="[\n]"))

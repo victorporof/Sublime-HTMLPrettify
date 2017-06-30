@@ -19,9 +19,5 @@ def get_user_dir():
     return join(packages_path(), 'User')
 
 
-def get_plugin_user_dir():
-    return join(get_user_dir(), basename(get_root_dir()))
-
-
 def get_main_js_file():
     return join(get_root_dir(), 'build', 'js-transpiled', 'main.js')

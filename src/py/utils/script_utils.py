@@ -8,7 +8,7 @@ from sublime import ok_cancel_dialog
 
 from .constants import DIAGNOSTICS_MARKER_BEGIN, DIAGNOSTICS_MARKER_END
 from .constants import PRETTIFIED_CODE_MARKER_BEGIN, PRETTIFIED_CODE_MARKER_END
-from .paths import get_root_dir, get_plugin_user_dir, get_main_js_file
+from .paths import get_root_dir, get_user_dir, get_main_js_file
 from .env_utils import NodeNotFoundError, NodeRuntimeError, run_node_command
 from .window_utils import get_pref, open_sublime_settings
 from .web_utils import file_bug
@@ -42,7 +42,7 @@ def get_prettified_code(output):
 
 def prettify(args):
     """Prettifies the code at the given file path"""
-    stdout = run_main_js(args + [get_plugin_user_dir(), get_root_dir()])
+    stdout = run_main_js(args + [get_user_dir(), get_root_dir()])
     prettified_code = get_prettified_code(stdout)
     output_diagnostics = get_diagnostics(stdout)
     return prettified_code, output_diagnostics
