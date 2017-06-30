@@ -191,6 +191,8 @@ When one is found, it stops searching, and it uses those options along with the 
     // and have the lowest level of precedence (meaning any of the settings in
     // the 'html', 'css', 'js', 'json' and 'custom' categories override these).
 
+    // You can add other .jsbeautifyrc rules in this section too.
+
     // End output with newline
     "end_with_newline": false,
 
@@ -220,6 +222,8 @@ When one is found, it stops searching, and it uses those options along with the 
     // Rules added here apply only to HTML files. They take precedence over all
     // of the settings in the 'all' category above.
 
+    // You can add other .jsbeautifyrc rules in this section too.
+
     // e.g. {{#foo}}, {{/foo}}
     "indent_handlebars": false,
 
@@ -237,6 +241,8 @@ When one is found, it stops searching, and it uses those options along with the 
     // Rules added here apply only to CSS files. They take precedence over all
     // of the settings in the 'all' category above.
 
+    // You can add other .jsbeautifyrc rules in this section too.
+
     // Add a new line after every css rule
     "newline_between_rules": true,
 
@@ -250,6 +256,8 @@ When one is found, it stops searching, and it uses those options along with the 
   "js": {
     // Rules added here apply only to JS files. They take precedence over all
     // of the settings in the 'all' category above.
+
+    // You can add other .jsbeautifyrc rules in this section too.
 
     // [collapse|collapse-preserve-inline|expand|end-expand|none] Put braces on the same line as control statements (default), or put braces on own line (Allman / ANSI style), or put end braces on own line, or attempt to keep them where they are
     "brace_style": "collapse-preserve-inline",
@@ -288,6 +296,8 @@ When one is found, it stops searching, and it uses those options along with the 
   "json": {
     // Rules added here apply only to JSON files. They take precedence over all
     // of the settings in the 'all' category above.
+
+    // You can add other .jsbeautifyrc rules in this section too.
 
     // [collapse|collapse-preserve-inline|expand|end-expand|none] Put braces on the same line as control statements (default), or put braces on own line (Allman / ANSI style), or put end braces on own line, or attempt to keep them where they are
     "brace_style": "expand",
