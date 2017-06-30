@@ -4,11 +4,15 @@
     "caption": "Prettify Code",
     "command": "htmlprettify"
   }, {
+    "caption": "-"
+  }, {
     "caption": "Prettify Preferences - Default",
     "command": "htmlprettify_set_prettify_prefs"
   }, {
     "caption": "Prettify Preferences - User",
     "command": "htmlprettify_set_user_prettify_prefs"
+  }, {
+    "caption": "-"
   }, {
     "caption": "Plugin Options - Default",
     "command": "htmlprettify_set_plugin_options"
@@ -16,13 +20,28 @@
     "caption": "Plugin Options - User",
     "command": "htmlprettify_set_user_plugin_options"
   }, {
+    "caption": "-"
+  }, {
     "caption": "Keyboard Shortcuts - Default",
     "command": "htmlprettify_set_keyboard_shortcuts"
   }, {
     "caption": "Keyboard Shortcuts - User",
     "command": "htmlprettify_set_user_keyboard_shortcuts"
   }, {
+    "caption": "-"
+  }, {
     "caption": "Set `node` Path",
     "command": "htmlprettify_set_node_path"
+  }, {
+    "caption": "-"
+  }, {
+    "caption": "Help",
+    "command": "htmlprettify_open_help"
+  }, {
+    "caption": "File a bug",
+    "command": "htmlprettify_open_bug_file"
+  }, {
+    "caption": "What's new in v2.0?",
+    "command": "htmlprettify_open_release_notes"
   }]
 }]

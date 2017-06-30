@@ -10,3 +10,15 @@ def file_bug():
     """Opens a new tab in the default browser at this plugin's repo"""
     url = "https://github.com/victorporof/Sublime-HTMLPrettify/issues/new"
     open_new_tab(url)
+
+
+def view_readme():
+    """Opens a new tab in the default browser at this plugin's repo"""
+    url = "https://github.com/victorporof/Sublime-HTMLPrettify/blob/master/README.md"
+    open_new_tab(url)
+
+
+def view_release_notes():
+    """Opens a new tab in the default browser at this plugin's repo"""
+    url = "https://github.com/victorporof/Sublime-HTMLPrettify/releases"
+    open_new_tab(url)

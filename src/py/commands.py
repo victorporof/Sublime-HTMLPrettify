@@ -8,6 +8,7 @@ from sublime_plugin import TextCommand
 from .utils.constants import PLATFORM
 from .utils.window_utils import open_config_rc, open_sublime_settings, open_sublime_keymap
 from .utils.window_utils import open_u_config_rc, open_u_sublime_settings, open_u_sublime_keymap
+from .utils.web_utils import file_bug, view_readme, view_release_notes
 
 
 class HtmlprettifySetPrettifyPrefsCommand(TextCommand):
@@ -51,3 +52,18 @@ class HtmlprettifySetUserKeyboardShortcutsCommand(TextCommand):
 class HtmlprettifySetNodePathCommand(TextCommand):
     def run(self, _):
         open_sublime_settings(self.view.window())
+
+
+class HtmlprettifyOpenHelpCommand(TextCommand):
+    def run(self, _):
+        view_readme()
+
+
+class HtmlprettifyOpenBugFile(TextCommand):
+    def run(self, _):
+        file_bug()
+
+
+class HtmlprettifyOpenReleaseNotes(TextCommand):
+    def run(self, _):
+        view_release_notes()
