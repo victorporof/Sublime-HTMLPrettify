@@ -12,7 +12,10 @@
     "clean:deps": "gulp clean:deps",
     "clobber": "npm run clean:build && npm run clean:deps",
     "build": "gulp build",
-    "release": "npm run clean:build && npm run build && git add . && git commit -m 'Update node_modules and transpile javascript' && npm version patch"
+    "release:local": "npm run clean:build && npm run build && git add . && git commit -m 'Update node_modules and build'",
+    "release:patch": "npm run release:local && npm version patch",
+    "release:minor": "npm run release:local && npm version minor",
+    "release:major": "npm run release:local && npm version major"
   },
   "dependencies": {
     "babel-runtime": "6.23.0",
