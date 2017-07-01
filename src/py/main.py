@@ -61,11 +61,7 @@ def main(view, edit):
     if prettified_text == text_to_prettify:
         return
 
-    if is_formatting_selection_only:
-        view.replace(edit, formatting_region, prettified_text)
-    else:
-        view.replace(edit, formatting_region, prettified_text)
-
+    view.replace(edit, formatting_region, prettified_text)
     force_fold_contents(view, folded_regions_content)
     force_set_viewport_position(view, previous_viewport_position)
     force_set_viewport_selections(view, previous_selections)
