@@ -21,29 +21,17 @@
     // Automatically format when a file loses focus. (Sublime Text 3 only)
     "format_on_focus_lost": false,
 
-    // Automatically format while a file is being edited. (Sublime Text 3 only)
+    // Automatically format while a file is being edited. (Experimental / Sublime Text 3 only)
     "format_while_editing": false,
 
     // Only format the selection if there's one available.
     "format_selection_only": true,
 
-    // Use current syntax to determine file type, instead of the extension.
-    "use_editor_syntax": true,
+    // Save to a temporary file before prettifying (legacy behavior).
+    "save_to_temp_file_before_prettifying": false,
 
-    // Use current identation settings to override the ones from `.jsbeautifyrc`.
-    "use_editor_indentation": false,
-
-    // Respect `.editorconfig` rules, overriding settings from `.jsbeautifyrc`.
-    // Note that `use_editor_syntax` and `use_editor_indentation` have precedence
-    // and will always override any other settings from any configuration file
-    // like `.jsbeautifyrc` and `.editorconfig`.
-    "respect_editorconfig": true,
-
-    // Log the settings passed to the prettifier from `.jsbeautifyrc`.
-    "print_diagnostics": true,
-
-    // Settings determining which files can be prettified.
-    "file_rules":
+    // Settings determining which files are allowed to be prettified.
+    "global_file_rules":
     {
         "html":
         {
@@ -79,5 +67,20 @@
             "allowed_file_syntaxes": ["json"],
             "disallowed_file_patterns": []
         }
-    }
+    },
+
+    // Respect `.editorconfig` rules, overriding settings from `.jsbeautifyrc`.
+    // Note that `use_editor_syntax` and `use_editor_indentation` have precedence
+    // and will always override any other settings from any configuration file
+    // like `.jsbeautifyrc` and `.editorconfig`.
+    "respect_editorconfig_files": true,
+
+    // Use current syntax to determine file type, instead of the extension.
+    "use_editor_syntax": true,
+
+    // Use current identation settings to override the ones from `.jsbeautifyrc`.
+    "use_editor_indentation": false,
+
+    // Log the settings passed to the prettifier from `.jsbeautifyrc`.
+    "print_diagnostics": true
 }

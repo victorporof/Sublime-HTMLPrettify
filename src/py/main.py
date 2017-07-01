@@ -17,43 +17,45 @@ from .utils.script_utils import prettify_verbose
 
 
 def main(view, edit):
+    format_selection_only = get_pref("format_selection_only")
+    save_to_temp_file = get_pref("save_to_temp_file_before_prettifying")
+    global_file_rules = get_pref("global_file_rules")
+    respect_editorconfig_files = get_pref("respect_editorconfig_files")
+
     editor_file_syntax = view.settings().get("syntax") if get_pref(
         "use_editor_syntax") else "?"
     editor_indent_size = view.settings().get("tab_size") if get_pref(
         "use_editor_indentation") else "?"
     editor_indent_with_tabs = view.settings().get("use_tab_stops") if get_pref(
         "use_editor_indentation") else "?"
-    respect_editorconfig_files = get_pref("respect_editorconfig")
-    global_file_rules = get_pref("file_rules")
 
     original_file_path = view.file_name() or "?"
     previous_viewport_position = view.viewport_position()
     previous_selections = get_editor_selections_copy(view)
     folded_regions_content = get_editor_folded_contents(view)
 
-    is_formatting_selection_only = \
-        get_pref("format_selection_only") and has_selection(view)
-
-    # Get the current text in the buffer and save it in a temporary file.
-    # This allows for scratch buffers and dirty files to be prettified as well.
-    if is_formatting_selection_only:
+    if format_selection_only and has_selection(view):
         text_to_prettify, formatting_region = get_first_selected_text(view)
-        editor_text_file_path = save_text_to_temp_file(text_to_prettify)
     else:
         text_to_prettify, formatting_region = get_entire_buffer_text(view)
-        editor_text_file_path = save_text_to_temp_file(text_to_prettify)
+
+    if save_to_temp_file:
+        editor_text_temp_file_path = save_text_to_temp_file(text_to_prettify)
 
     prettified_text = prettify_verbose(view.window(), [
-        editor_file_syntax,
+        str(save_to_temp_file),
+        json.dumps(global_file_rules),
+        str(respect_editorconfig_files),
+        str(editor_file_syntax),
         str(editor_indent_size),
         str(editor_indent_with_tabs),
-        str(respect_editorconfig_files),
-        json.dumps(global_file_rules),
-        editor_text_file_path,
+        editor_text_temp_file_path
+        if save_to_temp_file else text_to_prettify,
         original_file_path
     ])
 
-    os.remove(editor_text_file_path)
+    if save_to_temp_file:
+        os.remove(editor_text_temp_file_path)
 
     if prettified_text is None:
         return

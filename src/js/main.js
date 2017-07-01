@@ -23,13 +23,20 @@ async function main() {
   stdio.beginDiagnostics();
 
   // Dump some diagnostics messages, parsed out by the plugin.
-  stdio.info(`Using editor file syntax: ${constants.EDITOR_FILE_SYNTAX}`);
-  stdio.info(`Using editor indent size: ${constants.EDITOR_INDENT_SIZE}`);
-  stdio.info(`Using editor indent with tabs: ${constants.EDITOR_INDENT_WITH_TABS}`);
-  stdio.info(`Using .editorconfig files: ${constants.RESPECT_EDITORCONFIG_FILES}`);
-  stdio.info(`Using global file rules: ${constants.GLOBAL_FILE_RULES_JSON}`);
-  stdio.info(`Using editor text file path: ${constants.EDITOR_TEXT_FILE_PATH}`);
-  stdio.info(`Using original file path: ${constants.ORIGINAL_FILE_PATH}`);
+  stdio.info(`Using editor text temp file: ${constants.USING_EDITOR_TEXT_TEMP_FILE}`);
+
+  stdio.info(`Global file rules: ${constants.GLOBAL_FILE_RULES_JSON}`);
+  stdio.info(`Respecting .editorconfig files: ${constants.RESPECT_EDITORCONFIG_FILES}`);
+
+  stdio.info(`Editor file syntax: ${constants.EDITOR_FILE_SYNTAX}`);
+  stdio.info(`Editor indent size: ${constants.EDITOR_INDENT_SIZE}`);
+  stdio.info(`Editor indent with tabs: ${constants.EDITOR_INDENT_WITH_TABS}`);
+
+  stdio.info(`Editor text file path: ${constants.EDITOR_TEXT_TEMP_FILE_PATH}`);
+  stdio.info(`Editor text file contents: ${constants.EDITOR_TEXT_TEMP_FILE_CONTENTS}`);
+
+  stdio.info(`Original file path: ${constants.ORIGINAL_FILE_PATH}`);
+  stdio.info(`Config extra lookup paths: ${constants.CONFIG_EXTRA_LOOKUP_PATHS}`);
 
   const baseConfig = await cutils.parseDefaultJsbeautifyConfig();
   const pathsToLook = putils.getPotentialConfigDirs();
@@ -37,10 +44,12 @@ async function main() {
   const extendedConfig2 = await cutils.extendJsbeautifyConfigFromEditorConfigInFolders(pathsToLook, extendedConfig);
   const finalConfig = cutils.finalizeJsbeautifyConfig(extendedConfig2);
 
-  stdio.info(`Using paths for .jsbeautifyrc: ${JSON.stringify(pathsToLook)}`);
-  stdio.info(`Using prettify options: ${JSON.stringify(finalConfig)}`);
+  stdio.info(`Computed paths for .jsbeautifyrc: ${JSON.stringify(pathsToLook)}`);
+  stdio.info(`Computed prettify options: ${JSON.stringify(finalConfig)}`);
 
-  const fileContents = await fs.readFile(constants.EDITOR_TEXT_FILE_PATH, { encoding: 'utf8' });
+  const fileContents = constants.USING_EDITOR_TEXT_TEMP_FILE === 'True'
+    ? await fs.readFile(constants.EDITOR_TEXT_TEMP_FILE_PATH, { encoding: 'utf8' })
+    : constants.EDITOR_TEXT_TEMP_FILE_CONTENTS;
 
   if (isCSS()) {
     stdio.info('Attempting to prettify what seems to be a CSS file.');

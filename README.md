@@ -10,6 +10,7 @@ This will work with either HTML, CSS, JavaScript and JSON files.
 
 ## Installation
 First of all, be sure you have [node.js](http://nodejs.org/#download) installed in order to run the beautifier. After you've installed node.js, you will need to setup this plugin.
+
 Each OS has a different `Packages` folder required by Sublime Text. Open it via Preferences -> Browse Packages, and copy this repository contents to the `Sublime-HTMLPrettify` folder there.
 
 The shorter way of doing this is:
@@ -77,23 +78,17 @@ To beautify your code when while editing a document, set the `format_while_editi
 ## Auto-beautify when opening, focusing or bluring a file (Sublime Text 3 only)
 To beautify your code when on any of these events, set the `format_on_open`, `format_on_focus`, `format_on_focus_lost` settings to `true` in `HTMLPrettify.sublime-settings`.
 
-## Preserving selection after formatting
+## Formatting selected text only
 To stop beautifying only the selected text, set the `format_selection_only` setting to `false` in `HTMLPrettify.sublime-settings`.
 
-## Using editor indentation settings to determine formatting style
-To stop using the formatting style defined in the `.jsbeautifyrc` config file regarding indentation size and whether or not to use tabs or spaces, in order to use sublime's settings instead, then set the `use_editor_indentation` setting to `true` in `HTMLPrettify.sublime-settings`.
+## Saving to a temporary file before prettifying
+To avoid any potential data loss by prettifying a copy of the editor's text contents instead of operating on the original document, set the `save_to_temp_file_before_prettifying` setting to `true` in `HTMLPrettify.sublime-settings`. This is going to be slower than operating on the original document.
 
-## Using editor syntax for determining file type
-To stop using editor syntax and instead use file extensions for determining file type, set the `use_editor_syntax` setting to `false` in `HTMLPrettify.sublime-settings`.
-
-## Respecting [.editorconfig](http://editorconfig.org) files
-These configuration files can be placed wherever a `.jsbeautifyrc` could. To stop respecting `.editorconfig` files, which override the prettifier's rules, set the `use_editorconfig` setting to `false` in `HTMLPrettify.sublime-settings`. Note that `use_editor_syntax` and `use_editor_indentation` have precedence and will always override any other settings from any configuration file like `.jsbeautifyrc` and `.editorconfig`.
-
-## Specifying which files can be prettified
-To add different file extensions use `allowed_file_extensions` or `allowed_file_syntaxes` in `HTMLPrettify.sublime-settings`.
+## Specifying which files are allowed to be prettified
+To add different file extensions use `allowed_file_extensions` or `allowed_file_syntaxes` in `HTMLPrettify.sublime-settings`, under the `global_file_rules` setting.
 
 If the `use_editor_syntax` setting is false, then the following apply:
-```javascript
+```js
 {
   "html": {
     "allowed_file_extensions": ["htm", "html", "xhtml", "shtml", "xml", "svg"],
@@ -111,7 +106,7 @@ If the `use_editor_syntax` setting is false, then the following apply:
 ```
 
 If the `use_editor_syntax` setting is true, then the following apply:
-```javascript
+```js
 {
   "html": {
     "allowed_file_syntaxes": ["html", "xml"],
@@ -129,7 +124,7 @@ If the `use_editor_syntax` setting is true, then the following apply:
 ```
 
 ## Ignoring certain files
-To add ignore rules use `disallowed_file_patterns` in `HTMLPrettify.sublime-settings`. If the file(including path) matches any of the regexp patterns defined in `disallowed_file_patterns` it will not be beautified.
+To add ignore rules use `disallowed_file_patterns` in `HTMLPrettify.sublime-settings`, under the `global_file_rules` setting. If the file (including path) matches any of the regexp patterns defined in `disallowed_file_patterns` it will not be beautified.
 
 The following apply regardless of the `use_editor_syntax` setting's value:
 ```js
@@ -152,7 +147,6 @@ The following apply regardless of the `use_editor_syntax` setting's value:
 ## Ignoring certain blocks of code
 Parts of code that shouldn't be formatted can be ignored with `beautify preserve` and `beautify ignore` directive comments. This allows you to tell the beautifier to preserve the formtatting of or completely ignore part of a file. The example inputs below will remain changed after beautification.
 
-
 Use `preserve` when the content is javascript, but you don't want it reformatted.
 ```js
 /* beautify preserve:start */
@@ -172,6 +166,15 @@ var a = 1;
 /* beautify ignore:end */
 ```
 
+## Using editor indentation settings to determine formatting style
+To stop using the formatting style defined in the `.jsbeautifyrc` config file regarding indentation size and whether or not to use tabs or spaces, in order to use sublime's settings instead, then set the `use_editor_indentation` setting to `true` in `HTMLPrettify.sublime-settings`.
+
+## Using editor syntax for determining file type
+To stop using editor syntax and instead use file extensions for determining file type, set the `use_editor_syntax` setting to `false` in `HTMLPrettify.sublime-settings`.
+
+## Respecting [.editorconfig](http://editorconfig.org) files
+These configuration files can be placed wherever a `.jsbeautifyrc` could. To stop respecting `.editorconfig` files, which override the prettifier's rules, set the `use_editorconfig` setting to `false` in `HTMLPrettify.sublime-settings`. Note that `use_editor_syntax` and `use_editor_indentation` have precedence and will always override any other settings from any configuration file like `.jsbeautifyrc` and `.editorconfig`.
+
 ## Using your own .jsbeautifyrc options
 The plugin looks for a `.jsbeautifyrc` file in the following directories:
 
@@ -181,8 +184,7 @@ The plugin looks for a `.jsbeautifyrc` file in the following directories:
 4. Your personal Sublime settings folder.
 
 When one is found, it stops searching, and it uses those options along with the default ones.
-
-```javascript
+```js
 {
     // The plugin looks for a .jsbeautifyrc file in the same directory as the
     // source file you're prettifying (or any directory above if it doesn't exist,
@@ -352,7 +354,7 @@ When one is found, it stops searching, and it uses those options along with the 
 ```
 
 And here's how a `.jsbeautifyrc` file in your home folder could look like:
-```javascript
+```js
 {
   "html": {
     "indent_char": "\t",
