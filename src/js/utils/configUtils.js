@@ -179,10 +179,10 @@ export const finalizeJsbeautifyConfig = (jsbeautifyConfig) => {
     ...extendedJsbeautifyConfig.editorOverrides,
   };
 
-  // delete extendedJsbeautifyConfig.all;
-  // delete extendedJsbeautifyConfig.custom;
-  // delete extendedJsbeautifyConfig.currentFileMatchRules;
-  // delete extendedJsbeautifyConfig.editorOverrides;
+  delete extendedJsbeautifyConfig.all;
+  delete extendedJsbeautifyConfig.custom;
+  delete extendedJsbeautifyConfig.currentFileMatchRules;
+  delete extendedJsbeautifyConfig.editorOverrides;
 
   return extendedJsbeautifyConfig;
 };
