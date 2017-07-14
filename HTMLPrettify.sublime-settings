@@ -82,5 +82,5 @@
     "use_editor_indentation": false,
 
     // Log the settings passed to the prettifier from `.jsbeautifyrc`.
-    "print_diagnostics": false
+    "print_diagnostics": true
 }
