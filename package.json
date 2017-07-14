@@ -1,0 +1,48 @@
+{
+  "name": "html-prettify",
+  "version": "2.0.5",
+  "description": "HTML, CSS, JavaScript and JSON code formatter for Sublime Text 2 and 3 via node.js",
+  "author": "Victor Porof",
+  "license": "MPL-2.0",
+  "repository": "https://github.com/victorporof/Sublime-HTMLPrettify",
+  "scripts": {
+    "test": "gulp test",
+    "fix": "gulp eslint --fix",
+    "clean:build": "gulp clean:build",
+    "clean:deps": "gulp clean:deps",
+    "clobber": "npm run clean:build && npm run clean:deps",
+    "build": "gulp build",
+    "release:local": "npm run clean:build && npm run build && git add . && git commit -m 'Update node_modules and build'",
+    "release:patch": "npm run release:local && npm version patch",
+    "release:minor": "npm run release:local && npm version minor",
+    "release:major": "npm run release:local && npm version major"
+  },
+  "dependencies": {
+    "babel-runtime": "6.23.0",
+    "editorconfig-parser": "0.0.2",
+    "fs-extra": "3.0.1",
+    "is-glob": "3.1.0",
+    "js-beautify": "1.6.14",
+    "json5": "0.5.1",
+    "lodash": "4.17.4",
+    "map-obj": "2.0.0",
+    "minimatch": "3.0.4",
+    "promise-arrays": "0.1.0"
+  },
+  "devDependencies": {
+    "babel-eslint": "7.2.3",
+    "babel-plugin-transform-async-to-generator": "6.24.1",
+    "babel-plugin-transform-object-rest-spread": "6.23.0",
+    "babel-plugin-transform-runtime": "6.23.0",
+    "babel-preset-es2015": "6.24.1",
+    "del": "3.0.0",
+    "eslint-config-airbnb-base": "11.2.0",
+    "eslint-plugin-import": "2.6.0",
+    "gulp": "github:gulpjs/gulp#4.0",
+    "gulp-babel": "6.1.2",
+    "gulp-changed": "3.1.0",
+    "gulp-debug": "3.1.0",
+    "gulp-eslint": "3.0.1",
+    "gulp-if": "2.0.2"
+  }
+}
