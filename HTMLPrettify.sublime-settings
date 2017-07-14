@@ -28,7 +28,7 @@
     "format_selection_only": true,
 
     // Save to a temporary file before prettifying (legacy behavior).
-    "save_to_temp_file_before_prettifying": false,
+    "save_to_temp_file_before_prettifying": true,
 
     // Settings determining which files are allowed to be prettified.
     "global_file_rules":
