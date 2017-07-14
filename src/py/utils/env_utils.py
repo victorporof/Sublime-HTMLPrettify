@@ -6,7 +6,7 @@
 import subprocess
 from os import environ
 
-from .constants import PLATFORM, SUBLIME_VERSION
+from .constants import PLATFORM
 from .window_utils import get_pref
 
 
@@ -38,7 +38,7 @@ def run_command(args):
         "env": environ,
     }
 
-    if SUBLIME_VERSION < 3000 and PLATFORM == "windows":
+    if PLATFORM == "windows":
         startupinfo = subprocess.STARTUPINFO()
         startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
         popen_args["startupinfo"] = startupinfo
