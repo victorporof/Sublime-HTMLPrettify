@@ -82,7 +82,7 @@ To beautify your code when on any of these events, set the `format_on_open`, `fo
 To stop beautifying only the selected text, set the `format_selection_only` setting to `false` in `HTMLPrettify.sublime-settings`.
 
 ## Saving to a temporary file before prettifying
-To avoid any potential data loss by prettifying a copy of the editor's text contents instead of operating on the original document, set the `save_to_temp_file_before_prettifying` setting to `true` in `HTMLPrettify.sublime-settings`. This is going to be slower than operating on the original document.
+Before prettifying, a copy of the the current editor's text contents are saved to a temporary file. This avoids piping the text directly to the prettifier, avoiding "filename or extension is too long" errors on Windows or any potential data lowss. To operate on the original document instead, set the `save_to_temp_file_before_prettifying` setting to `false` in `HTMLPrettify.sublime-settings`.
 
 ## Specifying which files are allowed to be prettified
 To add different file extensions use `allowed_file_extensions` or `allowed_file_syntaxes` in `HTMLPrettify.sublime-settings`, under the `global_file_rules` setting.

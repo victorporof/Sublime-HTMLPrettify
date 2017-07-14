@@ -27,7 +27,7 @@
     // Only format the selection if there's one available.
     "format_selection_only": true,
 
-    // Save to a temporary file before prettifying (legacy behavior).
+    // Save to a temporary file before prettifying.
     "save_to_temp_file_before_prettifying": true,
 
     // Settings determining which files are allowed to be prettified.
