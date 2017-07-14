@@ -1,6 +1,6 @@
 {
   "name": "html-prettify",
-  "version": "2.0.3",
+  "version": "2.0.4",
   "dependencies": {
     "babel-runtime": "6.23.0",
     "editorconfig-parser": "0.0.2",

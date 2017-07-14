@@ -1,3 +1,8 @@
+3.0.1 / 2017-07-05
+------------------
+
+- Fixed bug in `writeFile` when there was a serialization error & no callback was passed. In previous versions, an empty file would be written; now no file is written.
+
 3.0.0 / 2017-04-25
 ------------------
 

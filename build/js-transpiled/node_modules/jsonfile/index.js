@@ -94,7 +94,9 @@ function writeFile (file, obj, options, callback) {
   try {
     str = JSON.stringify(obj, options ? options.replacer : null, spaces) + '\n'
   } catch (err) {
-    if (callback) return callback(err, null)
+    // Need to return whether a callback was passed or not
+    if (callback) callback(err, null)
+    return
   }
 
   fs.writeFile(file, str, options, callback)
