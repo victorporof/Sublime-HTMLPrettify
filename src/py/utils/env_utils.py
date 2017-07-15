@@ -16,9 +16,18 @@ class NodeNotFoundError(OSError):
         OSError.__init__(self, msg + (": %s" % original_exception))
         self.node_path = node_path
 
+
 class NodeRuntimeError(RuntimeError):
     def __init__(self, stdout, stderr):
         msg = "Node.js encountered a runtime error"
+        RuntimeError.__init__(self, msg + (": %s\n%s" % (stderr, stdout)))
+        self.stdout = stdout
+        self.stderr = stderr
+
+
+class NodeSyntaxError(RuntimeError):
+    def __init__(self, stdout, stderr):
+        msg = "Node.js encountered a runtime syntax error"
         RuntimeError.__init__(self, msg + (": %s\n%s" % (stderr, stdout)))
         self.stdout = stdout
         self.stderr = stderr
@@ -45,7 +54,12 @@ def run_command(args):
 
     stdout, stderr = subprocess.Popen(args, **popen_args).communicate()
     if stderr:
-        raise NodeRuntimeError(stdout.decode('utf-8'), stderr.decode('utf-8'))
+        if b"SyntaxError" in stderr:
+            raise NodeSyntaxError(
+                stdout.decode('utf-8'), stderr.decode('utf-8'))
+        else:
+            raise NodeRuntimeError(
+                stdout.decode('utf-8'), stderr.decode('utf-8'))
 
     return stdout
 

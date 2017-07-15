@@ -9,7 +9,7 @@ from sublime import ok_cancel_dialog
 from .constants import DIAGNOSTICS_MARKER_BEGIN, DIAGNOSTICS_MARKER_END
 from .constants import PRETTIFIED_CODE_MARKER_BEGIN, PRETTIFIED_CODE_MARKER_END
 from .paths import get_root_dir, get_user_dir, get_main_js_file
-from .env_utils import NodeNotFoundError, NodeRuntimeError, run_node_command
+from .env_utils import NodeNotFoundError, NodeRuntimeError, NodeSyntaxError, run_node_command
 from .window_utils import get_pref, open_sublime_settings
 from .web_utils import file_bug
 
@@ -58,6 +58,13 @@ def prettify_verbose(window, args):
             open_sublime_settings(window)
         return None
 
+    def handle_syntax_error(err):
+        print(err)
+        msg = "Node.js version in the default path is too old! Please download the latest version and specify the updated location."
+        if ok_cancel_dialog(msg):
+            open_sublime_settings(window)
+        return None
+
     def handle_runtime_error(err):
         print(err)
         msg = "A runtime error was encountered in the prettifier. Care to file a bug?"
@@ -76,6 +83,8 @@ def prettify_verbose(window, args):
         prettified_code, output_diagnostics = prettify(args)
     except NodeNotFoundError as err:
         return handle_node_error(err)
+    except NodeSyntaxError as err:
+        return handle_syntax_error(err)
     except NodeRuntimeError as err:
         return handle_runtime_error(err)
     except BaseException as err:
