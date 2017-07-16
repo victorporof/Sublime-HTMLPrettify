@@ -71,7 +71,9 @@ def run_node_command(args):
     try:
         stdout = run_command([node_path] + args)
     except OSError as err:
-        if node_path in err.strerror:
+        if node_path in err.strerror or \
+            "No such file or directory" in err.strerror or \
+            "The system cannot find the file specified" in err.strerror:
             raise NodeNotFoundError(err, node_path)
         else:
             raise err
