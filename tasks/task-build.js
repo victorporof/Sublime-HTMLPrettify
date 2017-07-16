@@ -32,7 +32,7 @@ gulp.task('build:babel', () =>
     .pipe(gulp.dest(BUILD_DIR)));
 
 gulp.task('build:write-manifest', () => {
-  const config = pick(Manifest, ['name', 'version', 'dependencies']);
+  const config = pick(Manifest, ['dependencies']);
   return fs.writeJson(path.join(BUILD_DIR, 'package.json'), config);
 });
 
