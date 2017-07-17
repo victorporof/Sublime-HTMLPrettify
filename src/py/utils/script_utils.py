@@ -73,16 +73,20 @@ def prettify_verbose(window, args):
 
     def handle_runtime_error(err):
         print(err)
-        msg = "A runtime error was encountered in the prettifier. Care to file a bug?"
+        msg = "A runtime error was encountered in the prettifier. See the console output for more information. Do you wish to file a bug?"
         if ok_cancel_dialog(msg):
-            file_bug()
+            msg = "Please include detailed information in your bug report."
+            if ok_cancel_dialog(msg):
+                file_bug()
         return None
 
     def handle_unknown_error(err):
         print(err)
-        msg = "An unhandled error was encountered while prettifying. Care to file a bug?"
+        msg = "An unhandled error was encountered while prettifying. See the console output for more information. Do you wish to file a bug?"
         if ok_cancel_dialog(msg):
-            file_bug()
+            msg = "Please include detailed information in your bug report."
+            if ok_cancel_dialog(msg):
+                file_bug()
         return None
 
     def handle_output_diagnostics(output):
