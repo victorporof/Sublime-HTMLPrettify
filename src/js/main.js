@@ -38,13 +38,15 @@ async function main() {
   stdio.info(`Original file path: ${constants.ORIGINAL_FILE_PATH}`);
   stdio.info(`Config extra lookup paths: ${constants.CONFIG_EXTRA_LOOKUP_PATHS}`);
 
-  const baseConfig = await cutils.parseDefaultJsbeautifyConfig();
   const pathsToLook = putils.getPotentialConfigDirs();
+
+  stdio.info(`Computed extra lookup paths for .jsbeautifyrc: ${JSON.stringify(pathsToLook)}`);
+
+  const baseConfig = await cutils.parseDefaultJsbeautifyConfig();
   const extendedConfig = await cutils.extendJsbeautifyConfigFromFolders(pathsToLook, baseConfig);
   const extendedConfig2 = await cutils.extendJsbeautifyConfigFromEditorConfigInFolders(pathsToLook, extendedConfig);
   const finalConfig = cutils.finalizeJsbeautifyConfig(extendedConfig2);
 
-  stdio.info(`Computed paths for .jsbeautifyrc: ${JSON.stringify(pathsToLook)}`);
   stdio.info(`Computed prettify options: ${JSON.stringify(finalConfig)}`);
 
   const fileContents = constants.USING_EDITOR_TEXT_TEMP_FILE === 'True'
