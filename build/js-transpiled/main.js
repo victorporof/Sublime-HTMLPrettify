@@ -94,7 +94,7 @@ var main = function () {
               stdio.beginPrettifiedCode();
               stdio.out(beautify.html(fileContents, finalConfig.html));
               stdio.endPrettifiedCode();
-            } else if ((0, _fileUtils.isJSON)()) {
+            } else if ((0, _fileUtils.isJSON)(fileContents)) {
               stdio.info('Attempting to prettify what seems to be a JSON file.');
               stdio.endDiagnostics();
               stdio.beginPrettifiedCode();

@@ -65,7 +65,7 @@ async function main() {
     stdio.beginPrettifiedCode();
     stdio.out(beautify.html(fileContents, finalConfig.html));
     stdio.endPrettifiedCode();
-  } else if (isJSON()) {
+  } else if (isJSON(fileContents)) {
     stdio.info('Attempting to prettify what seems to be a JSON file.');
     stdio.endDiagnostics();
     stdio.beginPrettifiedCode();

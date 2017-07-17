@@ -127,69 +127,51 @@ var hasAllowedFileSyntax = function hasAllowedFileSyntax(expectedType, fileSynta
 };
 
 var isCSS = exports.isCSS = function isCSS() {
-  // If file unsaved, there's no good way to determine whether or not it's
-  // CSS based on the file contents, so just bail.
-  if (_constants.ORIGINAL_FILE_PATH === '?') {
-    return false;
-  }
   if (isDisallowedFilePattern('css', _constants.ORIGINAL_FILE_PATH)) {
     return false;
   }
   var allowedExtension = hasAllowedFileExtension('css', _constants.ORIGINAL_FILE_PATH);
-  if (_constants.EDITOR_FILE_SYNTAX === '?') {
-    return allowedExtension;
-  }
   var allowedSyntax = hasAllowedFileSyntax('css', _constants.EDITOR_FILE_SYNTAX);
   return allowedSyntax || allowedExtension;
 };
 
 var isHTML = exports.isHTML = function isHTML(bufferContents) {
-  // If file unsaved, check if first non-whitespace character is &lt;
-  if (_constants.ORIGINAL_FILE_PATH === '?') {
-    return bufferContents.match(/^\s*</);
-  }
   if (isDisallowedFilePattern('html', _constants.ORIGINAL_FILE_PATH)) {
     return false;
   }
   var allowedExtension = hasAllowedFileExtension('html', _constants.ORIGINAL_FILE_PATH);
-  if (_constants.EDITOR_FILE_SYNTAX === '?') {
-    return allowedExtension;
-  }
   var allowedSyntax = hasAllowedFileSyntax('html', _constants.EDITOR_FILE_SYNTAX);
-  return allowedSyntax || allowedExtension;
+  if (allowedSyntax || allowedExtension) {
+    return true;
+  }
+  // check if first non-whitespace character is &lt;
+  return bufferContents.match(/^\s*</);
 };
 
-var isJSON = exports.isJSON = function isJSON() {
-  // If file unsaved, there's no good way to determine whether or not it's
-  // JSON based on the file contents, so just bail.
-  if (_constants.ORIGINAL_FILE_PATH === '?') {
-    return false;
-  }
+var isJSON = exports.isJSON = function isJSON(bufferContents) {
   if (isDisallowedFilePattern('json', _constants.ORIGINAL_FILE_PATH)) {
     return false;
   }
   var allowedExtension = hasAllowedFileExtension('json', _constants.ORIGINAL_FILE_PATH);
-  if (_constants.EDITOR_FILE_SYNTAX === '?') {
-    return allowedExtension;
-  }
   var allowedSyntax = hasAllowedFileSyntax('json', _constants.EDITOR_FILE_SYNTAX);
-  return allowedSyntax || allowedExtension;
+  if (allowedSyntax || allowedExtension) {
+    return true;
+  }
+  // check if first non-whitespace character is left curly brace
+  return bufferContents.match(/^\s*\{/);
 };
 
 var isJS = exports.isJS = function isJS(bufferContents) {
-  // If file unsaved, check if first non-whitespace character is NOT &lt;
-  if (_constants.ORIGINAL_FILE_PATH === '?') {
-    return !bufferContents.match(/^\s*</);
-  }
   if (isDisallowedFilePattern('js', _constants.ORIGINAL_FILE_PATH)) {
     return false;
   }
   var allowedExtension = hasAllowedFileExtension('js', _constants.ORIGINAL_FILE_PATH);
-  if (_constants.EDITOR_FILE_SYNTAX === '?') {
-    return allowedExtension;
-  }
   var allowedSyntax = hasAllowedFileSyntax('js', _constants.EDITOR_FILE_SYNTAX);
-  return allowedSyntax || allowedExtension;
+  if (allowedSyntax || allowedExtension) {
+    return true;
+  }
+  // check if first non-whitespace character is NOT &lt;
+  return !bufferContents.match(/^\s*</);
 };
 
 // Checks if a file path matches a particular glob string.
