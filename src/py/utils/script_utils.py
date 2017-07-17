@@ -5,6 +5,7 @@
 
 from __future__ import print_function
 from sublime import ok_cancel_dialog
+import re
 
 from .constants import DIAGNOSTICS_MARKER_BEGIN, DIAGNOSTICS_MARKER_END
 from .constants import PRETTIFIED_CODE_MARKER_BEGIN, PRETTIFIED_CODE_MARKER_END
@@ -38,6 +39,11 @@ def get_prettified_code(output):
     start = PRETTIFIED_CODE_MARKER_BEGIN
     end = PRETTIFIED_CODE_MARKER_END
     return get_output_between(output, start, end)
+
+
+def get_diagnostics_parse_fail(output):
+    """Gets the first file parsing failure in the diagnostics"""
+    return re.search('\[HTMLPrettify\] Failed to parse file: (.+?)\n', output)
 
 
 def prettify(args):
@@ -79,6 +85,19 @@ def prettify_verbose(window, args):
             file_bug()
         return None
 
+    def handle_output_diagnostics(output):
+        if get_pref("print_diagnostics"):
+            print(output)
+
+        file_parse_error = get_diagnostics_parse_fail(output)
+        if file_parse_error:
+            msg = "Ignoring malformed config file: " + file_parse_error.group(1)
+            if ok_cancel_dialog(msg):
+                msg = "Please fix the syntax errors in your config file and try again. See the console output for more information. Do you wish to file a bug instead?"
+                if ok_cancel_dialog(msg):
+                    file_bug()
+
+
     try:
         prettified_code, output_diagnostics = prettify(args)
     except NodeNotFoundError as err:
@@ -90,7 +109,8 @@ def prettify_verbose(window, args):
     except BaseException as err:
         return handle_unknown_error(err)
 
-    if output_diagnostics and get_pref("print_diagnostics"):
-        print(output_diagnostics)
+    if output_diagnostics:
+        handle_output_diagnostics(output_diagnostics)
+
 
     return prettified_code
