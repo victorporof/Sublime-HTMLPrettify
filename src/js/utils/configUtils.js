@@ -28,7 +28,7 @@ export const parseDefaultJsbeautifyConfig = () =>
 export const extendJsbeautifyConfig = (newJsbeautifyConfig, oldJsbeautifyConfig) => {
   const oldClonedJsbeautifyConfig = clone(oldJsbeautifyConfig);
 
-  for (const [fileType, newFileSettings] of Object.entries(newJsbeautifyConfig)) {
+  for (const [fileType, newFileSettings] of Object.entries(newJsbeautifyConfig || {})) {
     switch (fileType) {
       case 'all':
       case 'html':
@@ -37,14 +37,14 @@ export const extendJsbeautifyConfig = (newJsbeautifyConfig, oldJsbeautifyConfig)
       case 'json':
         oldClonedJsbeautifyConfig[fileType] = {
           ...oldClonedJsbeautifyConfig[fileType] || {},
-          ...newFileSettings,
+          ...newFileSettings || {},
         };
         break;
       case 'custom':
-        for (const [globString, newGlobConfig] of Object.entries(newFileSettings)) {
+        for (const [globString, newGlobConfig] of Object.entries(newFileSettings || {})) {
           oldClonedJsbeautifyConfig.custom[globString] = {
             ...oldClonedJsbeautifyConfig.custom[globString] || {},
-            ...newGlobConfig,
+            ...newGlobConfig || {},
           };
         }
         break;
@@ -105,8 +105,8 @@ export const extendJsbeautifyConfigWithCurrentFileMatchRules = (jsbeautifyConfig
   const clonedJsbeautifyConfig = clone(jsbeautifyConfig);
   clonedJsbeautifyConfig.currentFileMatchRules = {};
 
-  for (const [globString, globFileConfig] of Object.entries(clonedJsbeautifyConfig.custom)) {
-    for (const [prefName, globPrefValue] of Object.entries(globFileConfig)) {
+  for (const [globString, globFileConfig] of Object.entries(clonedJsbeautifyConfig.custom || {})) {
+    for (const [prefName, globPrefValue] of Object.entries(globFileConfig || {})) {
       if (isMatchingGlob(globString)) {
         clonedJsbeautifyConfig.currentFileMatchRules[prefName] = globPrefValue;
       }
@@ -149,40 +149,35 @@ export const finalizeJsbeautifyConfig = (jsbeautifyConfig) => {
       ),
     );
 
-  extendedJsbeautifyConfig.html = {
-    ...extendedJsbeautifyConfig.all,
-    ...extendedJsbeautifyConfig.html,
-    css: extendedJsbeautifyConfig.css,
-    js: extendedJsbeautifyConfig.js,
-    ...extendedJsbeautifyConfig.currentFileMatchRules,
-    ...extendedJsbeautifyConfig.editorOverrides,
+  return {
+    html: {
+      ...extendedJsbeautifyConfig.all || {},
+      ...extendedJsbeautifyConfig.html || {},
+      css: extendedJsbeautifyConfig.css,
+      js: extendedJsbeautifyConfig.js,
+      ...extendedJsbeautifyConfig.currentFileMatchRules || {},
+      ...extendedJsbeautifyConfig.editorOverrides || {},
+    },
+
+    css: {
+      ...extendedJsbeautifyConfig.all || {},
+      ...extendedJsbeautifyConfig.css || {},
+      ...extendedJsbeautifyConfig.currentFileMatchRules || {},
+      ...extendedJsbeautifyConfig.editorOverrides || {},
+    },
+
+    js: {
+      ...extendedJsbeautifyConfig.all || {},
+      ...extendedJsbeautifyConfig.js || {},
+      ...extendedJsbeautifyConfig.currentFileMatchRules || {},
+      ...extendedJsbeautifyConfig.editorOverrides || {},
+    },
+
+    json: {
+      ...extendedJsbeautifyConfig.all || {},
+      ...extendedJsbeautifyConfig.json || {},
+      ...extendedJsbeautifyConfig.currentFileMatchRules || {},
+      ...extendedJsbeautifyConfig.editorOverrides || {},
+    },
   };
-
-  extendedJsbeautifyConfig.css = {
-    ...extendedJsbeautifyConfig.all,
-    ...extendedJsbeautifyConfig.css,
-    ...extendedJsbeautifyConfig.currentFileMatchRules,
-    ...extendedJsbeautifyConfig.editorOverrides,
-  };
-
-  extendedJsbeautifyConfig.js = {
-    ...extendedJsbeautifyConfig.all,
-    ...extendedJsbeautifyConfig.js,
-    ...extendedJsbeautifyConfig.currentFileMatchRules,
-    ...extendedJsbeautifyConfig.editorOverrides,
-  };
-
-  extendedJsbeautifyConfig.json = {
-    ...extendedJsbeautifyConfig.all,
-    ...extendedJsbeautifyConfig.json,
-    ...extendedJsbeautifyConfig.currentFileMatchRules,
-    ...extendedJsbeautifyConfig.editorOverrides,
-  };
-
-  delete extendedJsbeautifyConfig.all;
-  delete extendedJsbeautifyConfig.custom;
-  delete extendedJsbeautifyConfig.currentFileMatchRules;
-  delete extendedJsbeautifyConfig.editorOverrides;
-
-  return extendedJsbeautifyConfig;
 };
