@@ -64,6 +64,13 @@ def prettify_verbose(window, args):
             open_sublime_settings(window)
         return None
 
+    def handle_unknown_os_error(err):
+        print(err)
+        msg = "An unhandled OS error was encountered while prettifying. This usually means Node.js was not found in the default path. Please specify the location."
+        if ok_cancel_dialog(msg):
+            open_sublime_settings(window)
+        return None
+
     def handle_syntax_error(err):
         print(err)
         msg = "Node.js version in the default path is too old! Please download the latest version and specify the updated location."
@@ -106,6 +113,8 @@ def prettify_verbose(window, args):
         prettified_code, output_diagnostics = prettify(args)
     except NodeNotFoundError as err:
         return handle_node_error(err)
+    except OSError as err:
+        return handle_unknown_os_error(err)
     except NodeSyntaxError as err:
         return handle_syntax_error(err)
     except NodeRuntimeError as err:
