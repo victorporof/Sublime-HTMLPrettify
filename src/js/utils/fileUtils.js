@@ -76,7 +76,7 @@ export const isJSON = (bufferContents) => {
     return true;
   }
   // check if first non-whitespace character is left curly brace
-  return bufferContents.match(/^\s*\{/);
+  return bufferContents.match(/^\s*[\{\[]/);
 };
 
 export const isJS = (bufferContents) => {

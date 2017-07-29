@@ -158,7 +158,7 @@ var isJSON = exports.isJSON = function isJSON(bufferContents) {
     return true;
   }
   // check if first non-whitespace character is left curly brace
-  return bufferContents.match(/^\s*\{/);
+  return bufferContents.match(/^\s*[\{\[]/);
 };
 
 var isJS = exports.isJS = function isJS(bufferContents) {
