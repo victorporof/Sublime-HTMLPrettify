@@ -14,7 +14,7 @@ const GLOBAL_FILE_RULES = parseJSON5(GLOBAL_FILE_RULES_JSON);
 // Checks if a file path is allowed by regexing the file name and expecting
 // it not to match certain expressions.
 const isDisallowedFilePattern = (fileType, filePath) => {
-  for (const pattern of GLOBAL_FILE_RULES[fileType].disallowed_file_patterns || []) {
+  for (const pattern of (GLOBAL_FILE_RULES[fileType] || {}).disallowed_file_patterns || []) {
     if (filePath.match(new RegExp(pattern, 'i'))) {
       return true;
     }
@@ -25,7 +25,7 @@ const isDisallowedFilePattern = (fileType, filePath) => {
 // Checks if a file is of a particular type by regexing the file name and
 // expecting a certain extension.
 const hasAllowedFileExtension = (expectedType, filePath) => {
-  for (const extension of GLOBAL_FILE_RULES[expectedType].allowed_file_extensions || []) {
+  for (const extension of (GLOBAL_FILE_RULES[expectedType] || {}).allowed_file_extensions || []) {
     if (filePath.match(new RegExp(`\\.${extension}$`, 'i'))) {
       return true;
     }
@@ -36,7 +36,7 @@ const hasAllowedFileExtension = (expectedType, filePath) => {
 // Checks if a file is of a particular type by regexing the syntax name and
 // expecting a pattern.
 const hasAllowedFileSyntax = (expectedType, fileSyntax) => {
-  for (const pattern of GLOBAL_FILE_RULES[expectedType].allowed_file_syntaxes || []) {
+  for (const pattern of (GLOBAL_FILE_RULES[expectedType] || {}).allowed_file_syntaxes || []) {
     if (fileSyntax.toLowerCase().includes(pattern)) {
       return true;
     }
