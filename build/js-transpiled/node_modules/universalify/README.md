@@ -36,7 +36,7 @@ fn('Hello World!')
 fn('Hi!', (error, result) => {
   if (error) return console.error(error)
   console.log(result)
-  // -> Hello World!
+  // -> Hi!
 })
 ```
 
@@ -64,7 +64,7 @@ fn('Hello World!')
 fn('Hi!', (error, result) => {
   if (error) return console.error(error)
   console.log(result)
-  // -> Hello World!
+  // -> Hi!
 })
 ```
 
