@@ -31,26 +31,35 @@
     "save_to_temp_file_before_prettifying": true,
 
     // Settings determining which files are allowed to be prettified.
+    // All the keys below need to be included in your user settings for them to work.
     "global_file_rules":
     {
+        // Be sure to include the `html` key in your user settings to be able
+        // to prettify html files.
         "html":
         {
             "allowed_file_extensions": ["htm", "html", "xhtml", "shtml", "xml", "svg"],
             "allowed_file_syntaxes": ["html", "xml"],
             "disallowed_file_patterns": []
         },
+        // Be sure to include the `css` key in your user settings to be able
+        // to prettify css files.
         "css":
         {
             "allowed_file_extensions": ["css", "scss", "sass", "less"],
             "allowed_file_syntaxes": ["css", "sass", "less"],
             "disallowed_file_patterns": []
         },
+        // Be sure to include the `js` key in your user settings to be able
+        // to prettify js files.
         "js":
         {
             "allowed_file_extensions": ["js"],
             "allowed_file_syntaxes": ["javascript", "ecma"],
             "disallowed_file_patterns": []
         },
+        // Be sure to include the `json` key in your user settings to be able
+        // to prettify json files.
         "json":
         {
             "allowed_file_extensions": [
