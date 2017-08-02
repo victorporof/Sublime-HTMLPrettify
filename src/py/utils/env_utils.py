@@ -4,7 +4,7 @@
 """Various utility functions used by this plugin"""
 
 import subprocess
-from os import environ
+from os import environ, devnull
 
 from .constants import PLATFORM
 from .window_utils import get_pref
@@ -51,6 +51,7 @@ def run_command(args):
         startupinfo = subprocess.STARTUPINFO()
         startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
         popen_args["startupinfo"] = startupinfo
+        popen_args["stdin"] = open(devnull, 'wb')
 
     stdout, stderr = subprocess.Popen(args, **popen_args).communicate()
     if stderr:
