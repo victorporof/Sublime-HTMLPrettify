@@ -45,69 +45,51 @@ const hasAllowedFileSyntax = (expectedType, fileSyntax) => {
 };
 
 export const isCSS = () => {
-  // If file unsaved, there's no good way to determine whether or not it's
-  // CSS based on the file contents, so just bail.
-  if (ORIGINAL_FILE_PATH === '?') {
-    return false;
-  }
   if (isDisallowedFilePattern('css', ORIGINAL_FILE_PATH)) {
     return false;
   }
   const allowedExtension = hasAllowedFileExtension('css', ORIGINAL_FILE_PATH);
-  if (EDITOR_FILE_SYNTAX === '?') {
-    return allowedExtension;
-  }
   const allowedSyntax = hasAllowedFileSyntax('css', EDITOR_FILE_SYNTAX);
   return allowedSyntax || allowedExtension;
 };
 
 export const isHTML = (bufferContents) => {
-  // If file unsaved, check if first non-whitespace character is &lt;
-  if (ORIGINAL_FILE_PATH === '?') {
-    return bufferContents.match(/^\s*</);
-  }
   if (isDisallowedFilePattern('html', ORIGINAL_FILE_PATH)) {
     return false;
   }
   const allowedExtension = hasAllowedFileExtension('html', ORIGINAL_FILE_PATH);
-  if (EDITOR_FILE_SYNTAX === '?') {
-    return allowedExtension;
-  }
   const allowedSyntax = hasAllowedFileSyntax('html', EDITOR_FILE_SYNTAX);
-  return allowedSyntax || allowedExtension;
+  if (allowedSyntax || allowedExtension) {
+    return true;
+  }
+  // check if first non-whitespace character is &lt;
+  return bufferContents.match(/^\s*</);
 };
 
-export const isJSON = () => {
-  // If file unsaved, there's no good way to determine whether or not it's
-  // JSON based on the file contents, so just bail.
-  if (ORIGINAL_FILE_PATH === '?') {
-    return false;
-  }
+export const isJSON = (bufferContents) => {
   if (isDisallowedFilePattern('json', ORIGINAL_FILE_PATH)) {
     return false;
   }
   const allowedExtension = hasAllowedFileExtension('json', ORIGINAL_FILE_PATH);
-  if (EDITOR_FILE_SYNTAX === '?') {
-    return allowedExtension;
-  }
   const allowedSyntax = hasAllowedFileSyntax('json', EDITOR_FILE_SYNTAX);
-  return allowedSyntax || allowedExtension;
+  if (allowedSyntax || allowedExtension) {
+    return true;
+  }
+  // check if first non-whitespace character is left curly brace
+  return bufferContents.match(/^\s*[\{\[]/);
 };
 
 export const isJS = (bufferContents) => {
-  // If file unsaved, check if first non-whitespace character is NOT &lt;
-  if (ORIGINAL_FILE_PATH === '?') {
-    return !bufferContents.match(/^\s*</);
-  }
   if (isDisallowedFilePattern('js', ORIGINAL_FILE_PATH)) {
     return false;
   }
   const allowedExtension = hasAllowedFileExtension('js', ORIGINAL_FILE_PATH);
-  if (EDITOR_FILE_SYNTAX === '?') {
-    return allowedExtension;
-  }
   const allowedSyntax = hasAllowedFileSyntax('js', EDITOR_FILE_SYNTAX);
-  return allowedSyntax || allowedExtension;
+  if (allowedSyntax || allowedExtension) {
+    return true;
+  }
+  // check if first non-whitespace character is NOT &lt;
+  return !bufferContents.match(/^\s*</);
 };
 
 // Checks if a file path matches a particular glob string.
