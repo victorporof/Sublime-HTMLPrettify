@@ -13,7 +13,7 @@ const GLOBAL_FILE_RULES = parseJSON5(GLOBAL_FILE_RULES_JSON);
 
 // Checks if a file path is allowed by regexing the file name and expecting
 // it not to match certain expressions.
-const isDisallowedFilePattern = (fileType, filePath) => {
+const hasDisallowedFilePathPattern = (fileType, filePath) => {
   for (const pattern of (GLOBAL_FILE_RULES[fileType] || {}).disallowed_file_patterns || []) {
     if (filePath.match(new RegExp(pattern, 'i'))) {
       return true;
@@ -45,69 +45,98 @@ const hasAllowedFileSyntax = (expectedType, fileSyntax) => {
 };
 
 export const isCSS = () => {
-  // If file unsaved, there's no good way to determine whether or not it's
-  // CSS based on the file contents, so just bail.
-  if (ORIGINAL_FILE_PATH === '?') {
+  const isSavedFile = ORIGINAL_FILE_PATH !== '?';
+  const useEditorFileSyntaxForDeterminingFileType = EDITOR_FILE_SYNTAX !== '?';
+
+  const isAllowedExtension = hasAllowedFileExtension('css', ORIGINAL_FILE_PATH);
+  const isAllowedSyntax = hasAllowedFileSyntax('css', EDITOR_FILE_SYNTAX);
+  const isDisallowedFilePattern = hasDisallowedFilePathPattern('css', ORIGINAL_FILE_PATH);
+
+  if (!isSavedFile) {
+    return useEditorFileSyntaxForDeterminingFileType
+      ? isAllowedSyntax
+      : false;
+  }
+
+  if (isDisallowedFilePattern) {
     return false;
   }
-  if (isDisallowedFilePattern('css', ORIGINAL_FILE_PATH)) {
-    return false;
-  }
-  const allowedExtension = hasAllowedFileExtension('css', ORIGINAL_FILE_PATH);
-  if (EDITOR_FILE_SYNTAX === '?') {
-    return allowedExtension;
-  }
-  const allowedSyntax = hasAllowedFileSyntax('css', EDITOR_FILE_SYNTAX);
-  return allowedSyntax || allowedExtension;
+
+  return useEditorFileSyntaxForDeterminingFileType
+      ? isAllowedSyntax || isAllowedExtension
+      : isAllowedExtension;
 };
 
 export const isHTML = (bufferContents) => {
-  // If file unsaved, check if first non-whitespace character is &lt;
-  if (ORIGINAL_FILE_PATH === '?') {
-    return bufferContents.match(/^\s*</);
+  const isSavedFile = ORIGINAL_FILE_PATH !== '?';
+  const useEditorFileSyntaxForDeterminingFileType = EDITOR_FILE_SYNTAX !== '?';
+
+  const isAllowedExtension = hasAllowedFileExtension('html', ORIGINAL_FILE_PATH);
+  const isAllowedSyntax = hasAllowedFileSyntax('html', EDITOR_FILE_SYNTAX);
+  const isDisallowedFilePattern = hasDisallowedFilePathPattern('html', ORIGINAL_FILE_PATH);
+  const isMaybeHtml = bufferContents.match(/^\s*</);
+
+  if (!isSavedFile) {
+    return useEditorFileSyntaxForDeterminingFileType
+      ? isAllowedSyntax || isMaybeHtml
+      : isMaybeHtml;
   }
-  if (isDisallowedFilePattern('html', ORIGINAL_FILE_PATH)) {
+
+  if (isDisallowedFilePattern) {
     return false;
   }
-  const allowedExtension = hasAllowedFileExtension('html', ORIGINAL_FILE_PATH);
-  if (EDITOR_FILE_SYNTAX === '?') {
-    return allowedExtension;
-  }
-  const allowedSyntax = hasAllowedFileSyntax('html', EDITOR_FILE_SYNTAX);
-  return allowedSyntax || allowedExtension;
+
+  return useEditorFileSyntaxForDeterminingFileType
+      ? isAllowedSyntax || isAllowedExtension
+      : isAllowedExtension;
 };
 
-export const isJSON = () => {
-  // If file unsaved, there's no good way to determine whether or not it's
-  // JSON based on the file contents, so just bail.
-  if (ORIGINAL_FILE_PATH === '?') {
+export const isJSON = (bufferContents) => {
+  const isSavedFile = ORIGINAL_FILE_PATH !== '?';
+  const useEditorFileSyntaxForDeterminingFileType = EDITOR_FILE_SYNTAX !== '?';
+
+  const isAllowedExtension = hasAllowedFileExtension('json', ORIGINAL_FILE_PATH);
+  const isAllowedSyntax = hasAllowedFileSyntax('json', EDITOR_FILE_SYNTAX);
+  const isDisallowedFilePattern = hasDisallowedFilePathPattern('json', ORIGINAL_FILE_PATH);
+  const isMaybeJson = bufferContents.match(/^\s*[{[]/);
+
+  if (!isSavedFile) {
+    return useEditorFileSyntaxForDeterminingFileType
+      ? isAllowedSyntax || isMaybeJson
+      : isMaybeJson;
+  }
+
+  if (isDisallowedFilePattern) {
     return false;
   }
-  if (isDisallowedFilePattern('json', ORIGINAL_FILE_PATH)) {
-    return false;
-  }
-  const allowedExtension = hasAllowedFileExtension('json', ORIGINAL_FILE_PATH);
-  if (EDITOR_FILE_SYNTAX === '?') {
-    return allowedExtension;
-  }
-  const allowedSyntax = hasAllowedFileSyntax('json', EDITOR_FILE_SYNTAX);
-  return allowedSyntax || allowedExtension;
+
+  return useEditorFileSyntaxForDeterminingFileType
+      ? isAllowedSyntax || isAllowedExtension
+      : isAllowedExtension;
 };
 
 export const isJS = (bufferContents) => {
-  // If file unsaved, check if first non-whitespace character is NOT &lt;
-  if (ORIGINAL_FILE_PATH === '?') {
-    return !bufferContents.match(/^\s*</);
+  const isSavedFile = ORIGINAL_FILE_PATH !== '?';
+  const useEditorFileSyntaxForDeterminingFileType = EDITOR_FILE_SYNTAX !== '?';
+
+  const isAllowedExtension = hasAllowedFileExtension('js', ORIGINAL_FILE_PATH);
+  const isAllowedSyntax = hasAllowedFileSyntax('js', EDITOR_FILE_SYNTAX);
+  const isDisallowedFilePattern = hasDisallowedFilePathPattern('js', ORIGINAL_FILE_PATH);
+  const isMaybeJs = !bufferContents.match(/^\s*</);
+
+  if (!isSavedFile) {
+    return useEditorFileSyntaxForDeterminingFileType
+      ? isAllowedSyntax || isMaybeJs
+      : isMaybeJs;
   }
-  if (isDisallowedFilePattern('js', ORIGINAL_FILE_PATH)) {
+
+  if (isDisallowedFilePattern) {
     return false;
   }
-  const allowedExtension = hasAllowedFileExtension('js', ORIGINAL_FILE_PATH);
-  if (EDITOR_FILE_SYNTAX === '?') {
-    return allowedExtension;
-  }
-  const allowedSyntax = hasAllowedFileSyntax('js', EDITOR_FILE_SYNTAX);
-  return allowedSyntax || allowedExtension;
+
+  return useEditorFileSyntaxForDeterminingFileType
+      ? isAllowedSyntax || isAllowedExtension
+      : isAllowedExtension;
 };
 
 // Checks if a file path matches a particular glob string.
@@ -116,6 +145,9 @@ export const isMatchingGlob = (globString) => {
   if (ORIGINAL_FILE_PATH === '?') {
     return false;
   }
-  return minimatch(ORIGINAL_FILE_PATH, globString) || minimatch(basename(ORIGINAL_FILE_PATH), globString);
+  return (
+    minimatch(ORIGINAL_FILE_PATH, globString) ||
+    minimatch(basename(ORIGINAL_FILE_PATH), globString)
+  );
 };
 
