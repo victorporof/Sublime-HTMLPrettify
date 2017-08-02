@@ -3,7 +3,7 @@
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 """Various paths used by this plugin"""
 
-from os.path import abspath, realpath, dirname, basename, join
+from os.path import abspath, dirname, join
 from sublime import packages_path
 
 SETTINGS_FILENAME = 'HTMLPrettify.sublime-settings'
