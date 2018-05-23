@@ -55,7 +55,10 @@ def run_command(args):
 
     stdout, stderr = subprocess.Popen(args, **popen_args).communicate()
     if stderr:
-        if b"SyntaxError" in stderr:
+        if b"ExperimentalWarning" in stderr:
+            # Don't treat node experimental warnings as actual errors.
+            return stdout
+        elif b"SyntaxError" in stderr:
             raise NodeSyntaxError(
                 stdout.decode('utf-8'), stderr.decode('utf-8'))
         else:
