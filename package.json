@@ -13,6 +13,7 @@
     "clobber": "npm run clean:build && npm run clean:deps",
     "build": "gulp build",
     "release:local": "npm run clean:build && npm run build && git add . && git commit -m 'Update node_modules and build'",
+    "release:bump": "npm version patch",
     "release:patch": "npm run release:local && npm version patch",
     "release:minor": "npm run release:local && npm version minor",
     "release:major": "npm run release:local && npm version major"
