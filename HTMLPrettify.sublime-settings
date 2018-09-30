@@ -54,8 +54,8 @@
         // if you want to be able to prettify the default files as well.
         "js":
         {
-            "allowed_file_extensions": ["js"],
-            "allowed_file_syntaxes": ["javascript", "ecma"],
+            "allowed_file_extensions": ["js", "jsx"],
+            "allowed_file_syntaxes": ["javascript", "ecma", "react", "babel"],
             "disallowed_file_patterns": []
         },
         // Be sure to include all of the `html`, `css`, `js` and `json` keys in your user settings

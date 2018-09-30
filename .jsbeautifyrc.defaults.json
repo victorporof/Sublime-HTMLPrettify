@@ -100,7 +100,7 @@
         "comma_first": false,
 
         // Pass E4X xml literals through untouched
-        "e4x": false,
+        "e4x": true,
 
         // If true, then jslint-stricter mode is enforced
         "jslint_happy": false,

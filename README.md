@@ -1,12 +1,12 @@
-# HTML, CSS, JavaScript, JSON and Vue code formatter for Sublime Text 2 and 3 via node.js
+# HTML, CSS, JavaScript, JSON, React and Vue code formatter for Sublime Text 2 and 3 via node.js
 #### [Sublime Text 3](http://www.sublimetext.com/3)
 #### [JS-beautify](https://github.com/einars/js-beautify)
 #### [Node.js download](http://nodejs.org/#download)
 
 ## About
-This is a Sublime Text 2 and 3 plugin allowing you to format your HTML, CSS, JavaScript, JSON and Vue code. It uses a set of nice beautifier scripts made by Einar Lielmanis. The formatters are written in JavaScript, so you'll need something (node.js) to interpret JavaScript code outside the browser.
+This is a Sublime Text 2 and 3 plugin allowing you to format your HTML, CSS, JavaScript, JSON, React and Vue code. It uses a set of nice beautifier scripts made by Einar Lielmanis. The formatters are written in JavaScript, so you'll need something (node.js) to interpret JavaScript code outside the browser.
 
-This will work with either HTML, CSS, JavaScript, JSON and Vue files.
+This will work with either HTML, CSS, JavaScript, JSON, React and Vue files.
 
 ## Installation
 First of all, be sure you have [node.js](http://nodejs.org/#download) installed in order to run the beautifier. After you've installed node.js, you will need to setup this plugin.
@@ -47,7 +47,7 @@ Right click in the current buffer and select `HTML/CSS/JS Prettify` -> `Prettify
 
 -- or --
 
-Open a HTML, CSS, JavaScript, JSON or Vue file, pop out the console in Sublime Text from View -> Show Console, and type `view.run_command("htmlprettify")`.
+Open a HTML, CSS, JavaScript, JSON, React or Vue file, pop out the console in Sublime Text from View -> Show Console, and type `view.run_command("htmlprettify")`.
 
 Writing commands in the console is ugly. Set up your own key combo for this, by going to Preferences -> Key Bindings - User, and adding a command in that array: `{ "keys": ["super+shift+h"], "command": "htmlprettify" }`. You can use any other command you want, thought most of them are already taken.
 
@@ -65,6 +65,12 @@ On Windows, the absolute path to node.exe *must* use forward slashes. Must inclu
 
 ### Be very careful on Linux!
 Depending on your distribution and default package sources, `apt-get install node` (for example) *will not* install node.js, contrary to all human common sense and popular belief. You want `nodejs` instead. Best thing is to make it yourself from http://nodejs.org/#download.
+
+## Beautify Vue
+To properly beautify Vue files, make sure the file syntax is recongnized by Sublime as either HTML, XML or Vue.
+
+## Beautify JSX
+To properly beautify JSX files, make sure the file syntax is recongnized by Sublime as JavaScript and that `e4x` is `true` in your `.jsbeautifyrc`.
 
 ## Beautify on Save
 To beautify your code when saving the document, set the `format_on_save` setting to `true` in `HTMLPrettify.sublime-settings`:
