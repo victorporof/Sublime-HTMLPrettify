@@ -158,7 +158,7 @@
         // For the following entries, keys are globs and values are objects which
         // can contain any kind of .jsbeautifyrc setting.
 
-        "(package|yarn)(-lock).json":
+        "@(package?(-lock)|yarn-lock).json":
         {
             "indent_size": 2,
             "brace_style": "collapse"
