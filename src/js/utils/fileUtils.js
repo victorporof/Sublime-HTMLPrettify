@@ -141,7 +141,7 @@ export const isJS = (bufferContents) => {
 
 // Checks if a file path matches a particular glob string.
 export const isMatchingGlob = (globString) => {
-  // If file unsaved, reject globl matching;
+  // If file unsaved, reject glob matching;
   if (ORIGINAL_FILE_PATH === '?') {
     return false;
   }

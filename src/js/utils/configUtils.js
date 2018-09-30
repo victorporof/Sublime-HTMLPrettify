@@ -98,7 +98,7 @@ export const extendJsbeautifyConfigFromEditorConfigInFolders = async (folderPath
   return clone(oldJsbeautifyConfig);
 };
 
-// Clones and extends a given .jsbeautifyrc with some additonal custom options
+// Clones and extends a given .jsbeautifyrc with some additional custom options
 // defined in the "custom" field, which contains globs defining additional
 // prettification rules for certain files paths.
 export const extendJsbeautifyConfigWithCurrentFileMatchRules = (jsbeautifyConfig) => {
@@ -116,7 +116,7 @@ export const extendJsbeautifyConfigWithCurrentFileMatchRules = (jsbeautifyConfig
   return clonedJsbeautifyConfig;
 };
 
-// Clones and extends a given .jsbeautifyrc with some additonal custom options
+// Clones and extends a given .jsbeautifyrc with some additional custom options
 // retrieved from the editor settings.
 export const extendJsbeautifyConfigWithEditorOverrides = (jsbeautifyConfig) => {
   const clonedJsbeautifyConfig = clone(jsbeautifyConfig);
@@ -139,7 +139,7 @@ export const extendJsbeautifyConfigWithEditorOverrides = (jsbeautifyConfig) => {
   return clonedJsbeautifyConfig;
 };
 
-// Clones and extends a given .jsbeautifyrc with some additonal meta-options
+// Clones and extends a given .jsbeautifyrc with some additional meta-options
 // following some specific rules respecting global editor settings.
 export const finalizeJsbeautifyConfig = (jsbeautifyConfig) => {
   const extendedJsbeautifyConfig =
