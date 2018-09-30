@@ -16,12 +16,10 @@ import { isMatchingGlob } from './fileUtils';
 
 // Parses a .jsbeautifyrc json file and returns a sanitized object
 // with a consistent and expected format.
-export const parseJsbeautifyConfig = async filePath =>
-  sanitizeJsbeautifyConfig(await parseJSON5File(filePath));
+export const parseJsbeautifyConfig = async filePath => sanitizeJsbeautifyConfig(await parseJSON5File(filePath));
 
 // Parses the default .jsbeautifyrc json file coming with this plugin.
-export const parseDefaultJsbeautifyConfig = () =>
-  parseJsbeautifyConfig(path.join(ROOT_DIR, '.jsbeautifyrc.defaults.json'));
+export const parseDefaultJsbeautifyConfig = () => parseJsbeautifyConfig(path.join(ROOT_DIR, '.jsbeautifyrc.defaults.json'));
 
 // Clones and extends a given .jsbeautifyrc object with the one located at a
 // file path. If none exists, a clone of the original is returned.
@@ -142,12 +140,11 @@ export const extendJsbeautifyConfigWithEditorOverrides = (jsbeautifyConfig) => {
 // Clones and extends a given .jsbeautifyrc with some additional meta-options
 // following some specific rules respecting global editor settings.
 export const finalizeJsbeautifyConfig = (jsbeautifyConfig) => {
-  const extendedJsbeautifyConfig =
-    extendJsbeautifyConfigWithCurrentFileMatchRules(
-      extendJsbeautifyConfigWithEditorOverrides(
-        jsbeautifyConfig,
-      ),
-    );
+  const extendedJsbeautifyConfig = extendJsbeautifyConfigWithCurrentFileMatchRules(
+    extendJsbeautifyConfigWithEditorOverrides(
+      jsbeautifyConfig,
+    ),
+  );
 
   return {
     html: {

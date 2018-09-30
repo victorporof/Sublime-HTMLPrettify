@@ -63,8 +63,8 @@ export const isCSS = () => {
   }
 
   return useEditorFileSyntaxForDeterminingFileType
-      ? isAllowedSyntax || isAllowedExtension
-      : isAllowedExtension;
+    ? isAllowedSyntax || isAllowedExtension
+    : isAllowedExtension;
 };
 
 export const isHTML = (bufferContents) => {
@@ -87,8 +87,8 @@ export const isHTML = (bufferContents) => {
   }
 
   return useEditorFileSyntaxForDeterminingFileType
-      ? isAllowedSyntax || isAllowedExtension
-      : isAllowedExtension;
+    ? isAllowedSyntax || isAllowedExtension
+    : isAllowedExtension;
 };
 
 export const isJSON = (bufferContents) => {
@@ -111,8 +111,8 @@ export const isJSON = (bufferContents) => {
   }
 
   return useEditorFileSyntaxForDeterminingFileType
-      ? isAllowedSyntax || isAllowedExtension
-      : isAllowedExtension;
+    ? isAllowedSyntax || isAllowedExtension
+    : isAllowedExtension;
 };
 
 export const isJS = (bufferContents) => {
@@ -135,8 +135,8 @@ export const isJS = (bufferContents) => {
   }
 
   return useEditorFileSyntaxForDeterminingFileType
-      ? isAllowedSyntax || isAllowedExtension
-      : isAllowedExtension;
+    ? isAllowedSyntax || isAllowedExtension
+    : isAllowedExtension;
 };
 
 // Checks if a file path matches a particular glob string.
@@ -146,8 +146,7 @@ export const isMatchingGlob = (globString) => {
     return false;
   }
   return (
-    minimatch(ORIGINAL_FILE_PATH, globString) ||
-    minimatch(basename(ORIGINAL_FILE_PATH), globString)
+    minimatch(ORIGINAL_FILE_PATH, globString)
+    || minimatch(basename(ORIGINAL_FILE_PATH), globString)
   );
 };
-

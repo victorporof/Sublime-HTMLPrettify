@@ -22,14 +22,13 @@ const BABELRC_CONTENTS = fs.readJsonSync(BABELRC_PATH, { encoding: 'utf8' });
 const SRC_DIR = path.join(ROOT_DIR, 'src', 'js');
 const BUILD_DIR = path.join(ROOT_DIR, 'build', 'js-transpiled');
 
-gulp.task('build:babel', () =>
-  gulp.src(`${SRC_DIR}/**/*.js`)
-    .pipe(changed(BUILD_DIR, { extension: '.js' }))
-    .pipe(debug({ title: 'Running babel' }))
-    .pipe(sourcemaps.init())
-    .pipe(babel(BABELRC_CONTENTS))
-    .pipe(sourcemaps.write())
-    .pipe(gulp.dest(BUILD_DIR)));
+gulp.task('build:babel', () => gulp.src(`${SRC_DIR}/**/*.js`)
+  .pipe(changed(BUILD_DIR, { extension: '.js' }))
+  .pipe(debug({ title: 'Running babel' }))
+  .pipe(sourcemaps.init())
+  .pipe(babel(BABELRC_CONTENTS))
+  .pipe(sourcemaps.write())
+  .pipe(gulp.dest(BUILD_DIR)));
 
 gulp.task('build:write-manifest', () => {
   const config = pick(Manifest, ['dependencies']);

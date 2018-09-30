@@ -8,7 +8,6 @@ export const PATH_SEP = path.sep || '/';
 
 export const ROOT_DIR = path.resolve(path.join(__dirname, '..', '..', '..'));
 
-export const USER_HOME_DIR =
-  process.env.HOME ||
-  process.env.USERPROFILE ||
-  path.join(process.env.HOMEDRIVE, process.env.HOMEPATH);
+export const USER_HOME_DIR = process.env.HOME
+  || process.env.USERPROFILE
+  || path.join(process.env.HOMEDRIVE, process.env.HOMEPATH);

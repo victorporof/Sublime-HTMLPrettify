@@ -1,8 +1,17 @@
 {
-  "presets": ["es2015"],
+  "presets": [
+    [
+      "@babel/env",
+      {
+        "targets": {
+          "node": "0.1"
+        }
+      }
+    ]
+  ],
   "plugins": [
-    "transform-runtime",
-    "transform-object-rest-spread",
-    "transform-async-to-generator"
+    "@babel/transform-runtime",
+    "@babel/syntax-object-rest-spread",
+    "@babel/transform-async-to-generator"
   ]
 }
