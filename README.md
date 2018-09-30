@@ -1,12 +1,12 @@
-# HTML, CSS, JavaScript and JSON code formatter for Sublime Text 2 and 3 via node.js
+# HTML, CSS, JavaScript, JSON and Vue code formatter for Sublime Text 2 and 3 via node.js
 #### [Sublime Text 3](http://www.sublimetext.com/3)
 #### [JS-beautify](https://github.com/einars/js-beautify)
 #### [Node.js download](http://nodejs.org/#download)
 
 ## About
-This is a Sublime Text 2 and 3 plugin allowing you to format your HTML, CSS, JavaScript and JSON code. It uses a set of nice beautifier scripts made by Einar Lielmanis. The formatters are written in JavaScript, so you'll need something (node.js) to interpret JavaScript code outside the browser.
+This is a Sublime Text 2 and 3 plugin allowing you to format your HTML, CSS, JavaScript, JSON and Vue code. It uses a set of nice beautifier scripts made by Einar Lielmanis. The formatters are written in JavaScript, so you'll need something (node.js) to interpret JavaScript code outside the browser.
 
-This will work with either HTML, CSS, JavaScript and JSON files.
+This will work with either HTML, CSS, JavaScript, JSON and Vue files.
 
 ## Installation
 First of all, be sure you have [node.js](http://nodejs.org/#download) installed in order to run the beautifier. After you've installed node.js, you will need to setup this plugin.
@@ -47,7 +47,7 @@ Right click in the current buffer and select `HTML/CSS/JS Prettify` -> `Prettify
 
 -- or --
 
-Open a HTML, CSS or JavaScript file, pop out the console in Sublime Text from View -> Show Console, and type `view.run_command("htmlprettify")`.
+Open a HTML, CSS, JavaScript, JSON or Vue file, pop out the console in Sublime Text from View -> Show Console, and type `view.run_command("htmlprettify")`.
 
 Writing commands in the console is ugly. Set up your own key combo for this, by going to Preferences -> Key Bindings - User, and adding a command in that array: `{ "keys": ["super+shift+h"], "command": "htmlprettify" }`. You can use any other command you want, thought most of them are already taken.
 
@@ -196,7 +196,7 @@ When one is found, it stops searching, and it uses those options along with the 
 
     "all":
     {
-        // These rules apply to all HTML, CSS, JS and JSON files to be prettified
+        // These rules apply to any supported code that is going to be be prettified,
         // and have the lowest level of precedence (meaning any of the settings in
         // the 'html', 'css', 'js', 'json' and 'custom' categories override these).
 
@@ -232,8 +232,9 @@ When one is found, it stops searching, and it uses those options along with the 
 
     "html":
     {
-        // Rules added here apply only to HTML files. They take precedence over all
-        // of the settings in the 'all' category above.
+        // Rules added here apply only to HTML-like files, as determined by the
+        // rules specified for `global_file_rules` in the plugin settings. They
+        // take precedence  over all of the settings in the 'all' category above.
 
         // You can add other .jsbeautifyrc rules in this section too.
 
@@ -252,8 +253,9 @@ When one is found, it stops searching, and it uses those options along with the 
 
     "css":
     {
-        // Rules added here apply only to CSS files. They take precedence over all
-        // of the settings in the 'all' category above.
+        // Rules added here apply only to CSS-like files, as determined by the
+        // rules specified for `global_file_rules` in the plugin settings. They
+        // take precedence  over all of the settings in the 'all' category above.
 
         // You can add other .jsbeautifyrc rules in this section too.
 
@@ -269,8 +271,9 @@ When one is found, it stops searching, and it uses those options along with the 
 
     "js":
     {
-        // Rules added here apply only to JS files. They take precedence over all
-        // of the settings in the 'all' category above.
+        // Rules added here apply only to JS-like files, as determined by the
+        // rules specified for `global_file_rules` in the plugin settings. They
+        // take precedence  over all of the settings in the 'all' category above.
 
         // You can add other .jsbeautifyrc rules in this section too.
 
@@ -316,8 +319,9 @@ When one is found, it stops searching, and it uses those options along with the 
 
     "json":
     {
-        // Rules added here apply only to JSON files. They take precedence over all
-        // of the settings in the 'all' category above.
+        // Rules added here apply only to JSON-like files, as determined by the
+        // rules specified for `global_file_rules` in the plugin settings. They
+        // take precedence over all of the settings in the 'all' category above.
 
         // You can add other .jsbeautifyrc rules in this section too.
 
@@ -333,10 +337,13 @@ When one is found, it stops searching, and it uses those options along with the 
 
     "custom":
     {
-        // Rules added here apply only to some files matching specific glob strings.
+        // Rules added here apply only to files matching specific glob strings,
+        // but respecting any whitelists or blacklists as determined by the
+        // rules specified for `global_file_rules` in the plugin settings. They
+        // take precedence over any of the settings in the categories above.
+
         // For the following entries, keys are globs and values are objects which
-        // can contain any kind of .jsbeautifyrc setting. They take precedence over
-        // all of the above settings.
+        // can contain any kind of .jsbeautifyrc setting.
 
         "package?(-lock).json":
         {
