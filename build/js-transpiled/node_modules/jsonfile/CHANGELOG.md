@@ -1,3 +1,11 @@
+4.0.0 / 2017-07-12
+------------------
+
+- **BREAKING:** Remove global `spaces` option.
+- **BREAKING:** Drop support for Node 0.10, 0.12, and io.js.
+- Remove undocumented `passParsingErrors` option.
+- Added `EOL` override option to `writeFile` when using `spaces`. [#89]
+
 3.0.1 / 2017-07-05
 ------------------
 
@@ -89,12 +97,13 @@ changes it according to docs. [#12][#12]
 ------------------
 * Initial release.
 
+[#89]: https://github.com/jprichardson/node-jsonfile/pull/89
 [#45]: https://github.com/jprichardson/node-jsonfile/issues/45    "Reading of UTF8-encoded (w/ BOM) files fails"
 [#44]: https://github.com/jprichardson/node-jsonfile/issues/44    "Extra characters in written file"
 [#43]: https://github.com/jprichardson/node-jsonfile/issues/43    "Prettyfy json when written to file"
 [#42]: https://github.com/jprichardson/node-jsonfile/pull/42      "Moved fs.readFileSync within the try/catch"
 [#41]: https://github.com/jprichardson/node-jsonfile/issues/41    "Linux: Hidden file not working"
-[#40]: https://github.com/jprichardson/node-jsonfile/issues/40    "autocreate folder doesnt work from Path-value"
+[#40]: https://github.com/jprichardson/node-jsonfile/issues/40    "autocreate folder doesn't work from Path-value"
 [#39]: https://github.com/jprichardson/node-jsonfile/pull/39      "Add `throws` option for readFile (async)"
 [#38]: https://github.com/jprichardson/node-jsonfile/pull/38      "Update README.md writeFile[Sync] signature"
 [#37]: https://github.com/jprichardson/node-jsonfile/pull/37      "support append file"

@@ -1,4 +1,4 @@
-# is-glob [![NPM version](https://img.shields.io/npm/v/is-glob.svg?style=flat)](https://www.npmjs.com/package/is-glob) [![NPM downloads](https://img.shields.io/npm/dm/is-glob.svg?style=flat)](https://npmjs.org/package/is-glob) [![Build Status](https://img.shields.io/travis/jonschlinkert/is-glob.svg?style=flat)](https://travis-ci.org/jonschlinkert/is-glob)
+# is-glob [![NPM version](https://img.shields.io/npm/v/is-glob.svg?style=flat)](https://www.npmjs.com/package/is-glob) [![NPM monthly downloads](https://img.shields.io/npm/dm/is-glob.svg?style=flat)](https://npmjs.org/package/is-glob)  [![NPM total downloads](https://img.shields.io/npm/dt/is-glob.svg?style=flat)](https://npmjs.org/package/is-glob) [![Linux Build Status](https://img.shields.io/travis/jonschlinkert/is-glob.svg?style=flat&label=Travis)](https://travis-ci.org/jonschlinkert/is-glob) [![Windows Build Status](https://img.shields.io/appveyor/ci/jonschlinkert/is-glob.svg?style=flat&label=AppVeyor)](https://ci.appveyor.com/project/jonschlinkert/is-glob)
 
 > Returns `true` if the given string looks like a glob pattern or an extglob pattern. This makes it easy to create code that only uses external modules like node-glob when necessary, resulting in much faster code execution and initialization time, and a better user experience.
 
@@ -18,6 +18,8 @@ You might also be interested in [is-valid-glob](https://github.com/jonschlinkert
 var isGlob = require('is-glob');
 ```
 
+### Default behavior
+
 **True**
 
 Patterns that have glob characters or regex patterns will return `true`:
@@ -30,7 +32,6 @@ isGlob('abc/*.js');
 isGlob('abc/(aaa|bbb).js');
 isGlob('abc/[a-z].js');
 isGlob('abc/{a,b}.js');
-isGlob('abc/?.js');
 //=> true
 ```
 
@@ -62,7 +63,6 @@ isGlob('abc/\\*.js');
 isGlob('abc/\\(aaa|bbb).js');
 isGlob('abc/\\[a-z].js');
 isGlob('abc/\\{a,b}.js');
-isGlob('abc/\\?.js');
 //=> false
 ```
 
@@ -74,6 +74,7 @@ isGlob('abc/def/ghi.js');
 isGlob('foo.js');
 isGlob('abc/@.js');
 isGlob('abc/+.js');
+isGlob('abc/?.js');
 isGlob();
 isGlob(null);
 //=> false
@@ -87,12 +88,58 @@ isGlob(['foo.js']);
 //=> false
 ```
 
+### Option strict
+
+When `options.strict === false` the behavior is less strict in determining if a pattern is a glob. Meaning that
+some patterns that would return `false` may return `true`. This is done so that matching libraries like [micromatch](https://github.com/micromatch/micromatch) have a chance at determining if the pattern is a glob or not.
+
+**True**
+
+Patterns that have glob characters or regex patterns will return `true`:
+
+```js
+isGlob('!foo.js', {strict: false});
+isGlob('*.js', {strict: false});
+isGlob('**/abc.js', {strict: false});
+isGlob('abc/*.js', {strict: false});
+isGlob('abc/(aaa|bbb).js', {strict: false});
+isGlob('abc/[a-z].js', {strict: false});
+isGlob('abc/{a,b}.js', {strict: false});
+//=> true
+```
+
+Extglobs
+
+```js
+isGlob('abc/@(a).js', {strict: false});
+isGlob('abc/!(a).js', {strict: false});
+isGlob('abc/+(a).js', {strict: false});
+isGlob('abc/*(a).js', {strict: false});
+isGlob('abc/?(a).js', {strict: false});
+//=> true
+```
+
+**False**
+
+Escaped globs or extglobs return `false`:
+
+```js
+isGlob('\\!foo.js', {strict: false});
+isGlob('\\*.js', {strict: false});
+isGlob('\\*\\*/abc.js', {strict: false});
+isGlob('abc/\\*.js', {strict: false});
+isGlob('abc/\\(aaa|bbb).js', {strict: false});
+isGlob('abc/\\[a-z].js', {strict: false});
+isGlob('abc/\\{a,b}.js', {strict: false});
+//=> false
+```
+
 ## About
 
 ### Related projects
 
 * [assemble](https://www.npmjs.com/package/assemble): Get the rocks out of your socks! Assemble makes you fast at creating web projects… [more](https://github.com/assemble/assemble) | [homepage](https://github.com/assemble/assemble "Get the rocks out of your socks! Assemble makes you fast at creating web projects. Assemble is used by thousands of projects for rapid prototyping, creating themes, scaffolds, boilerplates, e-books, UI components, API documentation, blogs, building websit")
-* [base](https://www.npmjs.com/package/base): base is the foundation for creating modular, unit testable and highly pluggable node.js applications, starting… [more](https://github.com/node-base/base) | [homepage](https://github.com/node-base/base "base is the foundation for creating modular, unit testable and highly pluggable node.js applications, starting with a handful of common methods, like `set`, `get`, `del` and `use`.")
+* [base](https://www.npmjs.com/package/base): Framework for rapidly creating high quality node.js applications, using plugins like building blocks | [homepage](https://github.com/node-base/base "Framework for rapidly creating high quality node.js applications, using plugins like building blocks")
 * [update](https://www.npmjs.com/package/update): Be scalable! Update is a new, open source developer framework and CLI for automating updates… [more](https://github.com/update/update) | [homepage](https://github.com/update/update "Be scalable! Update is a new, open source developer framework and CLI for automating updates of any kind in code projects.")
 * [verb](https://www.npmjs.com/package/verb): Documentation generator for GitHub projects. Verb is extremely powerful, easy to use, and is used… [more](https://github.com/verbose/verb) | [homepage](https://github.com/verbose/verb "Documentation generator for GitHub projects. Verb is extremely powerful, easy to use, and is used on hundreds of projects of all sizes to generate everything from API docs to readmes.")
 
@@ -102,27 +149,28 @@ Pull requests and stars are always welcome. For bugs and feature requests, [plea
 
 ### Contributors
 
-| **Commits** | **Contributor**<br/> | 
-| --- | --- |
-| 40 | [jonschlinkert](https://github.com/jonschlinkert) |
-| 1 | [tuvistavie](https://github.com/tuvistavie) |
+| **Commits** | **Contributor** |  
+| --- | --- |  
+| 47 | [jonschlinkert](https://github.com/jonschlinkert) |  
+| 1  | [doowb](https://github.com/doowb) |  
+| 1  | [tuvistavie](https://github.com/tuvistavie) |  
 
 ### Building docs
 
-_(This document was generated by [verb-generate-readme](https://github.com/verbose/verb-generate-readme) (a [verb](https://github.com/verbose/verb) generator), please don't edit the readme directly. Any changes to the readme must be made in [.verb.md](.verb.md).)_
+_(This project's readme.md is generated by [verb](https://github.com/verbose/verb-generate-readme), please don't edit the readme directly. Any changes to the readme must be made in the [.verb.md](.verb.md) readme template.)_
 
-To generate the readme and API documentation with [verb](https://github.com/verbose/verb):
+To generate the readme, run the following command:
 
 ```sh
-$ npm install -g verb verb-generate-readme && verb
+$ npm install -g verbose/verb#dev verb-generate-readme && verb
 ```
 
 ### Running tests
 
-Install dev dependencies:
+Running and reviewing unit tests is a great way to get familiarized with a library and its API. You can install dependencies and run tests with the following command:
 
 ```sh
-$ npm install -d && npm test
+$ npm install && npm test
 ```
 
 ### Author
@@ -130,13 +178,13 @@ $ npm install -d && npm test
 **Jon Schlinkert**
 
 * [github/jonschlinkert](https://github.com/jonschlinkert)
-* [twitter/jonschlinkert](http://twitter.com/jonschlinkert)
+* [twitter/jonschlinkert](https://twitter.com/jonschlinkert)
 
 ### License
 
-Copyright © 2016, [Jon Schlinkert](https://github.com/jonschlinkert).
-Released under the [MIT license](https://github.com/jonschlinkert/is-glob/blob/master/LICENSE).
+Copyright © 2017, [Jon Schlinkert](https://github.com/jonschlinkert).
+Released under the [MIT License](LICENSE).
 
 ***
 
-_This file was generated by [verb-generate-readme](https://github.com/verbose/verb-generate-readme), v0.1.31, on October 12, 2016._
+_This file was generated by [verb-generate-readme](https://github.com/verbose/verb-generate-readme), v0.6.0, on August 07, 2017._

@@ -1,36 +1,9 @@
 // Based on minimatch.js by isaacs <https://npmjs.org/package/minimatch>
 
-;(function (require, exports, module, platform) {
+  var platform = typeof process === "object" ? process.platform : "win32"
 
   if (module) module.exports = minimatch
   else exports.minimatch = minimatch
-
-  if (!require) {
-    require = function (id) {
-      switch (id) {
-        case "sigmund": return function sigmund (obj) {
-            return JSON.stringify(obj)
-          }
-        case "path": return { basename: function (f) {
-              f = f.split(/[\/\\]/)
-              var e = f.pop()
-              if (!e) e = f.pop()
-              return e
-            }}
-        case "lru-cache": return function LRUCache () {
-            // not quite an LRU, but still space-limited.
-            var cache = {}
-            var cnt = 0
-            this.set = function (k, v) {
-              cnt ++
-              if (cnt >= 100) cache = {}
-              cache[k] = v
-            }
-            this.get = function (k) { return cache[k] }
-          }
-      }
-    }
-  }
 
   minimatch.Minimatch = Minimatch
 
@@ -1072,9 +1045,3 @@
   function regExpEscape (s) {
     return s.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, "\\$&")
   }
-
-})( typeof require === "function" ? require : null,
-  this,
-    typeof module === "object" ? module : null,
-    typeof process === "object" ? process.platform : "win32"
-)
