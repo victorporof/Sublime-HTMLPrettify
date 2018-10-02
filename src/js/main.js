@@ -23,6 +23,8 @@ async function main() {
   stdio.beginDiagnostics();
 
   // Dump some diagnostics messages, parsed out by the plugin.
+  stdio.info(`Using process versions: ${JSON.stringify(process.versions)}`);
+
   stdio.info(`Using editor text temp file: ${constants.USING_EDITOR_TEXT_TEMP_FILE}`);
 
   stdio.info(`Global file rules: ${constants.GLOBAL_FILE_RULES_JSON}`);
