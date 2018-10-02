@@ -1,6 +1,7 @@
 {
   "dependencies": {
     "@babel/runtime": "7.1.2",
+    "core-js": "2.5.7",
     "editorconfig-parser": "0.0.2",
     "fs-extra": "7.0.0",
     "is-glob": "4.0.0",
