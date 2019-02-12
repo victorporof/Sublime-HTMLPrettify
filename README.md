@@ -253,8 +253,8 @@ When one is found, it stops searching, and it uses those options along with the 
         // [keep|separate|normal]
         "indent_scripts": "keep",
 
-        // List of tags that should not be reformatted
-        "unformatted": ["a", "span", "img", "code", "pre", "sub", "sup", "em", "strong", "b", "i", "u", "strike", "big", "small", "pre", "h1", "h2", "h3", "h4", "h5", "h6"]
+        // List of tags that should not be reformatted. This should generally not be needed.
+        "unformatted": []
     },
 
     "css":
