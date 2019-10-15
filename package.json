@@ -26,7 +26,7 @@
     "is-glob": "4.0.0",
     "js-beautify": "1.8.8",
     "json5": "2.1.0",
-    "lodash": "4.17.11",
+    "lodash": "4.17.13",
     "map-obj": "3.0.0",
     "minimatch": "3.0.4",
     "promise-arrays": "0.1.0"
