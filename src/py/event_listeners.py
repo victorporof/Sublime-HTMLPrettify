@@ -12,26 +12,26 @@ from .utils.debounce_utils import debounce
 class HtmlprettifyEventListeners(EventListener):
     @staticmethod
     def on_pre_save(view):
-        if get_pref("format_on_save"):
+        if get_pref("format_on_save", view):
             view.run_command("htmlprettify")
 
     @staticmethod
     def on_load_async(view):
-        if get_pref("format_on_open"):
+        if get_pref("format_on_open", view):
             view.run_command("htmlprettify")
 
     @staticmethod
     def on_activated_async(view):
-        if get_pref("format_on_focus"):
+        if get_pref("format_on_focus", view):
             view.run_command("htmlprettify")
 
     @staticmethod
     def on_deactivated_async(view):
-        if get_pref("format_on_focus_lost"):
+        if get_pref("format_on_focus_lost", view):
             view.run_command("htmlprettify")
 
     @staticmethod
     @debounce(1)
     def on_modified_async(view):
-        if get_pref("format_while_editing"):
+        if get_pref("format_while_editing", view):
             view.run_command("htmlprettify")

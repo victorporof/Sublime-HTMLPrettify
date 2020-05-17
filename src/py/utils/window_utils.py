@@ -11,9 +11,13 @@ from .paths import get_root_dir, get_user_dir
 from .file_utils import read_text_from_file, ensure_file
 
 
-def get_pref(key):
+def get_pref(key, view=None):
     """Retrieves the pref value under the given name key from the settings file"""
-    return load_settings(SETTINGS_FILENAME).get(key)
+
+    file_settings = load_settings(SETTINGS_FILENAME)
+    view_settings = view.settings() if view else {}
+
+    return view_settings.get("HTMLPrettify."+key, file_settings.get(key))
 
 
 def open_config_rc(window):
