@@ -17,17 +17,17 @@ from .utils.script_utils import prettify_verbose
 
 
 def main(view, edit):
-    format_selection_only = get_pref("format_selection_only")
-    save_to_temp_file = get_pref("save_to_temp_file_before_prettifying")
-    global_file_rules = get_pref("global_file_rules")
-    respect_editorconfig_files = get_pref("respect_editorconfig_files")
+    format_selection_only = get_pref("format_selection_only", view)
+    save_to_temp_file = get_pref("save_to_temp_file_before_prettifying", view)
+    global_file_rules = get_pref("global_file_rules", view)
+    respect_editorconfig_files = get_pref("respect_editorconfig_files", view)
 
     editor_file_syntax = view.settings().get("syntax") if get_pref(
-        "use_editor_syntax") else "?"
+        "use_editor_syntax", view) else "?"
     editor_indent_size = view.settings().get("tab_size") if get_pref(
-        "use_editor_indentation") else "?"
+        "use_editor_indentation", view) else "?"
     editor_indent_with_tabs = view.settings().get("use_tab_stops") if get_pref(
-        "use_editor_indentation") else "?"
+        "use_editor_indentation, view") else "?"
 
     original_file_path = view.file_name() or "?"
     previous_viewport_position = view.viewport_position()
