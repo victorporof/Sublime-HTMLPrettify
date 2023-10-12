@@ -91,6 +91,7 @@
         // You can add other .jsbeautifyrc rules in this section too.
 
         // [collapse|collapse-preserve-inline|expand|end-expand|none] Put braces on the same line as control statements (default), or put braces on own line (Allman / ANSI style), or put end braces on own line, or attempt to keep them where they are
+        // alt input: [collapse|expand|end-expand|none][,preserve-inline], for ex default alt input is 'collapse,preserve-inline'. This allows you to use '[expand|end-expand]' in conjunction with 'preserve-inline'.
         "brace_style": "collapse-preserve-inline",
 
         // Break chained method calls across subsequent lines
@@ -127,7 +128,10 @@
         "space_in_paren": false,
 
         // Should printable characters in strings encoded in \xNN notation be unescaped, "example" vs "\x65\x78\x61\x6d\x70\x6c\x65"
-        "unescape_strings": false
+        "unescape_strings": false,
+
+        // Don't indent chained method calls
+        "unindent-chained-methods": false
     },
 
     "json":
